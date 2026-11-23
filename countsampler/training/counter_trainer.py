@@ -26,7 +26,7 @@ from ..data.counter_data import (
 from ..data.shapes import ShapeRenderer
 from ..generator.turbo import load_vae, vae_encode
 from ..novel.components.counter import DensityCounter, save_counter
-from ..utils.config import to_dict
+from ..utils.config import save_config, to_dict
 from ..utils.misc import ensure_dir, resolve_device, seed_everything
 from ..utils.run_logger import RunLogger
 
@@ -71,6 +71,7 @@ def train_counter(cfg, out_dir: str | Path | None = None) -> dict:
     seed_everything(seed)
     device = resolve_device(exp.get("device", "auto"))
     out_dir = ensure_dir(out_dir or Path(exp.output_dir) / exp.name)
+    save_config(cfg, out_dir / "config.yaml")
     logger = RunLogger(out_dir, use_wandb=bool(exp.get("wandb", False)), run_name=exp.name, config=to_dict(cfg))
 
     colors = list(ccfg.get("colors") or cfg.data.colors)
