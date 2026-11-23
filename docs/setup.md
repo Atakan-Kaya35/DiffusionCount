@@ -43,7 +43,7 @@ You should see a `+cu128` (or newer) version, `True`, and the card's name.
 pytest -q
 ```
 
-All tests run on the CPU against tiny random models, so they pass on any machine. They take about 10 seconds.
+All tests run on the CPU against tiny random models, so they pass on any machine. They take about 20 seconds.
 
 ## Model weights
 

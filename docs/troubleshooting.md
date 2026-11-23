@@ -30,6 +30,10 @@
 | `method.stages must contain a stage starting at step 0` | the first stage needs `start: 0` |
 | `unknown terms … in stage` / `no weight for terms` | stage term names must be in the method's `TERMS` or `anc/pri/ord`, and each needs a `method.weights` entry |
 | `counts_per_eps J=… exceeds n_max` | J counts are drawn without replacement from 1…N_max |
+| `data_cache/benchmarks/CoCoCount.json not found` | run `python scripts/prepare_benchmarks.py` (needs internet once) |
+| `ColorComponentsCounter needs a colour` | benchmarks need a detector: `--counter owlv2` or `--counter yolo` |
+| `YoloCounter needs pip install ultralytics` | `pip install -e ".[yolo]"` (AGPL-3.0). The first use downloads `yolov9e.pt` |
+| benchmark object never detected by `yolo` | YOLO only knows the 80 COCO class names. The benchmark's `name` must match one exactly (e.g. `sports ball`, not `ball`). Use `owlv2` for other nouns |
 
 ## Training behaviour
 

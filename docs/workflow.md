@@ -10,7 +10,7 @@ flowchart TD
     CT["2. Train counter C_ψ<br/>scripts/train_counter.py"] --> PB["pre-check B"]
     PB --> CFG
     CFG --> T["3. Train sampler per method<br/>scripts/train_sampler.py"]
-    T --> E["4. Evaluate<br/>scripts/evaluate.py"]
+    T --> E["4. Evaluate: synthetic prompts,<br/>CoCoCount, D2D-style<br/>scripts/evaluate.py"]
     BL["frozen baseline<br/>evaluate.py --baseline"] --> C["5. Compare<br/>scripts/compare.py"]
     E --> C
     C --> V["6. Variants and ablations"]
@@ -123,13 +123,30 @@ python scripts/evaluate.py --ckpt runs/method_a/sampler_last.pt
 The default split is `heldout`, i.e. shapes the sampler never saw in training (§7). Use `--split all` to see both.
 The hard counter is independent of C_ψ, which matters for Method B (Remark 3).
 
+Then the benchmarks §8 asks for (CoCoCount and the D2D benchmarks), with a detector counter. Details are in [benchmarks.md](benchmarks.md):
+
+```bash
+python scripts/prepare_benchmarks.py
+```
+```bash
+python scripts/evaluate.py --baseline --config configs/base.yaml --benchmark cococount
+```
+```bash
+python scripts/evaluate.py --ckpt runs/method_a/sampler_last.pt --benchmark cococount
+```
+
+Repeat with `--benchmark d2d_small`, `d2d_multi` and `d2d_large`. Use the same `--counter` for every run you compare.
+
 ## 5. Compare
 
 ```bash
 python scripts/compare.py runs/eval_baseline runs/method_a/eval runs/method_b/eval runs/method_c/eval
 ```
+```bash
+python scripts/compare.py runs/eval_baseline_cococount runs/method_a/eval_cococount runs/method_b/eval_cococount runs/method_c/eval_cococount
+```
 
-This prints a markdown table. Paste it into the experiment log. Besides accuracy, read:
+Each prints a markdown table (one table per benchmark, if you mix them). Paste them into the experiment log. Besides accuracy, read:
 - `seed_spearman_mean`: per seed, how well the counted value follows the requested n (§8's per-seed histograms, summarised). Near 0 for the baseline means seeds have a preferred count. A higher value after training means the sampler moved it.
 - `nn_regularity_cv`: low values mean grid-like layouts, a possible sign of signal hacking (§8).
 - `diversity`: if it collapses compared with the baseline, the sampler found a degenerate solution.

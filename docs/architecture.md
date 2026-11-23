@@ -78,7 +78,8 @@ z_n = ε therefore gives the official frozen baseline.
 |---|---|
 | a method | subclass `CountMethod` (`novel/methods/base.py`): set `name` and `TERMS`, implement `method_terms` (and `attention_request` if it reads attention). Register it in `METHODS` in `novel/methods/__init__.py` and add `configs/method_<x>.yaml` |
 | a loss term to a method | add the function in `novel/losses/<method>.py`, return it from `method_terms`, add it to `TERMS`, then add a weight and stage in the config |
-| a hard counter (e.g. CountGD) | a class with `count(image, color, shape) -> CountResult` in `evaluation/hard_counters.py`, registered in `build_hard_counter` |
+| a hard counter (e.g. CountGD) | a class with `count(image, color, shape) -> CountResult` in `evaluation/hard_counters.py`, registered in `build_hard_counter`. Benchmarks call it with `color=None` |
+| a benchmark | a loader returning `BenchmarkItem`s in `data/benchmarks.py`, added to `BENCHMARKS` and `load_benchmark`, or just a JSONL file |
 | a counter for Method B | anything with `count(x) -> [B, K]`. Pass it with `counter=` / `counter_meta=` to `DensityCountMethod` |
 | a generator family | handle it in `FrozenTurboGenerator.from_pretrained` / `_encode_uncached` / `_model_output` (SDXL is the worked example: two text encoders, `added_cond_kwargs`) |
 | a shape or colour | `SHAPES` / `shape_outline` / `COLOR_RGB` in `data/shapes.py`, and `HUE_RANGES` in `evaluation/hard_counters.py` |
@@ -102,4 +103,5 @@ so the whole pipeline runs on the CPU in seconds with no downloads:
 | `tests/test_generator.py` | layer scan, capture = default processor, Eq. 1, equivalence with diffusers' Euler pipeline, gradient through attention with checkpointing |
 | `tests/test_data.py` | prompts, renderer vs hard counter, density targets, held-out combinations, config inheritance |
 | `tests/test_pipeline.py` | training steps for A/B/C, stages, checkpoints, previews, evaluation, pre-checks, counter training, latent cache |
+| `tests/test_benchmarks.py` | CoCoCount/JSONL loaders, D2D-style sets (and the committed files), strict multi-object scoring, seed policies, `compare.py` |
 | `tests/test_docs.py` | docs drift: every config key is documented, and every linked file and code path exists |

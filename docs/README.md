@@ -23,6 +23,7 @@ New to the project? Read these in order:
 ## Reference
 
 - [Spec → code map](spec_map.md): every equation and section, with the function that implements it.
+- [Benchmarks](benchmarks.md): CoCoCount and the D2D-style sets, counting protocol, how the sampler handles them.
 - [Configuration reference](configuration.md): every config key, its default, and what it does.
 - [Outputs and logs](outputs.md): what each run writes, every logged metric, and checkpoint formats.
 - [Architecture](architecture.md): how the code fits together, and how to add a method, counter or generator.

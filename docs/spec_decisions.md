@@ -74,12 +74,21 @@ for its own conditioning).
 The frozen model runs in bf16 (`generator.dtype`). The sampler, attention probabilities, x̂0, losses and eigendecompositions
 run in float32/float64. bf16 avoids the gradient underflow that fp16 can cause when backpropagating through the U-Net.
 
+### Benchmarks (§8)
+
+- **D2D benchmarks are reconstructed.** The official files are not public, so D2D-Small, -Multi and -Large are rebuilt from the paper's
+  templates, sizes and count ranges with our own 40-class list. Report them as "D2D-style". See [benchmarks.md](benchmarks.md).
+- **Multi-object prompts:** the sampler takes one n, so `eval.benchmark.multi_object_count=sum` conditions it on the total count
+  (`skip` drops those prompts). An image counts as correct only if every object has the right count.
+- **Counter:** OWLv2 by default (D2D's critic). YOLOv9 is available (Make It Count's protocol). CountGD (D2D's evaluation counter) runs
+  externally on saved images.
+
 ## Not implemented yet / external
 
 | Spec item | Status | How to add it |
 |---|---|---|
-| §8 evaluation on **CoCoCount** and the **D2D benchmarks** | missing. Evaluation runs only on the synthetic "n colour shape" prompts | a prompt-file evaluation mode (prompt, object noun, count) with a detector counter (`owlv2`, or CountGD) |
-| §8 **CountGD** as the evaluation counter | external, not pip-installable | wrap it in a class with `count(image, color, shape)` in `countsampler/evaluation/hard_counters.py` |
+| §8 **official D2D benchmark files** | not public yet. D2D-style reconstructions are used | convert the files to the JSONL format in [benchmarks.md](benchmarks.md) once released |
+| §8 **CountGD** as the evaluation counter | external, not pip-installable | run it on `--save-images` output (`manifest.jsonl`), or wrap it in a class with `count(image, color, shape)` in `countsampler/evaluation/hard_counters.py` |
 | §6, §8 **D2D** baseline | external | run D2D's code, then evaluate its images with the same hard counter |
 | §8 image quality beyond CLIP score (e.g. FID) | missing | add to `countsampler/evaluation/metrics.py` |
 | Remark 3 **ensemble of counters** | missing | load several counters in `DensityCountMethod` and average their counts |

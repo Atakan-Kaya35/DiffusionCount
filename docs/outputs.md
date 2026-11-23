@@ -12,21 +12,27 @@ runs/
 │   ├── previews/step_<N>_<color>_<shape>.png
 │   ├── sampler_step<N>.pt          # every train.ckpt_every steps
 │   ├── sampler_last.pt
-│   └── eval/                       # scripts/evaluate.py --ckpt (default location)
-│       ├── metrics.json
-│       ├── records.csv
-│       ├── per_seed_hist.csv
-│       └── grids/<color>_<shape>.png
+│   ├── eval/                       # scripts/evaluate.py --ckpt (default location)
+│   │   ├── metrics.json
+│   │   ├── records.csv
+│   │   ├── per_seed_hist.csv
+│   │   └── grids/<color>_<shape>.png
+│   └── eval_<benchmark>/           # scripts/evaluate.py --ckpt … --benchmark <name>
+│       ├── metrics.json, records.csv
+│       └── images/, manifest.jsonl # with --save-images
 ├── counter/                        # scripts/train_counter.py
 │   ├── config.yaml, log.jsonl
 │   ├── counter_best.pt             # lowest val/mae_present
 │   └── counter_last.pt
 ├── eval_baseline/                  # scripts/evaluate.py --baseline (same files as eval/)
+├── eval_baseline_<benchmark>/      # scripts/evaluate.py --baseline --benchmark <name>
 └── precheck/                       # scripts/precheck.py
     ├── precheck_A_rows.csv, precheck_A_summary.csv
     ├── precheck_B_rows.csv, precheck_B_summary.csv
     └── precheck_C_rows.csv, precheck_C_summary.csv
 data_cache/counter/{train,val}_<config-hash>.pt   # VAE-encoded synthetic scenes
+data_cache/benchmarks/CoCoCount.json              # scripts/prepare_benchmarks.py
+benchmarks/d2d_style_{small,multi,large}.jsonl    # committed D2D-style prompt sets
 ```
 
 ## Sampler training log (`log.jsonl`)
@@ -95,6 +101,28 @@ Training lines: `epoch`, `loss`, `mse`, `l1`, `lr`. One validation line per epoc
 
 **`per_seed_hist.csv`**: one row per (seed, colour, shape), with the counted value for each requested n plus
 `spearman` and `distinct_counts`. This is the "per-seed count histogram" of §8. Compare baseline and trained runs row by row.
+
+## Benchmark evaluation
+
+`scripts/evaluate.py --benchmark <name>` writes to `runs/<run>/eval_<name>/` (or `runs/eval_baseline_<name>/`):
+
+**`metrics.json`**
+
+| Key | Meaning |
+|---|---|
+| `benchmark`, `num_prompts`, `seeds`, `multi_object_count` | what was run |
+| `image_exact_acc`, `num_images` | share of images where **every** requested object has the right count |
+| `image_exact_acc_per_seed`, `image_exact_acc_mean_over_seeds`, `image_exact_acc_std_over_seeds` | accuracy per seed, and mean ± std over seeds (as D2D reports) |
+| `object` | per-object count metrics: `exact_acc`, `within1_acc`, `mae`, `rel_err`, `exact_acc@<n>` |
+| `in_train_range`, `out_of_train_range` | image accuracy for prompts with all counts ≤ `data.n_max` vs above it |
+| `single_object`, `multi_object` | image accuracy by prompt type (only when the benchmark has multi-object prompts) |
+| `latency_ms_per_image`, `clip_score` | as in the synthetic evaluation |
+
+**`records.csv`**: one row per (image, object): `item, prompt, seed, object, target, counted, image_correct, n_cond,
+in_train_range, num_objects, image_file`. `n_cond` is the count the sampler was conditioned on.
+
+With `--save-images`: `images/<item>_s<seed>.png` plus **`manifest.jsonl`** (`file, prompt, seed, objects`), which is what an
+external counter such as CountGD needs.
 
 ## Pre-checks (`scripts/precheck.py`)
 

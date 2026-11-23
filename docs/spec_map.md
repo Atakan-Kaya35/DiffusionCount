@@ -87,6 +87,8 @@ Paths are relative to the repository root. Files under `countsampler/novel/` car
 | §7 step 6 clipping and skip-on-NaN | `SamplerTrainer.train_step` |
 | §7 ablation without the number | `data.include_count=false` |
 | §8 count accuracy with an external counter | `countsampler/evaluation/evaluate.py` `run_evaluation` |
+| §8 CoCoCount and D2D benchmarks | `countsampler/data/benchmarks.py`, `countsampler/evaluation/benchmark_eval.py`, `scripts/prepare_benchmarks.py`, `scripts/evaluate.py --benchmark` |
+| §8 one shared counter (OWLv2 / YOLOv9; CountGD external) | `countsampler/evaluation/hard_counters.py` |
 | §8 comparison table | `scripts/compare.py` |
 | §8 per-seed count histograms | `per_seed_hist.csv`, `seed_spearman_mean` |
 | §8 diversity and image quality, grid-layout detection | `countsampler/evaluation/metrics.py` `pairwise_diversity`, `nn_regularity`, `ClipScorer` |

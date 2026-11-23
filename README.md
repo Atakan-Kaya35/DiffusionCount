@@ -27,6 +27,7 @@ All three share the sampler and its geometry regularizers ([docs/methods/shared.
 - [Overview](docs/overview.md): the idea, the pipeline, how gradients reach the sampler
 - [Setup](docs/setup.md): install on RTX 50-series, first smoke run
 - [Workflow](docs/workflow.md): pre-checks → counter → training → evaluation → comparison
+- [Benchmarks](docs/benchmarks.md): CoCoCount and D2D-style evaluation with a detector counter
 - [Spec → code map](docs/spec_map.md) · [Configuration reference](docs/configuration.md) · [Outputs and logs](docs/outputs.md)
 - [Architecture](docs/architecture.md) · [Spec decisions and gaps](docs/spec_decisions.md) · [Troubleshooting](docs/troubleshooting.md)
 - [Contributing](docs/contributing.md) · [Experiment log](docs/experiment_log.md)
@@ -71,6 +72,7 @@ python scripts/train_sampler.py --config configs/method_a.yaml
 python scripts/evaluate.py --ckpt runs/method_a/sampler_last.pt
 ```
 
+For the §8 benchmarks: `python scripts/prepare_benchmarks.py`, then add `--benchmark cococount` (or `d2d_small`, `d2d_multi`, `d2d_large`) to `evaluate.py`.
 Method B needs a counter first (`python scripts/train_counter.py --config configs/counter.yaml`).
 On 8 GB cards add `--config configs/gpu_8gb.yaml`. The full protocol is in [docs/workflow.md](docs/workflow.md).
 
@@ -80,5 +82,5 @@ On 8 GB cards add `--config configs/gpu_8gb.yaml`. The full protocol is in [docs
 pytest -q
 ```
 
-Runs on the CPU in about 10 seconds with no downloads. Covers the losses, gradient flow through the frozen U-Net, equivalence with
+Runs on the CPU in about 20 seconds with no downloads. Covers the losses, gradient flow through the frozen U-Net, equivalence with
 diffusers' SD-Turbo pipeline, end-to-end training steps for A/B/C, and checks that the docs stay in sync with the code.

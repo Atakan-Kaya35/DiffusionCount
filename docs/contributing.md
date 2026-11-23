@@ -13,7 +13,7 @@
 pytest -q
 ```
 
-The suite runs on the CPU in about 10 seconds with no downloads. It includes `tests/test_docs.py`, which fails if:
+The suite runs on the CPU in about 20 seconds with no downloads. It includes `tests/test_docs.py`, which fails if:
 - a config key in `configs/*.yaml` is missing from [configuration.md](configuration.md);
 - a relative link in `docs/` or `README.md` points to a file that does not exist;
 - a backticked repository path in the docs (e.g. `countsampler/novel/shared.py`) does not exist.
