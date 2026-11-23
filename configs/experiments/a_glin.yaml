@@ -1,0 +1,8 @@
+# Example of a versioned experiment overlay (see docs/contributing.md).
+# Method A with g_lin as the target metric of L_ord (spec §3.4: run g_log and g_lin separately).
+#   python scripts/train_sampler.py --config configs/method_a.yaml --config configs/experiments/a_glin.yaml
+experiment:
+  name: a_glin
+
+geometry:
+  g: lin
