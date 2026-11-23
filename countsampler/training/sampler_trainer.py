@@ -126,13 +126,14 @@ class SamplerTrainer:
 
         params = [p for p in self.sampler.parameters() if p.grad is not None]
         grad_norm = torch.nn.utils.clip_grad_norm_(params, float(self.cfg.train.grad_clip)) if params else None
-        if skipped == self.accum or grad_norm is None or not torch.isfinite(grad_norm):
+        step_skipped = skipped == self.accum or grad_norm is None or not torch.isfinite(grad_norm)
+        if step_skipped:
             self.opt.zero_grad(set_to_none=True)
-            logs["skipped"] = 1
         else:
             self.opt.step()
             self.lr_sched.step()
-            logs["skipped"] = skipped
+        logs["skipped"] = int(step_skipped)      # 1 = no optimiser update this step
+        logs["skipped_micro"] = skipped           # micro-batches dropped (non-finite loss / eigh failure)
         logs["grad_norm"] = float(grad_norm) if grad_norm is not None else float("nan")
         logs["lr"] = self.opt.param_groups[0]["lr"]
         logs["sec_per_step"] = time.time() - t0
