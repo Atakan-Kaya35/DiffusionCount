@@ -1,0 +1,400 @@
+{"prompt": "A realistic photo of a scene with one car.", "objects": [{"name": "car", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two cars.", "objects": [{"name": "car", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three cars.", "objects": [{"name": "car", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four cars.", "objects": [{"name": "car", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five cars.", "objects": [{"name": "car", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six cars.", "objects": [{"name": "car", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven cars.", "objects": [{"name": "car", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight cars.", "objects": [{"name": "car", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine cars.", "objects": [{"name": "car", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten cars.", "objects": [{"name": "car", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one airplane.", "objects": [{"name": "airplane", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two airplanes.", "objects": [{"name": "airplane", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three airplanes.", "objects": [{"name": "airplane", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four airplanes.", "objects": [{"name": "airplane", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five airplanes.", "objects": [{"name": "airplane", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six airplanes.", "objects": [{"name": "airplane", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven airplanes.", "objects": [{"name": "airplane", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight airplanes.", "objects": [{"name": "airplane", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine airplanes.", "objects": [{"name": "airplane", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten airplanes.", "objects": [{"name": "airplane", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one bird.", "objects": [{"name": "bird", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two birds.", "objects": [{"name": "bird", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three birds.", "objects": [{"name": "bird", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four birds.", "objects": [{"name": "bird", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five birds.", "objects": [{"name": "bird", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six birds.", "objects": [{"name": "bird", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven birds.", "objects": [{"name": "bird", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight birds.", "objects": [{"name": "bird", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine birds.", "objects": [{"name": "bird", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten birds.", "objects": [{"name": "bird", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one cat.", "objects": [{"name": "cat", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two cats.", "objects": [{"name": "cat", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three cats.", "objects": [{"name": "cat", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four cats.", "objects": [{"name": "cat", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five cats.", "objects": [{"name": "cat", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six cats.", "objects": [{"name": "cat", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven cats.", "objects": [{"name": "cat", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight cats.", "objects": [{"name": "cat", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine cats.", "objects": [{"name": "cat", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten cats.", "objects": [{"name": "cat", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one dog.", "objects": [{"name": "dog", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two dogs.", "objects": [{"name": "dog", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three dogs.", "objects": [{"name": "dog", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four dogs.", "objects": [{"name": "dog", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five dogs.", "objects": [{"name": "dog", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six dogs.", "objects": [{"name": "dog", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven dogs.", "objects": [{"name": "dog", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight dogs.", "objects": [{"name": "dog", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine dogs.", "objects": [{"name": "dog", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten dogs.", "objects": [{"name": "dog", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one horse.", "objects": [{"name": "horse", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two horses.", "objects": [{"name": "horse", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three horses.", "objects": [{"name": "horse", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four horses.", "objects": [{"name": "horse", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five horses.", "objects": [{"name": "horse", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six horses.", "objects": [{"name": "horse", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven horses.", "objects": [{"name": "horse", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight horses.", "objects": [{"name": "horse", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine horses.", "objects": [{"name": "horse", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten horses.", "objects": [{"name": "horse", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one sheep.", "objects": [{"name": "sheep", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two sheep.", "objects": [{"name": "sheep", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three sheep.", "objects": [{"name": "sheep", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four sheep.", "objects": [{"name": "sheep", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five sheep.", "objects": [{"name": "sheep", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six sheep.", "objects": [{"name": "sheep", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven sheep.", "objects": [{"name": "sheep", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight sheep.", "objects": [{"name": "sheep", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine sheep.", "objects": [{"name": "sheep", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten sheep.", "objects": [{"name": "sheep", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one cow.", "objects": [{"name": "cow", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two cows.", "objects": [{"name": "cow", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three cows.", "objects": [{"name": "cow", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four cows.", "objects": [{"name": "cow", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five cows.", "objects": [{"name": "cow", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six cows.", "objects": [{"name": "cow", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven cows.", "objects": [{"name": "cow", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight cows.", "objects": [{"name": "cow", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine cows.", "objects": [{"name": "cow", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten cows.", "objects": [{"name": "cow", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one elephant.", "objects": [{"name": "elephant", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two elephants.", "objects": [{"name": "elephant", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three elephants.", "objects": [{"name": "elephant", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four elephants.", "objects": [{"name": "elephant", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five elephants.", "objects": [{"name": "elephant", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six elephants.", "objects": [{"name": "elephant", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven elephants.", "objects": [{"name": "elephant", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight elephants.", "objects": [{"name": "elephant", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine elephants.", "objects": [{"name": "elephant", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten elephants.", "objects": [{"name": "elephant", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one bear.", "objects": [{"name": "bear", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two bears.", "objects": [{"name": "bear", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three bears.", "objects": [{"name": "bear", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four bears.", "objects": [{"name": "bear", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five bears.", "objects": [{"name": "bear", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six bears.", "objects": [{"name": "bear", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven bears.", "objects": [{"name": "bear", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight bears.", "objects": [{"name": "bear", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine bears.", "objects": [{"name": "bear", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten bears.", "objects": [{"name": "bear", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one backpack.", "objects": [{"name": "backpack", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two backpacks.", "objects": [{"name": "backpack", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three backpacks.", "objects": [{"name": "backpack", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four backpacks.", "objects": [{"name": "backpack", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five backpacks.", "objects": [{"name": "backpack", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six backpacks.", "objects": [{"name": "backpack", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven backpacks.", "objects": [{"name": "backpack", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight backpacks.", "objects": [{"name": "backpack", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine backpacks.", "objects": [{"name": "backpack", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten backpacks.", "objects": [{"name": "backpack", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one tie.", "objects": [{"name": "tie", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two ties.", "objects": [{"name": "tie", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three ties.", "objects": [{"name": "tie", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four ties.", "objects": [{"name": "tie", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five ties.", "objects": [{"name": "tie", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six ties.", "objects": [{"name": "tie", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven ties.", "objects": [{"name": "tie", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight ties.", "objects": [{"name": "tie", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine ties.", "objects": [{"name": "tie", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten ties.", "objects": [{"name": "tie", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one sports ball.", "objects": [{"name": "sports ball", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two sports balls.", "objects": [{"name": "sports ball", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three sports balls.", "objects": [{"name": "sports ball", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four sports balls.", "objects": [{"name": "sports ball", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five sports balls.", "objects": [{"name": "sports ball", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six sports balls.", "objects": [{"name": "sports ball", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven sports balls.", "objects": [{"name": "sports ball", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight sports balls.", "objects": [{"name": "sports ball", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine sports balls.", "objects": [{"name": "sports ball", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten sports balls.", "objects": [{"name": "sports ball", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one baseball glove.", "objects": [{"name": "baseball glove", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two baseball gloves.", "objects": [{"name": "baseball glove", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three baseball gloves.", "objects": [{"name": "baseball glove", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four baseball gloves.", "objects": [{"name": "baseball glove", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five baseball gloves.", "objects": [{"name": "baseball glove", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six baseball gloves.", "objects": [{"name": "baseball glove", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven baseball gloves.", "objects": [{"name": "baseball glove", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight baseball gloves.", "objects": [{"name": "baseball glove", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine baseball gloves.", "objects": [{"name": "baseball glove", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten baseball gloves.", "objects": [{"name": "baseball glove", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one cup.", "objects": [{"name": "cup", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two cups.", "objects": [{"name": "cup", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three cups.", "objects": [{"name": "cup", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four cups.", "objects": [{"name": "cup", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five cups.", "objects": [{"name": "cup", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six cups.", "objects": [{"name": "cup", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven cups.", "objects": [{"name": "cup", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight cups.", "objects": [{"name": "cup", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine cups.", "objects": [{"name": "cup", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten cups.", "objects": [{"name": "cup", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one bowl.", "objects": [{"name": "bowl", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two bowls.", "objects": [{"name": "bowl", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three bowls.", "objects": [{"name": "bowl", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four bowls.", "objects": [{"name": "bowl", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five bowls.", "objects": [{"name": "bowl", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six bowls.", "objects": [{"name": "bowl", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven bowls.", "objects": [{"name": "bowl", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight bowls.", "objects": [{"name": "bowl", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine bowls.", "objects": [{"name": "bowl", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten bowls.", "objects": [{"name": "bowl", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one apple.", "objects": [{"name": "apple", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two apples.", "objects": [{"name": "apple", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three apples.", "objects": [{"name": "apple", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four apples.", "objects": [{"name": "apple", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five apples.", "objects": [{"name": "apple", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six apples.", "objects": [{"name": "apple", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven apples.", "objects": [{"name": "apple", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight apples.", "objects": [{"name": "apple", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine apples.", "objects": [{"name": "apple", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten apples.", "objects": [{"name": "apple", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one donut.", "objects": [{"name": "donut", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two donuts.", "objects": [{"name": "donut", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three donuts.", "objects": [{"name": "donut", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four donuts.", "objects": [{"name": "donut", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five donuts.", "objects": [{"name": "donut", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six donuts.", "objects": [{"name": "donut", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven donuts.", "objects": [{"name": "donut", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight donuts.", "objects": [{"name": "donut", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine donuts.", "objects": [{"name": "donut", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten donuts.", "objects": [{"name": "donut", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one cell phone.", "objects": [{"name": "cell phone", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two cell phones.", "objects": [{"name": "cell phone", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three cell phones.", "objects": [{"name": "cell phone", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four cell phones.", "objects": [{"name": "cell phone", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five cell phones.", "objects": [{"name": "cell phone", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six cell phones.", "objects": [{"name": "cell phone", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven cell phones.", "objects": [{"name": "cell phone", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight cell phones.", "objects": [{"name": "cell phone", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine cell phones.", "objects": [{"name": "cell phone", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten cell phones.", "objects": [{"name": "cell phone", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one clock.", "objects": [{"name": "clock", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two clocks.", "objects": [{"name": "clock", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three clocks.", "objects": [{"name": "clock", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four clocks.", "objects": [{"name": "clock", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five clocks.", "objects": [{"name": "clock", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six clocks.", "objects": [{"name": "clock", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven clocks.", "objects": [{"name": "clock", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight clocks.", "objects": [{"name": "clock", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine clocks.", "objects": [{"name": "clock", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten clocks.", "objects": [{"name": "clock", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one bicycle.", "objects": [{"name": "bicycle", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two bicycles.", "objects": [{"name": "bicycle", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three bicycles.", "objects": [{"name": "bicycle", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four bicycles.", "objects": [{"name": "bicycle", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five bicycles.", "objects": [{"name": "bicycle", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six bicycles.", "objects": [{"name": "bicycle", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven bicycles.", "objects": [{"name": "bicycle", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight bicycles.", "objects": [{"name": "bicycle", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine bicycles.", "objects": [{"name": "bicycle", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten bicycles.", "objects": [{"name": "bicycle", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one motorcycle.", "objects": [{"name": "motorcycle", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two motorcycles.", "objects": [{"name": "motorcycle", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three motorcycles.", "objects": [{"name": "motorcycle", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four motorcycles.", "objects": [{"name": "motorcycle", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five motorcycles.", "objects": [{"name": "motorcycle", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six motorcycles.", "objects": [{"name": "motorcycle", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven motorcycles.", "objects": [{"name": "motorcycle", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight motorcycles.", "objects": [{"name": "motorcycle", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine motorcycles.", "objects": [{"name": "motorcycle", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten motorcycles.", "objects": [{"name": "motorcycle", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one bus.", "objects": [{"name": "bus", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two buses.", "objects": [{"name": "bus", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three buses.", "objects": [{"name": "bus", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four buses.", "objects": [{"name": "bus", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five buses.", "objects": [{"name": "bus", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six buses.", "objects": [{"name": "bus", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven buses.", "objects": [{"name": "bus", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight buses.", "objects": [{"name": "bus", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine buses.", "objects": [{"name": "bus", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten buses.", "objects": [{"name": "bus", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one truck.", "objects": [{"name": "truck", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two trucks.", "objects": [{"name": "truck", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three trucks.", "objects": [{"name": "truck", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four trucks.", "objects": [{"name": "truck", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five trucks.", "objects": [{"name": "truck", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six trucks.", "objects": [{"name": "truck", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven trucks.", "objects": [{"name": "truck", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight trucks.", "objects": [{"name": "truck", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine trucks.", "objects": [{"name": "truck", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten trucks.", "objects": [{"name": "truck", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one boat.", "objects": [{"name": "boat", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two boats.", "objects": [{"name": "boat", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three boats.", "objects": [{"name": "boat", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four boats.", "objects": [{"name": "boat", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five boats.", "objects": [{"name": "boat", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six boats.", "objects": [{"name": "boat", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven boats.", "objects": [{"name": "boat", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight boats.", "objects": [{"name": "boat", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine boats.", "objects": [{"name": "boat", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten boats.", "objects": [{"name": "boat", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one traffic light.", "objects": [{"name": "traffic light", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two traffic lights.", "objects": [{"name": "traffic light", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three traffic lights.", "objects": [{"name": "traffic light", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four traffic lights.", "objects": [{"name": "traffic light", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five traffic lights.", "objects": [{"name": "traffic light", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six traffic lights.", "objects": [{"name": "traffic light", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven traffic lights.", "objects": [{"name": "traffic light", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight traffic lights.", "objects": [{"name": "traffic light", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine traffic lights.", "objects": [{"name": "traffic light", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten traffic lights.", "objects": [{"name": "traffic light", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one bench.", "objects": [{"name": "bench", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two benches.", "objects": [{"name": "bench", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three benches.", "objects": [{"name": "bench", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four benches.", "objects": [{"name": "bench", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five benches.", "objects": [{"name": "bench", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six benches.", "objects": [{"name": "bench", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven benches.", "objects": [{"name": "bench", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight benches.", "objects": [{"name": "bench", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine benches.", "objects": [{"name": "bench", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten benches.", "objects": [{"name": "bench", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one zebra.", "objects": [{"name": "zebra", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two zebras.", "objects": [{"name": "zebra", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three zebras.", "objects": [{"name": "zebra", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four zebras.", "objects": [{"name": "zebra", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five zebras.", "objects": [{"name": "zebra", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six zebras.", "objects": [{"name": "zebra", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven zebras.", "objects": [{"name": "zebra", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight zebras.", "objects": [{"name": "zebra", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine zebras.", "objects": [{"name": "zebra", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten zebras.", "objects": [{"name": "zebra", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one giraffe.", "objects": [{"name": "giraffe", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two giraffes.", "objects": [{"name": "giraffe", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three giraffes.", "objects": [{"name": "giraffe", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four giraffes.", "objects": [{"name": "giraffe", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five giraffes.", "objects": [{"name": "giraffe", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six giraffes.", "objects": [{"name": "giraffe", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven giraffes.", "objects": [{"name": "giraffe", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight giraffes.", "objects": [{"name": "giraffe", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine giraffes.", "objects": [{"name": "giraffe", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten giraffes.", "objects": [{"name": "giraffe", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one umbrella.", "objects": [{"name": "umbrella", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two umbrellas.", "objects": [{"name": "umbrella", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three umbrellas.", "objects": [{"name": "umbrella", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four umbrellas.", "objects": [{"name": "umbrella", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five umbrellas.", "objects": [{"name": "umbrella", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six umbrellas.", "objects": [{"name": "umbrella", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven umbrellas.", "objects": [{"name": "umbrella", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight umbrellas.", "objects": [{"name": "umbrella", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine umbrellas.", "objects": [{"name": "umbrella", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten umbrellas.", "objects": [{"name": "umbrella", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one suitcase.", "objects": [{"name": "suitcase", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two suitcases.", "objects": [{"name": "suitcase", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three suitcases.", "objects": [{"name": "suitcase", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four suitcases.", "objects": [{"name": "suitcase", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five suitcases.", "objects": [{"name": "suitcase", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six suitcases.", "objects": [{"name": "suitcase", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven suitcases.", "objects": [{"name": "suitcase", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight suitcases.", "objects": [{"name": "suitcase", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine suitcases.", "objects": [{"name": "suitcase", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten suitcases.", "objects": [{"name": "suitcase", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one kite.", "objects": [{"name": "kite", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two kites.", "objects": [{"name": "kite", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three kites.", "objects": [{"name": "kite", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four kites.", "objects": [{"name": "kite", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five kites.", "objects": [{"name": "kite", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six kites.", "objects": [{"name": "kite", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven kites.", "objects": [{"name": "kite", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight kites.", "objects": [{"name": "kite", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine kites.", "objects": [{"name": "kite", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten kites.", "objects": [{"name": "kite", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one bottle.", "objects": [{"name": "bottle", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two bottles.", "objects": [{"name": "bottle", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three bottles.", "objects": [{"name": "bottle", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four bottles.", "objects": [{"name": "bottle", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five bottles.", "objects": [{"name": "bottle", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six bottles.", "objects": [{"name": "bottle", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven bottles.", "objects": [{"name": "bottle", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight bottles.", "objects": [{"name": "bottle", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine bottles.", "objects": [{"name": "bottle", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten bottles.", "objects": [{"name": "bottle", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one wine glass.", "objects": [{"name": "wine glass", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two wine glasses.", "objects": [{"name": "wine glass", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three wine glasses.", "objects": [{"name": "wine glass", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four wine glasses.", "objects": [{"name": "wine glass", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five wine glasses.", "objects": [{"name": "wine glass", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six wine glasses.", "objects": [{"name": "wine glass", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven wine glasses.", "objects": [{"name": "wine glass", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight wine glasses.", "objects": [{"name": "wine glass", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine wine glasses.", "objects": [{"name": "wine glass", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten wine glasses.", "objects": [{"name": "wine glass", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one banana.", "objects": [{"name": "banana", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two bananas.", "objects": [{"name": "banana", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three bananas.", "objects": [{"name": "banana", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four bananas.", "objects": [{"name": "banana", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five bananas.", "objects": [{"name": "banana", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six bananas.", "objects": [{"name": "banana", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven bananas.", "objects": [{"name": "banana", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight bananas.", "objects": [{"name": "banana", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine bananas.", "objects": [{"name": "banana", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten bananas.", "objects": [{"name": "banana", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one orange.", "objects": [{"name": "orange", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two oranges.", "objects": [{"name": "orange", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three oranges.", "objects": [{"name": "orange", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four oranges.", "objects": [{"name": "orange", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five oranges.", "objects": [{"name": "orange", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six oranges.", "objects": [{"name": "orange", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven oranges.", "objects": [{"name": "orange", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight oranges.", "objects": [{"name": "orange", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine oranges.", "objects": [{"name": "orange", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten oranges.", "objects": [{"name": "orange", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one chair.", "objects": [{"name": "chair", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two chairs.", "objects": [{"name": "chair", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three chairs.", "objects": [{"name": "chair", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four chairs.", "objects": [{"name": "chair", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five chairs.", "objects": [{"name": "chair", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six chairs.", "objects": [{"name": "chair", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven chairs.", "objects": [{"name": "chair", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight chairs.", "objects": [{"name": "chair", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine chairs.", "objects": [{"name": "chair", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten chairs.", "objects": [{"name": "chair", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one laptop.", "objects": [{"name": "laptop", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two laptops.", "objects": [{"name": "laptop", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three laptops.", "objects": [{"name": "laptop", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four laptops.", "objects": [{"name": "laptop", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five laptops.", "objects": [{"name": "laptop", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six laptops.", "objects": [{"name": "laptop", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven laptops.", "objects": [{"name": "laptop", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight laptops.", "objects": [{"name": "laptop", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine laptops.", "objects": [{"name": "laptop", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten laptops.", "objects": [{"name": "laptop", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one book.", "objects": [{"name": "book", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two books.", "objects": [{"name": "book", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three books.", "objects": [{"name": "book", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four books.", "objects": [{"name": "book", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five books.", "objects": [{"name": "book", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six books.", "objects": [{"name": "book", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven books.", "objects": [{"name": "book", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight books.", "objects": [{"name": "book", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine books.", "objects": [{"name": "book", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten books.", "objects": [{"name": "book", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with one teddy bear.", "objects": [{"name": "teddy bear", "count": 1}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with two teddy bears.", "objects": [{"name": "teddy bear", "count": 2}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with three teddy bears.", "objects": [{"name": "teddy bear", "count": 3}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with four teddy bears.", "objects": [{"name": "teddy bear", "count": 4}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with five teddy bears.", "objects": [{"name": "teddy bear", "count": 5}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with six teddy bears.", "objects": [{"name": "teddy bear", "count": 6}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with seven teddy bears.", "objects": [{"name": "teddy bear", "count": 7}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with eight teddy bears.", "objects": [{"name": "teddy bear", "count": 8}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with nine teddy bears.", "objects": [{"name": "teddy bear", "count": 9}], "meta": {"benchmark": "d2d_style_small"}}
+{"prompt": "A realistic photo of a scene with ten teddy bears.", "objects": [{"name": "teddy bear", "count": 10}], "meta": {"benchmark": "d2d_style_small"}}

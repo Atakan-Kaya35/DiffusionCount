@@ -1,0 +1,400 @@
+{"prompt": "A realistic photo of a scene with one boat and five benches.", "objects": [{"name": "boat", "count": 1}, {"name": "bench", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven bottles and five kites.", "objects": [{"name": "bottle", "count": 7}, {"name": "kite", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four suitcases and nine buses.", "objects": [{"name": "suitcase", "count": 4}, {"name": "bus", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three elephants and two cell phones.", "objects": [{"name": "elephant", "count": 3}, {"name": "cell phone", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine teddy bears and three apples.", "objects": [{"name": "teddy bear", "count": 9}, {"name": "apple", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two clocks and six sheep.", "objects": [{"name": "clock", "count": 2}, {"name": "sheep", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two suitcases and six oranges.", "objects": [{"name": "suitcase", "count": 2}, {"name": "orange", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four zebras and nine bicycles.", "objects": [{"name": "zebra", "count": 4}, {"name": "bicycle", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine suitcases and five giraffes.", "objects": [{"name": "suitcase", "count": 9}, {"name": "giraffe", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one cat and two oranges.", "objects": [{"name": "cat", "count": 1}, {"name": "orange", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight traffic lights and six cars.", "objects": [{"name": "traffic light", "count": 8}, {"name": "car", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two bowls and four bicycles.", "objects": [{"name": "bowl", "count": 2}, {"name": "bicycle", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four chairs and three cups.", "objects": [{"name": "chair", "count": 4}, {"name": "cup", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two bananas and two giraffes.", "objects": [{"name": "banana", "count": 2}, {"name": "giraffe", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight bicycles and two bottles.", "objects": [{"name": "bicycle", "count": 8}, {"name": "bottle", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five clocks and two oranges.", "objects": [{"name": "clock", "count": 5}, {"name": "orange", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine oranges and four motorcycles.", "objects": [{"name": "orange", "count": 9}, {"name": "motorcycle", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five books and eight oranges.", "objects": [{"name": "book", "count": 5}, {"name": "orange", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven horses and six books.", "objects": [{"name": "horse", "count": 7}, {"name": "book", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five chairs and three bowls.", "objects": [{"name": "chair", "count": 5}, {"name": "bowl", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one sports ball and five ties.", "objects": [{"name": "sports ball", "count": 1}, {"name": "tie", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two suitcases and three dogs.", "objects": [{"name": "suitcase", "count": 2}, {"name": "dog", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two bears and nine birds.", "objects": [{"name": "bear", "count": 2}, {"name": "bird", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five traffic lights and nine wine glasses.", "objects": [{"name": "traffic light", "count": 5}, {"name": "wine glass", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven bowls and five baseball gloves.", "objects": [{"name": "bowl", "count": 7}, {"name": "baseball glove", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six giraffes and two kites.", "objects": [{"name": "giraffe", "count": 6}, {"name": "kite", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two bicycles and eight teddy bears.", "objects": [{"name": "bicycle", "count": 2}, {"name": "teddy bear", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four laptops and four motorcycles.", "objects": [{"name": "laptop", "count": 4}, {"name": "motorcycle", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two airplanes and four donuts.", "objects": [{"name": "airplane", "count": 2}, {"name": "donut", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six trucks and seven backpacks.", "objects": [{"name": "truck", "count": 6}, {"name": "backpack", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three cats and four sheep.", "objects": [{"name": "cat", "count": 3}, {"name": "sheep", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine birds and two chairs.", "objects": [{"name": "bird", "count": 9}, {"name": "chair", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four airplanes and two cows.", "objects": [{"name": "airplane", "count": 4}, {"name": "cow", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six traffic lights and two horses.", "objects": [{"name": "traffic light", "count": 6}, {"name": "horse", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one bird and four books.", "objects": [{"name": "bird", "count": 1}, {"name": "book", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight ties and four cows.", "objects": [{"name": "tie", "count": 8}, {"name": "cow", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine cats and seven airplanes.", "objects": [{"name": "cat", "count": 9}, {"name": "airplane", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five teddy bears and two sheep.", "objects": [{"name": "teddy bear", "count": 5}, {"name": "sheep", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five cups and six dogs.", "objects": [{"name": "cup", "count": 5}, {"name": "dog", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one zebra and nine ties.", "objects": [{"name": "zebra", "count": 1}, {"name": "tie", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two umbrellas and seven birds.", "objects": [{"name": "umbrella", "count": 2}, {"name": "bird", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six sports balls and eight apples.", "objects": [{"name": "sports ball", "count": 6}, {"name": "apple", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four chairs and one backpack.", "objects": [{"name": "chair", "count": 4}, {"name": "backpack", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine backpacks and five motorcycles.", "objects": [{"name": "backpack", "count": 9}, {"name": "motorcycle", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight cows and three books.", "objects": [{"name": "cow", "count": 8}, {"name": "book", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven cars and nine suitcases.", "objects": [{"name": "car", "count": 7}, {"name": "suitcase", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven clocks and five buses.", "objects": [{"name": "clock", "count": 7}, {"name": "bus", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one bear and eight oranges.", "objects": [{"name": "bear", "count": 1}, {"name": "orange", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one horse and nine motorcycles.", "objects": [{"name": "horse", "count": 1}, {"name": "motorcycle", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four donuts and eight elephants.", "objects": [{"name": "donut", "count": 4}, {"name": "elephant", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five buses and six teddy bears.", "objects": [{"name": "bus", "count": 5}, {"name": "teddy bear", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three laptops and five teddy bears.", "objects": [{"name": "laptop", "count": 3}, {"name": "teddy bear", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two boats and one bench.", "objects": [{"name": "boat", "count": 2}, {"name": "bench", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six books and three sports balls.", "objects": [{"name": "book", "count": 6}, {"name": "sports ball", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight bowls and seven cups.", "objects": [{"name": "bowl", "count": 8}, {"name": "cup", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one chair and seven benches.", "objects": [{"name": "chair", "count": 1}, {"name": "bench", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one chair and three benches.", "objects": [{"name": "chair", "count": 1}, {"name": "bench", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five giraffes and three dogs.", "objects": [{"name": "giraffe", "count": 5}, {"name": "dog", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight giraffes and nine wine glasses.", "objects": [{"name": "giraffe", "count": 8}, {"name": "wine glass", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one book and eight cars.", "objects": [{"name": "book", "count": 1}, {"name": "car", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight bicycles and one clock.", "objects": [{"name": "bicycle", "count": 8}, {"name": "clock", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine benches and two sports balls.", "objects": [{"name": "bench", "count": 9}, {"name": "sports ball", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven elephants and seven cars.", "objects": [{"name": "elephant", "count": 7}, {"name": "car", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four bicycles and one car.", "objects": [{"name": "bicycle", "count": 4}, {"name": "car", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two cars and four wine glasses.", "objects": [{"name": "car", "count": 2}, {"name": "wine glass", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four cows and five books.", "objects": [{"name": "cow", "count": 4}, {"name": "book", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two donuts and eight ties.", "objects": [{"name": "donut", "count": 2}, {"name": "tie", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one traffic light and five horses.", "objects": [{"name": "traffic light", "count": 1}, {"name": "horse", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five giraffes and three cows.", "objects": [{"name": "giraffe", "count": 5}, {"name": "cow", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two wine glasses and three buses.", "objects": [{"name": "wine glass", "count": 2}, {"name": "bus", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one donut and one airplane.", "objects": [{"name": "donut", "count": 1}, {"name": "airplane", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine baseball gloves and six apples.", "objects": [{"name": "baseball glove", "count": 9}, {"name": "apple", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one truck and eight chairs.", "objects": [{"name": "truck", "count": 1}, {"name": "chair", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six umbrellas and nine zebras.", "objects": [{"name": "umbrella", "count": 6}, {"name": "zebra", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven ties and five baseball gloves.", "objects": [{"name": "tie", "count": 7}, {"name": "baseball glove", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three cars and five elephants.", "objects": [{"name": "car", "count": 3}, {"name": "elephant", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two motorcycles and six trucks.", "objects": [{"name": "motorcycle", "count": 2}, {"name": "truck", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one teddy bear and five birds.", "objects": [{"name": "teddy bear", "count": 1}, {"name": "bird", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five backpacks and six bears.", "objects": [{"name": "backpack", "count": 5}, {"name": "bear", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three traffic lights and five oranges.", "objects": [{"name": "traffic light", "count": 3}, {"name": "orange", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four cows and one suitcase.", "objects": [{"name": "cow", "count": 4}, {"name": "suitcase", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine clocks and two ties.", "objects": [{"name": "clock", "count": 9}, {"name": "tie", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six clocks and five traffic lights.", "objects": [{"name": "clock", "count": 6}, {"name": "traffic light", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two benches and nine sheep.", "objects": [{"name": "bench", "count": 2}, {"name": "sheep", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six suitcases and two motorcycles.", "objects": [{"name": "suitcase", "count": 6}, {"name": "motorcycle", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight suitcases and seven cows.", "objects": [{"name": "suitcase", "count": 8}, {"name": "cow", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six birds and three clocks.", "objects": [{"name": "bird", "count": 6}, {"name": "clock", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven backpacks and two chairs.", "objects": [{"name": "backpack", "count": 7}, {"name": "chair", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four dogs and four horses.", "objects": [{"name": "dog", "count": 4}, {"name": "horse", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one cat and two boats.", "objects": [{"name": "cat", "count": 1}, {"name": "boat", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine traffic lights and five oranges.", "objects": [{"name": "traffic light", "count": 9}, {"name": "orange", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four giraffes and seven kites.", "objects": [{"name": "giraffe", "count": 4}, {"name": "kite", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four horses and five trucks.", "objects": [{"name": "horse", "count": 4}, {"name": "truck", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven laptops and four backpacks.", "objects": [{"name": "laptop", "count": 7}, {"name": "backpack", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two buses and one cow.", "objects": [{"name": "bus", "count": 2}, {"name": "cow", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four wine glasses and two giraffes.", "objects": [{"name": "wine glass", "count": 4}, {"name": "giraffe", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five kites and four traffic lights.", "objects": [{"name": "kite", "count": 5}, {"name": "traffic light", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three birds and two baseball gloves.", "objects": [{"name": "bird", "count": 3}, {"name": "baseball glove", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven sports balls and six umbrellas.", "objects": [{"name": "sports ball", "count": 7}, {"name": "umbrella", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two bananas and eight bears.", "objects": [{"name": "banana", "count": 2}, {"name": "bear", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven bears and seven chairs.", "objects": [{"name": "bear", "count": 7}, {"name": "chair", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six wine glasses and eight kites.", "objects": [{"name": "wine glass", "count": 6}, {"name": "kite", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine kites and four sports balls.", "objects": [{"name": "kite", "count": 9}, {"name": "sports ball", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six cars and six motorcycles.", "objects": [{"name": "car", "count": 6}, {"name": "motorcycle", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three birds and five wine glasses.", "objects": [{"name": "bird", "count": 3}, {"name": "wine glass", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven books and five bears.", "objects": [{"name": "book", "count": 7}, {"name": "bear", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two suitcases and nine dogs.", "objects": [{"name": "suitcase", "count": 2}, {"name": "dog", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four birds and three dogs.", "objects": [{"name": "bird", "count": 4}, {"name": "dog", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one bird and eight clocks.", "objects": [{"name": "bird", "count": 1}, {"name": "clock", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three motorcycles and eight backpacks.", "objects": [{"name": "motorcycle", "count": 3}, {"name": "backpack", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven trucks and nine bottles.", "objects": [{"name": "truck", "count": 7}, {"name": "bottle", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two bottles and nine birds.", "objects": [{"name": "bottle", "count": 2}, {"name": "bird", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven books and four dogs.", "objects": [{"name": "book", "count": 7}, {"name": "dog", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven cell phones and eight bananas.", "objects": [{"name": "cell phone", "count": 7}, {"name": "banana", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four boats and one book.", "objects": [{"name": "boat", "count": 4}, {"name": "book", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five cars and nine ties.", "objects": [{"name": "car", "count": 5}, {"name": "tie", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six chairs and two apples.", "objects": [{"name": "chair", "count": 6}, {"name": "apple", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five kites and seven apples.", "objects": [{"name": "kite", "count": 5}, {"name": "apple", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three boats and three cats.", "objects": [{"name": "boat", "count": 3}, {"name": "cat", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six bowls and one cell phone.", "objects": [{"name": "bowl", "count": 6}, {"name": "cell phone", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven birds and three suitcases.", "objects": [{"name": "bird", "count": 7}, {"name": "suitcase", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two kites and three books.", "objects": [{"name": "kite", "count": 2}, {"name": "book", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one bus and eight benches.", "objects": [{"name": "bus", "count": 1}, {"name": "bench", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one boat and two umbrellas.", "objects": [{"name": "boat", "count": 1}, {"name": "umbrella", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one suitcase and one bear.", "objects": [{"name": "suitcase", "count": 1}, {"name": "bear", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three books and six teddy bears.", "objects": [{"name": "book", "count": 3}, {"name": "teddy bear", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six sheep and four oranges.", "objects": [{"name": "sheep", "count": 6}, {"name": "orange", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two boats and one kite.", "objects": [{"name": "boat", "count": 2}, {"name": "kite", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six teddy bears and two umbrellas.", "objects": [{"name": "teddy bear", "count": 6}, {"name": "umbrella", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three teddy bears and seven cell phones.", "objects": [{"name": "teddy bear", "count": 3}, {"name": "cell phone", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine cell phones and four cows.", "objects": [{"name": "cell phone", "count": 9}, {"name": "cow", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight birds and six traffic lights.", "objects": [{"name": "bird", "count": 8}, {"name": "traffic light", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six sports balls and two umbrellas.", "objects": [{"name": "sports ball", "count": 6}, {"name": "umbrella", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five birds and one kite.", "objects": [{"name": "bird", "count": 5}, {"name": "kite", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four wine glasses and four chairs.", "objects": [{"name": "wine glass", "count": 4}, {"name": "chair", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine horses and seven bottles.", "objects": [{"name": "horse", "count": 9}, {"name": "bottle", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two bottles and three clocks.", "objects": [{"name": "bottle", "count": 2}, {"name": "clock", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven zebras and two chairs.", "objects": [{"name": "zebra", "count": 7}, {"name": "chair", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two sheep and two benches.", "objects": [{"name": "sheep", "count": 2}, {"name": "bench", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one bench and eight bears.", "objects": [{"name": "bench", "count": 1}, {"name": "bear", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one zebra and eight benches.", "objects": [{"name": "zebra", "count": 1}, {"name": "bench", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two bicycles and six apples.", "objects": [{"name": "bicycle", "count": 2}, {"name": "apple", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six dogs and one cow.", "objects": [{"name": "dog", "count": 6}, {"name": "cow", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one bus and four ties.", "objects": [{"name": "bus", "count": 1}, {"name": "tie", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three trucks and four dogs.", "objects": [{"name": "truck", "count": 3}, {"name": "dog", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two cars and one baseball glove.", "objects": [{"name": "car", "count": 2}, {"name": "baseball glove", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one cell phone and four trucks.", "objects": [{"name": "cell phone", "count": 1}, {"name": "truck", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight bears and two ties.", "objects": [{"name": "bear", "count": 8}, {"name": "tie", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five suitcases and three buses.", "objects": [{"name": "suitcase", "count": 5}, {"name": "bus", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six airplanes and six baseball gloves.", "objects": [{"name": "airplane", "count": 6}, {"name": "baseball glove", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five suitcases and nine cell phones.", "objects": [{"name": "suitcase", "count": 5}, {"name": "cell phone", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two bicycles and two ties.", "objects": [{"name": "bicycle", "count": 2}, {"name": "tie", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five bananas and three laptops.", "objects": [{"name": "banana", "count": 5}, {"name": "laptop", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three boats and four bears.", "objects": [{"name": "boat", "count": 3}, {"name": "bear", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four bicycles and four bottles.", "objects": [{"name": "bicycle", "count": 4}, {"name": "bottle", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six ties and seven cell phones.", "objects": [{"name": "tie", "count": 6}, {"name": "cell phone", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one bird and seven elephants.", "objects": [{"name": "bird", "count": 1}, {"name": "elephant", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven dogs and five elephants.", "objects": [{"name": "dog", "count": 7}, {"name": "elephant", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three oranges and seven benches.", "objects": [{"name": "orange", "count": 3}, {"name": "bench", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two clocks and four buses.", "objects": [{"name": "clock", "count": 2}, {"name": "bus", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine giraffes and one truck.", "objects": [{"name": "giraffe", "count": 9}, {"name": "truck", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one boat and seven benches.", "objects": [{"name": "boat", "count": 1}, {"name": "bench", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four bicycles and six giraffes.", "objects": [{"name": "bicycle", "count": 4}, {"name": "giraffe", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two cell phones and three suitcases.", "objects": [{"name": "cell phone", "count": 2}, {"name": "suitcase", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two sheep and nine donuts.", "objects": [{"name": "sheep", "count": 2}, {"name": "donut", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight books and seven bears.", "objects": [{"name": "book", "count": 8}, {"name": "bear", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven ties and three benches.", "objects": [{"name": "tie", "count": 7}, {"name": "bench", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six bowls and nine umbrellas.", "objects": [{"name": "bowl", "count": 6}, {"name": "umbrella", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight bears and two buses.", "objects": [{"name": "bear", "count": 8}, {"name": "bus", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five suitcases and one baseball glove.", "objects": [{"name": "suitcase", "count": 5}, {"name": "baseball glove", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight giraffes and one teddy bear.", "objects": [{"name": "giraffe", "count": 8}, {"name": "teddy bear", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two baseball gloves and five clocks.", "objects": [{"name": "baseball glove", "count": 2}, {"name": "clock", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three bananas and seven books.", "objects": [{"name": "banana", "count": 3}, {"name": "book", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight suitcases and four horses.", "objects": [{"name": "suitcase", "count": 8}, {"name": "horse", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five bananas and one traffic light.", "objects": [{"name": "banana", "count": 5}, {"name": "traffic light", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one cow and one donut.", "objects": [{"name": "cow", "count": 1}, {"name": "donut", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine apples and seven traffic lights.", "objects": [{"name": "apple", "count": 9}, {"name": "traffic light", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five giraffes and six sheep.", "objects": [{"name": "giraffe", "count": 5}, {"name": "sheep", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two cell phones and one sports ball.", "objects": [{"name": "cell phone", "count": 2}, {"name": "sports ball", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five dogs and nine apples.", "objects": [{"name": "dog", "count": 5}, {"name": "apple", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine motorcycles and four cows.", "objects": [{"name": "motorcycle", "count": 9}, {"name": "cow", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven backpacks and five dogs.", "objects": [{"name": "backpack", "count": 7}, {"name": "dog", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three cell phones and nine wine glasses.", "objects": [{"name": "cell phone", "count": 3}, {"name": "wine glass", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two baseball gloves and seven bananas.", "objects": [{"name": "baseball glove", "count": 2}, {"name": "banana", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five bananas and five traffic lights.", "objects": [{"name": "banana", "count": 5}, {"name": "traffic light", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three giraffes and three trucks.", "objects": [{"name": "giraffe", "count": 3}, {"name": "truck", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven cows and eight boats.", "objects": [{"name": "cow", "count": 7}, {"name": "boat", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five elephants and six oranges.", "objects": [{"name": "elephant", "count": 5}, {"name": "orange", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four suitcases and eight benches.", "objects": [{"name": "suitcase", "count": 4}, {"name": "bench", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six kites and eight bottles.", "objects": [{"name": "kite", "count": 6}, {"name": "bottle", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five cats and three giraffes.", "objects": [{"name": "cat", "count": 5}, {"name": "giraffe", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four kites and one cat.", "objects": [{"name": "kite", "count": 4}, {"name": "cat", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven buses and one suitcase.", "objects": [{"name": "bus", "count": 7}, {"name": "suitcase", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two wine glasses and seven dogs.", "objects": [{"name": "wine glass", "count": 2}, {"name": "dog", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one car and two trucks.", "objects": [{"name": "car", "count": 1}, {"name": "truck", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five teddy bears and five cars.", "objects": [{"name": "teddy bear", "count": 5}, {"name": "car", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five cups and four bears.", "objects": [{"name": "cup", "count": 5}, {"name": "bear", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight sheep and six zebras.", "objects": [{"name": "sheep", "count": 8}, {"name": "zebra", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six boats and seven backpacks.", "objects": [{"name": "boat", "count": 6}, {"name": "backpack", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight zebras and three bears.", "objects": [{"name": "zebra", "count": 8}, {"name": "bear", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three wine glasses and four bicycles.", "objects": [{"name": "wine glass", "count": 3}, {"name": "bicycle", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six ties and seven giraffes.", "objects": [{"name": "tie", "count": 6}, {"name": "giraffe", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven zebras and four kites.", "objects": [{"name": "zebra", "count": 7}, {"name": "kite", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four sports balls and one giraffe.", "objects": [{"name": "sports ball", "count": 4}, {"name": "giraffe", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four boats and two birds.", "objects": [{"name": "boat", "count": 4}, {"name": "bird", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one tie and three trucks.", "objects": [{"name": "tie", "count": 1}, {"name": "truck", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five cups and two teddy bears.", "objects": [{"name": "cup", "count": 5}, {"name": "teddy bear", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six bottles and seven cell phones.", "objects": [{"name": "bottle", "count": 6}, {"name": "cell phone", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine umbrellas and nine cats.", "objects": [{"name": "umbrella", "count": 9}, {"name": "cat", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight zebras and eight laptops.", "objects": [{"name": "zebra", "count": 8}, {"name": "laptop", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four apples and six suitcases.", "objects": [{"name": "apple", "count": 4}, {"name": "suitcase", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one donut and one bird.", "objects": [{"name": "donut", "count": 1}, {"name": "bird", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one backpack and five buses.", "objects": [{"name": "backpack", "count": 1}, {"name": "bus", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two cars and seven elephants.", "objects": [{"name": "car", "count": 2}, {"name": "elephant", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven cups and nine books.", "objects": [{"name": "cup", "count": 7}, {"name": "book", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four cups and six umbrellas.", "objects": [{"name": "cup", "count": 4}, {"name": "umbrella", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two books and six sheep.", "objects": [{"name": "book", "count": 2}, {"name": "sheep", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight bicycles and six bananas.", "objects": [{"name": "bicycle", "count": 8}, {"name": "banana", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine apples and one airplane.", "objects": [{"name": "apple", "count": 9}, {"name": "airplane", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two sports balls and four trucks.", "objects": [{"name": "sports ball", "count": 2}, {"name": "truck", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four wine glasses and four buses.", "objects": [{"name": "wine glass", "count": 4}, {"name": "bus", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five apples and nine clocks.", "objects": [{"name": "apple", "count": 5}, {"name": "clock", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight boats and six apples.", "objects": [{"name": "boat", "count": 8}, {"name": "apple", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five bowls and nine birds.", "objects": [{"name": "bowl", "count": 5}, {"name": "bird", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight dogs and eight cars.", "objects": [{"name": "dog", "count": 8}, {"name": "car", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven giraffes and eight cats.", "objects": [{"name": "giraffe", "count": 7}, {"name": "cat", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two umbrellas and two giraffes.", "objects": [{"name": "umbrella", "count": 2}, {"name": "giraffe", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two horses and three bowls.", "objects": [{"name": "horse", "count": 2}, {"name": "bowl", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight benches and two baseball gloves.", "objects": [{"name": "bench", "count": 8}, {"name": "baseball glove", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven zebras and one orange.", "objects": [{"name": "zebra", "count": 7}, {"name": "orange", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight ties and four bowls.", "objects": [{"name": "tie", "count": 8}, {"name": "bowl", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six elephants and six donuts.", "objects": [{"name": "elephant", "count": 6}, {"name": "donut", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine zebras and five sheep.", "objects": [{"name": "zebra", "count": 9}, {"name": "sheep", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four teddy bears and five bananas.", "objects": [{"name": "teddy bear", "count": 4}, {"name": "banana", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight giraffes and nine bottles.", "objects": [{"name": "giraffe", "count": 8}, {"name": "bottle", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four apples and one donut.", "objects": [{"name": "apple", "count": 4}, {"name": "donut", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two cows and three teddy bears.", "objects": [{"name": "cow", "count": 2}, {"name": "teddy bear", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four benches and five bowls.", "objects": [{"name": "bench", "count": 4}, {"name": "bowl", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine cars and seven bananas.", "objects": [{"name": "car", "count": 9}, {"name": "banana", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven cats and five cows.", "objects": [{"name": "cat", "count": 7}, {"name": "cow", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six cows and four chairs.", "objects": [{"name": "cow", "count": 6}, {"name": "chair", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four bananas and four cell phones.", "objects": [{"name": "banana", "count": 4}, {"name": "cell phone", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five dogs and six wine glasses.", "objects": [{"name": "dog", "count": 5}, {"name": "wine glass", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight cups and five trucks.", "objects": [{"name": "cup", "count": 8}, {"name": "truck", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three laptops and one backpack.", "objects": [{"name": "laptop", "count": 3}, {"name": "backpack", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six oranges and six bottles.", "objects": [{"name": "orange", "count": 6}, {"name": "bottle", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three laptops and seven airplanes.", "objects": [{"name": "laptop", "count": 3}, {"name": "airplane", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine bears and two ties.", "objects": [{"name": "bear", "count": 9}, {"name": "tie", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight elephants and four baseball gloves.", "objects": [{"name": "elephant", "count": 8}, {"name": "baseball glove", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four bowls and seven elephants.", "objects": [{"name": "bowl", "count": 4}, {"name": "elephant", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three buses and eight books.", "objects": [{"name": "bus", "count": 3}, {"name": "book", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one sheep and nine teddy bears.", "objects": [{"name": "sheep", "count": 1}, {"name": "teddy bear", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight books and eight buses.", "objects": [{"name": "book", "count": 8}, {"name": "bus", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four clocks and nine cars.", "objects": [{"name": "clock", "count": 4}, {"name": "car", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight backpacks and nine kites.", "objects": [{"name": "backpack", "count": 8}, {"name": "kite", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five bicycles and three horses.", "objects": [{"name": "bicycle", "count": 5}, {"name": "horse", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four books and six traffic lights.", "objects": [{"name": "book", "count": 4}, {"name": "traffic light", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one cell phone and four boats.", "objects": [{"name": "cell phone", "count": 1}, {"name": "boat", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four birds and six bicycles.", "objects": [{"name": "bird", "count": 4}, {"name": "bicycle", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five giraffes and six cups.", "objects": [{"name": "giraffe", "count": 5}, {"name": "cup", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one backpack and six clocks.", "objects": [{"name": "backpack", "count": 1}, {"name": "clock", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one chair and three bananas.", "objects": [{"name": "chair", "count": 1}, {"name": "banana", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight buses and one airplane.", "objects": [{"name": "bus", "count": 8}, {"name": "airplane", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one airplane and one bowl.", "objects": [{"name": "airplane", "count": 1}, {"name": "bowl", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two cups and one bicycle.", "objects": [{"name": "cup", "count": 2}, {"name": "bicycle", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three buses and four zebras.", "objects": [{"name": "bus", "count": 3}, {"name": "zebra", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three giraffes and six zebras.", "objects": [{"name": "giraffe", "count": 3}, {"name": "zebra", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six clocks and seven ties.", "objects": [{"name": "clock", "count": 6}, {"name": "tie", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven boats and five cars.", "objects": [{"name": "boat", "count": 7}, {"name": "car", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one banana and two umbrellas.", "objects": [{"name": "banana", "count": 1}, {"name": "umbrella", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three benches and one boat.", "objects": [{"name": "bench", "count": 3}, {"name": "boat", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine bottles and three elephants.", "objects": [{"name": "bottle", "count": 9}, {"name": "elephant", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four horses and three motorcycles.", "objects": [{"name": "horse", "count": 4}, {"name": "motorcycle", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three bowls and nine airplanes.", "objects": [{"name": "bowl", "count": 3}, {"name": "airplane", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven backpacks and two horses.", "objects": [{"name": "backpack", "count": 7}, {"name": "horse", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three teddy bears and one umbrella.", "objects": [{"name": "teddy bear", "count": 3}, {"name": "umbrella", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven apples and one motorcycle.", "objects": [{"name": "apple", "count": 7}, {"name": "motorcycle", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two birds and six kites.", "objects": [{"name": "bird", "count": 2}, {"name": "kite", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight cell phones and four bears.", "objects": [{"name": "cell phone", "count": 8}, {"name": "bear", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three bottles and seven buses.", "objects": [{"name": "bottle", "count": 3}, {"name": "bus", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight motorcycles and seven donuts.", "objects": [{"name": "motorcycle", "count": 8}, {"name": "donut", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine cars and five clocks.", "objects": [{"name": "car", "count": 9}, {"name": "clock", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one orange and nine suitcases.", "objects": [{"name": "orange", "count": 1}, {"name": "suitcase", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five chairs and one orange.", "objects": [{"name": "chair", "count": 5}, {"name": "orange", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two umbrellas and seven traffic lights.", "objects": [{"name": "umbrella", "count": 2}, {"name": "traffic light", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one bus and one kite.", "objects": [{"name": "bus", "count": 1}, {"name": "kite", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five donuts and five birds.", "objects": [{"name": "donut", "count": 5}, {"name": "bird", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine baseball gloves and six wine glasses.", "objects": [{"name": "baseball glove", "count": 9}, {"name": "wine glass", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four boats and two apples.", "objects": [{"name": "boat", "count": 4}, {"name": "apple", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four chairs and nine motorcycles.", "objects": [{"name": "chair", "count": 4}, {"name": "motorcycle", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three buses and six backpacks.", "objects": [{"name": "bus", "count": 3}, {"name": "backpack", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one car and three laptops.", "objects": [{"name": "car", "count": 1}, {"name": "laptop", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five buses and five trucks.", "objects": [{"name": "bus", "count": 5}, {"name": "truck", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven bicycles and seven kites.", "objects": [{"name": "bicycle", "count": 7}, {"name": "kite", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three backpacks and one car.", "objects": [{"name": "backpack", "count": 3}, {"name": "car", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six giraffes and one elephant.", "objects": [{"name": "giraffe", "count": 6}, {"name": "elephant", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four suitcases and two apples.", "objects": [{"name": "suitcase", "count": 4}, {"name": "apple", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five oranges and three zebras.", "objects": [{"name": "orange", "count": 5}, {"name": "zebra", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two wine glasses and three backpacks.", "objects": [{"name": "wine glass", "count": 2}, {"name": "backpack", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine laptops and nine cows.", "objects": [{"name": "laptop", "count": 9}, {"name": "cow", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven books and five boats.", "objects": [{"name": "book", "count": 7}, {"name": "boat", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one clock and seven cell phones.", "objects": [{"name": "clock", "count": 1}, {"name": "cell phone", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine donuts and nine apples.", "objects": [{"name": "donut", "count": 9}, {"name": "apple", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six oranges and four bicycles.", "objects": [{"name": "orange", "count": 6}, {"name": "bicycle", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one zebra and nine bears.", "objects": [{"name": "zebra", "count": 1}, {"name": "bear", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven bears and six chairs.", "objects": [{"name": "bear", "count": 7}, {"name": "chair", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine umbrellas and seven birds.", "objects": [{"name": "umbrella", "count": 9}, {"name": "bird", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one teddy bear and six cups.", "objects": [{"name": "teddy bear", "count": 1}, {"name": "cup", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four wine glasses and six backpacks.", "objects": [{"name": "wine glass", "count": 4}, {"name": "backpack", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four kites and four airplanes.", "objects": [{"name": "kite", "count": 4}, {"name": "airplane", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven donuts and two ties.", "objects": [{"name": "donut", "count": 7}, {"name": "tie", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four chairs and eight giraffes.", "objects": [{"name": "chair", "count": 4}, {"name": "giraffe", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four bottles and three sheep.", "objects": [{"name": "bottle", "count": 4}, {"name": "sheep", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven giraffes and seven dogs.", "objects": [{"name": "giraffe", "count": 7}, {"name": "dog", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven donuts and six apples.", "objects": [{"name": "donut", "count": 7}, {"name": "apple", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two teddy bears and five bicycles.", "objects": [{"name": "teddy bear", "count": 2}, {"name": "bicycle", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one airplane and five kites.", "objects": [{"name": "airplane", "count": 1}, {"name": "kite", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven sports balls and seven traffic lights.", "objects": [{"name": "sports ball", "count": 7}, {"name": "traffic light", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight boats and six birds.", "objects": [{"name": "boat", "count": 8}, {"name": "bird", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five chairs and six elephants.", "objects": [{"name": "chair", "count": 5}, {"name": "elephant", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight airplanes and nine traffic lights.", "objects": [{"name": "airplane", "count": 8}, {"name": "traffic light", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two elephants and six birds.", "objects": [{"name": "elephant", "count": 2}, {"name": "bird", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two trucks and four cars.", "objects": [{"name": "truck", "count": 2}, {"name": "car", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight cows and one banana.", "objects": [{"name": "cow", "count": 8}, {"name": "banana", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six bicycles and seven airplanes.", "objects": [{"name": "bicycle", "count": 6}, {"name": "airplane", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven elephants and three donuts.", "objects": [{"name": "elephant", "count": 7}, {"name": "donut", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven books and five bears.", "objects": [{"name": "book", "count": 7}, {"name": "bear", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three bottles and three cats.", "objects": [{"name": "bottle", "count": 3}, {"name": "cat", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one elephant and nine suitcases.", "objects": [{"name": "elephant", "count": 1}, {"name": "suitcase", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven birds and three oranges.", "objects": [{"name": "bird", "count": 7}, {"name": "orange", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two buses and two laptops.", "objects": [{"name": "bus", "count": 2}, {"name": "laptop", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five oranges and four ties.", "objects": [{"name": "orange", "count": 5}, {"name": "tie", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five apples and five bicycles.", "objects": [{"name": "apple", "count": 5}, {"name": "bicycle", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three wine glasses and eight umbrellas.", "objects": [{"name": "wine glass", "count": 3}, {"name": "umbrella", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one orange and three bears.", "objects": [{"name": "orange", "count": 1}, {"name": "bear", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six bottles and two birds.", "objects": [{"name": "bottle", "count": 6}, {"name": "bird", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four sports balls and eight umbrellas.", "objects": [{"name": "sports ball", "count": 4}, {"name": "umbrella", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six wine glasses and three backpacks.", "objects": [{"name": "wine glass", "count": 6}, {"name": "backpack", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one suitcase and nine oranges.", "objects": [{"name": "suitcase", "count": 1}, {"name": "orange", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six horses and one wine glass.", "objects": [{"name": "horse", "count": 6}, {"name": "wine glass", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven horses and six sheep.", "objects": [{"name": "horse", "count": 7}, {"name": "sheep", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six chairs and seven giraffes.", "objects": [{"name": "chair", "count": 6}, {"name": "giraffe", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two bottles and three trucks.", "objects": [{"name": "bottle", "count": 2}, {"name": "truck", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three bicycles and three airplanes.", "objects": [{"name": "bicycle", "count": 3}, {"name": "airplane", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four airplanes and one motorcycle.", "objects": [{"name": "airplane", "count": 4}, {"name": "motorcycle", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five benches and seven cats.", "objects": [{"name": "bench", "count": 5}, {"name": "cat", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three cats and six books.", "objects": [{"name": "cat", "count": 3}, {"name": "book", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one dog and eight benches.", "objects": [{"name": "dog", "count": 1}, {"name": "bench", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five buses and five books.", "objects": [{"name": "bus", "count": 5}, {"name": "book", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven chairs and three umbrellas.", "objects": [{"name": "chair", "count": 7}, {"name": "umbrella", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five airplanes and four umbrellas.", "objects": [{"name": "airplane", "count": 5}, {"name": "umbrella", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six boats and two dogs.", "objects": [{"name": "boat", "count": 6}, {"name": "dog", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six cows and one airplane.", "objects": [{"name": "cow", "count": 6}, {"name": "airplane", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one tie and six traffic lights.", "objects": [{"name": "tie", "count": 1}, {"name": "traffic light", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight umbrellas and eight oranges.", "objects": [{"name": "umbrella", "count": 8}, {"name": "orange", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine horses and seven cats.", "objects": [{"name": "horse", "count": 9}, {"name": "cat", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine apples and two airplanes.", "objects": [{"name": "apple", "count": 9}, {"name": "airplane", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six horses and two motorcycles.", "objects": [{"name": "horse", "count": 6}, {"name": "motorcycle", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three suitcases and nine birds.", "objects": [{"name": "suitcase", "count": 3}, {"name": "bird", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one cell phone and seven birds.", "objects": [{"name": "cell phone", "count": 1}, {"name": "bird", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine motorcycles and three backpacks.", "objects": [{"name": "motorcycle", "count": 9}, {"name": "backpack", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three backpacks and four ties.", "objects": [{"name": "backpack", "count": 3}, {"name": "tie", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one teddy bear and eight motorcycles.", "objects": [{"name": "teddy bear", "count": 1}, {"name": "motorcycle", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four traffic lights and four birds.", "objects": [{"name": "traffic light", "count": 4}, {"name": "bird", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three cell phones and four motorcycles.", "objects": [{"name": "cell phone", "count": 3}, {"name": "motorcycle", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three buses and seven cups.", "objects": [{"name": "bus", "count": 3}, {"name": "cup", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three umbrellas and seven trucks.", "objects": [{"name": "umbrella", "count": 3}, {"name": "truck", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three chairs and one car.", "objects": [{"name": "chair", "count": 3}, {"name": "car", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three boats and one tie.", "objects": [{"name": "boat", "count": 3}, {"name": "tie", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine airplanes and one bicycle.", "objects": [{"name": "airplane", "count": 9}, {"name": "bicycle", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two birds and three cats.", "objects": [{"name": "bird", "count": 2}, {"name": "cat", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one bear and seven boats.", "objects": [{"name": "bear", "count": 1}, {"name": "boat", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six zebras and four chairs.", "objects": [{"name": "zebra", "count": 6}, {"name": "chair", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine elephants and four trucks.", "objects": [{"name": "elephant", "count": 9}, {"name": "truck", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two bananas and three traffic lights.", "objects": [{"name": "banana", "count": 2}, {"name": "traffic light", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six benches and two chairs.", "objects": [{"name": "bench", "count": 6}, {"name": "chair", "count": 2}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight zebras and seven bowls.", "objects": [{"name": "zebra", "count": 8}, {"name": "bowl", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four cups and eight traffic lights.", "objects": [{"name": "cup", "count": 4}, {"name": "traffic light", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with two traffic lights and five laptops.", "objects": [{"name": "traffic light", "count": 2}, {"name": "laptop", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six donuts and nine wine glasses.", "objects": [{"name": "donut", "count": 6}, {"name": "wine glass", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight airplanes and four books.", "objects": [{"name": "airplane", "count": 8}, {"name": "book", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six donuts and seven birds.", "objects": [{"name": "donut", "count": 6}, {"name": "bird", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one sheep and three bananas.", "objects": [{"name": "sheep", "count": 1}, {"name": "banana", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven traffic lights and seven airplanes.", "objects": [{"name": "traffic light", "count": 7}, {"name": "airplane", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight zebras and eight sheep.", "objects": [{"name": "zebra", "count": 8}, {"name": "sheep", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with eight backpacks and seven motorcycles.", "objects": [{"name": "backpack", "count": 8}, {"name": "motorcycle", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with five backpacks and nine laptops.", "objects": [{"name": "backpack", "count": 5}, {"name": "laptop", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six cows and three trucks.", "objects": [{"name": "cow", "count": 6}, {"name": "truck", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine buses and one suitcase.", "objects": [{"name": "bus", "count": 9}, {"name": "suitcase", "count": 1}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three sports balls and six apples.", "objects": [{"name": "sports ball", "count": 3}, {"name": "apple", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one cell phone and five boats.", "objects": [{"name": "cell phone", "count": 1}, {"name": "boat", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one orange and seven zebras.", "objects": [{"name": "orange", "count": 1}, {"name": "zebra", "count": 7}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with four donuts and six boats.", "objects": [{"name": "donut", "count": 4}, {"name": "boat", "count": 6}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six elephants and three cows.", "objects": [{"name": "elephant", "count": 6}, {"name": "cow", "count": 3}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven airplanes and eight zebras.", "objects": [{"name": "airplane", "count": 7}, {"name": "zebra", "count": 8}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with nine dogs and nine zebras.", "objects": [{"name": "dog", "count": 9}, {"name": "zebra", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with three elephants and four backpacks.", "objects": [{"name": "elephant", "count": 3}, {"name": "backpack", "count": 4}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with one backpack and nine cups.", "objects": [{"name": "backpack", "count": 1}, {"name": "cup", "count": 9}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with six elephants and five kites.", "objects": [{"name": "elephant", "count": 6}, {"name": "kite", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}
+{"prompt": "A realistic photo of a scene with seven motorcycles and five cows.", "objects": [{"name": "motorcycle", "count": 7}, {"name": "cow", "count": 5}], "meta": {"benchmark": "d2d_style_multi"}}

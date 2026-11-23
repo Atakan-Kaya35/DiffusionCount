@@ -1,0 +1,400 @@
+{"prompt": "A realistic photo of a scene with eleven cars.", "objects": [{"name": "car", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve cars.", "objects": [{"name": "car", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen cars.", "objects": [{"name": "car", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen cars.", "objects": [{"name": "car", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen cars.", "objects": [{"name": "car", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen cars.", "objects": [{"name": "car", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen cars.", "objects": [{"name": "car", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen cars.", "objects": [{"name": "car", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen cars.", "objects": [{"name": "car", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty cars.", "objects": [{"name": "car", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven airplanes.", "objects": [{"name": "airplane", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve airplanes.", "objects": [{"name": "airplane", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen airplanes.", "objects": [{"name": "airplane", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen airplanes.", "objects": [{"name": "airplane", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen airplanes.", "objects": [{"name": "airplane", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen airplanes.", "objects": [{"name": "airplane", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen airplanes.", "objects": [{"name": "airplane", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen airplanes.", "objects": [{"name": "airplane", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen airplanes.", "objects": [{"name": "airplane", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty airplanes.", "objects": [{"name": "airplane", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven birds.", "objects": [{"name": "bird", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve birds.", "objects": [{"name": "bird", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen birds.", "objects": [{"name": "bird", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen birds.", "objects": [{"name": "bird", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen birds.", "objects": [{"name": "bird", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen birds.", "objects": [{"name": "bird", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen birds.", "objects": [{"name": "bird", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen birds.", "objects": [{"name": "bird", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen birds.", "objects": [{"name": "bird", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty birds.", "objects": [{"name": "bird", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven cats.", "objects": [{"name": "cat", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve cats.", "objects": [{"name": "cat", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen cats.", "objects": [{"name": "cat", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen cats.", "objects": [{"name": "cat", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen cats.", "objects": [{"name": "cat", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen cats.", "objects": [{"name": "cat", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen cats.", "objects": [{"name": "cat", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen cats.", "objects": [{"name": "cat", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen cats.", "objects": [{"name": "cat", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty cats.", "objects": [{"name": "cat", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven dogs.", "objects": [{"name": "dog", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve dogs.", "objects": [{"name": "dog", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen dogs.", "objects": [{"name": "dog", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen dogs.", "objects": [{"name": "dog", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen dogs.", "objects": [{"name": "dog", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen dogs.", "objects": [{"name": "dog", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen dogs.", "objects": [{"name": "dog", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen dogs.", "objects": [{"name": "dog", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen dogs.", "objects": [{"name": "dog", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty dogs.", "objects": [{"name": "dog", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven horses.", "objects": [{"name": "horse", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve horses.", "objects": [{"name": "horse", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen horses.", "objects": [{"name": "horse", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen horses.", "objects": [{"name": "horse", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen horses.", "objects": [{"name": "horse", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen horses.", "objects": [{"name": "horse", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen horses.", "objects": [{"name": "horse", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen horses.", "objects": [{"name": "horse", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen horses.", "objects": [{"name": "horse", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty horses.", "objects": [{"name": "horse", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven sheep.", "objects": [{"name": "sheep", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve sheep.", "objects": [{"name": "sheep", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen sheep.", "objects": [{"name": "sheep", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen sheep.", "objects": [{"name": "sheep", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen sheep.", "objects": [{"name": "sheep", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen sheep.", "objects": [{"name": "sheep", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen sheep.", "objects": [{"name": "sheep", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen sheep.", "objects": [{"name": "sheep", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen sheep.", "objects": [{"name": "sheep", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty sheep.", "objects": [{"name": "sheep", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven cows.", "objects": [{"name": "cow", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve cows.", "objects": [{"name": "cow", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen cows.", "objects": [{"name": "cow", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen cows.", "objects": [{"name": "cow", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen cows.", "objects": [{"name": "cow", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen cows.", "objects": [{"name": "cow", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen cows.", "objects": [{"name": "cow", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen cows.", "objects": [{"name": "cow", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen cows.", "objects": [{"name": "cow", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty cows.", "objects": [{"name": "cow", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven elephants.", "objects": [{"name": "elephant", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve elephants.", "objects": [{"name": "elephant", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen elephants.", "objects": [{"name": "elephant", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen elephants.", "objects": [{"name": "elephant", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen elephants.", "objects": [{"name": "elephant", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen elephants.", "objects": [{"name": "elephant", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen elephants.", "objects": [{"name": "elephant", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen elephants.", "objects": [{"name": "elephant", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen elephants.", "objects": [{"name": "elephant", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty elephants.", "objects": [{"name": "elephant", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven bears.", "objects": [{"name": "bear", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve bears.", "objects": [{"name": "bear", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen bears.", "objects": [{"name": "bear", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen bears.", "objects": [{"name": "bear", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen bears.", "objects": [{"name": "bear", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen bears.", "objects": [{"name": "bear", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen bears.", "objects": [{"name": "bear", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen bears.", "objects": [{"name": "bear", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen bears.", "objects": [{"name": "bear", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty bears.", "objects": [{"name": "bear", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven backpacks.", "objects": [{"name": "backpack", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve backpacks.", "objects": [{"name": "backpack", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen backpacks.", "objects": [{"name": "backpack", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen backpacks.", "objects": [{"name": "backpack", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen backpacks.", "objects": [{"name": "backpack", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen backpacks.", "objects": [{"name": "backpack", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen backpacks.", "objects": [{"name": "backpack", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen backpacks.", "objects": [{"name": "backpack", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen backpacks.", "objects": [{"name": "backpack", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty backpacks.", "objects": [{"name": "backpack", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven ties.", "objects": [{"name": "tie", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve ties.", "objects": [{"name": "tie", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen ties.", "objects": [{"name": "tie", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen ties.", "objects": [{"name": "tie", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen ties.", "objects": [{"name": "tie", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen ties.", "objects": [{"name": "tie", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen ties.", "objects": [{"name": "tie", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen ties.", "objects": [{"name": "tie", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen ties.", "objects": [{"name": "tie", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty ties.", "objects": [{"name": "tie", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven sports balls.", "objects": [{"name": "sports ball", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve sports balls.", "objects": [{"name": "sports ball", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen sports balls.", "objects": [{"name": "sports ball", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen sports balls.", "objects": [{"name": "sports ball", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen sports balls.", "objects": [{"name": "sports ball", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen sports balls.", "objects": [{"name": "sports ball", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen sports balls.", "objects": [{"name": "sports ball", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen sports balls.", "objects": [{"name": "sports ball", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen sports balls.", "objects": [{"name": "sports ball", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty sports balls.", "objects": [{"name": "sports ball", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven baseball gloves.", "objects": [{"name": "baseball glove", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve baseball gloves.", "objects": [{"name": "baseball glove", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen baseball gloves.", "objects": [{"name": "baseball glove", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen baseball gloves.", "objects": [{"name": "baseball glove", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen baseball gloves.", "objects": [{"name": "baseball glove", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen baseball gloves.", "objects": [{"name": "baseball glove", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen baseball gloves.", "objects": [{"name": "baseball glove", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen baseball gloves.", "objects": [{"name": "baseball glove", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen baseball gloves.", "objects": [{"name": "baseball glove", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty baseball gloves.", "objects": [{"name": "baseball glove", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven cups.", "objects": [{"name": "cup", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve cups.", "objects": [{"name": "cup", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen cups.", "objects": [{"name": "cup", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen cups.", "objects": [{"name": "cup", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen cups.", "objects": [{"name": "cup", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen cups.", "objects": [{"name": "cup", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen cups.", "objects": [{"name": "cup", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen cups.", "objects": [{"name": "cup", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen cups.", "objects": [{"name": "cup", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty cups.", "objects": [{"name": "cup", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven bowls.", "objects": [{"name": "bowl", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve bowls.", "objects": [{"name": "bowl", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen bowls.", "objects": [{"name": "bowl", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen bowls.", "objects": [{"name": "bowl", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen bowls.", "objects": [{"name": "bowl", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen bowls.", "objects": [{"name": "bowl", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen bowls.", "objects": [{"name": "bowl", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen bowls.", "objects": [{"name": "bowl", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen bowls.", "objects": [{"name": "bowl", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty bowls.", "objects": [{"name": "bowl", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven apples.", "objects": [{"name": "apple", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve apples.", "objects": [{"name": "apple", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen apples.", "objects": [{"name": "apple", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen apples.", "objects": [{"name": "apple", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen apples.", "objects": [{"name": "apple", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen apples.", "objects": [{"name": "apple", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen apples.", "objects": [{"name": "apple", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen apples.", "objects": [{"name": "apple", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen apples.", "objects": [{"name": "apple", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty apples.", "objects": [{"name": "apple", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven donuts.", "objects": [{"name": "donut", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve donuts.", "objects": [{"name": "donut", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen donuts.", "objects": [{"name": "donut", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen donuts.", "objects": [{"name": "donut", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen donuts.", "objects": [{"name": "donut", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen donuts.", "objects": [{"name": "donut", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen donuts.", "objects": [{"name": "donut", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen donuts.", "objects": [{"name": "donut", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen donuts.", "objects": [{"name": "donut", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty donuts.", "objects": [{"name": "donut", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven cell phones.", "objects": [{"name": "cell phone", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve cell phones.", "objects": [{"name": "cell phone", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen cell phones.", "objects": [{"name": "cell phone", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen cell phones.", "objects": [{"name": "cell phone", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen cell phones.", "objects": [{"name": "cell phone", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen cell phones.", "objects": [{"name": "cell phone", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen cell phones.", "objects": [{"name": "cell phone", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen cell phones.", "objects": [{"name": "cell phone", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen cell phones.", "objects": [{"name": "cell phone", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty cell phones.", "objects": [{"name": "cell phone", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven clocks.", "objects": [{"name": "clock", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve clocks.", "objects": [{"name": "clock", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen clocks.", "objects": [{"name": "clock", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen clocks.", "objects": [{"name": "clock", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen clocks.", "objects": [{"name": "clock", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen clocks.", "objects": [{"name": "clock", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen clocks.", "objects": [{"name": "clock", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen clocks.", "objects": [{"name": "clock", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen clocks.", "objects": [{"name": "clock", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty clocks.", "objects": [{"name": "clock", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven bicycles.", "objects": [{"name": "bicycle", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve bicycles.", "objects": [{"name": "bicycle", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen bicycles.", "objects": [{"name": "bicycle", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen bicycles.", "objects": [{"name": "bicycle", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen bicycles.", "objects": [{"name": "bicycle", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen bicycles.", "objects": [{"name": "bicycle", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen bicycles.", "objects": [{"name": "bicycle", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen bicycles.", "objects": [{"name": "bicycle", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen bicycles.", "objects": [{"name": "bicycle", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty bicycles.", "objects": [{"name": "bicycle", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven motorcycles.", "objects": [{"name": "motorcycle", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve motorcycles.", "objects": [{"name": "motorcycle", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen motorcycles.", "objects": [{"name": "motorcycle", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen motorcycles.", "objects": [{"name": "motorcycle", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen motorcycles.", "objects": [{"name": "motorcycle", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen motorcycles.", "objects": [{"name": "motorcycle", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen motorcycles.", "objects": [{"name": "motorcycle", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen motorcycles.", "objects": [{"name": "motorcycle", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen motorcycles.", "objects": [{"name": "motorcycle", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty motorcycles.", "objects": [{"name": "motorcycle", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven buses.", "objects": [{"name": "bus", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve buses.", "objects": [{"name": "bus", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen buses.", "objects": [{"name": "bus", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen buses.", "objects": [{"name": "bus", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen buses.", "objects": [{"name": "bus", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen buses.", "objects": [{"name": "bus", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen buses.", "objects": [{"name": "bus", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen buses.", "objects": [{"name": "bus", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen buses.", "objects": [{"name": "bus", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty buses.", "objects": [{"name": "bus", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven trucks.", "objects": [{"name": "truck", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve trucks.", "objects": [{"name": "truck", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen trucks.", "objects": [{"name": "truck", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen trucks.", "objects": [{"name": "truck", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen trucks.", "objects": [{"name": "truck", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen trucks.", "objects": [{"name": "truck", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen trucks.", "objects": [{"name": "truck", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen trucks.", "objects": [{"name": "truck", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen trucks.", "objects": [{"name": "truck", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty trucks.", "objects": [{"name": "truck", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven boats.", "objects": [{"name": "boat", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve boats.", "objects": [{"name": "boat", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen boats.", "objects": [{"name": "boat", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen boats.", "objects": [{"name": "boat", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen boats.", "objects": [{"name": "boat", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen boats.", "objects": [{"name": "boat", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen boats.", "objects": [{"name": "boat", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen boats.", "objects": [{"name": "boat", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen boats.", "objects": [{"name": "boat", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty boats.", "objects": [{"name": "boat", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven traffic lights.", "objects": [{"name": "traffic light", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve traffic lights.", "objects": [{"name": "traffic light", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen traffic lights.", "objects": [{"name": "traffic light", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen traffic lights.", "objects": [{"name": "traffic light", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen traffic lights.", "objects": [{"name": "traffic light", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen traffic lights.", "objects": [{"name": "traffic light", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen traffic lights.", "objects": [{"name": "traffic light", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen traffic lights.", "objects": [{"name": "traffic light", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen traffic lights.", "objects": [{"name": "traffic light", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty traffic lights.", "objects": [{"name": "traffic light", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven benches.", "objects": [{"name": "bench", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve benches.", "objects": [{"name": "bench", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen benches.", "objects": [{"name": "bench", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen benches.", "objects": [{"name": "bench", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen benches.", "objects": [{"name": "bench", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen benches.", "objects": [{"name": "bench", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen benches.", "objects": [{"name": "bench", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen benches.", "objects": [{"name": "bench", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen benches.", "objects": [{"name": "bench", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty benches.", "objects": [{"name": "bench", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven zebras.", "objects": [{"name": "zebra", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve zebras.", "objects": [{"name": "zebra", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen zebras.", "objects": [{"name": "zebra", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen zebras.", "objects": [{"name": "zebra", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen zebras.", "objects": [{"name": "zebra", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen zebras.", "objects": [{"name": "zebra", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen zebras.", "objects": [{"name": "zebra", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen zebras.", "objects": [{"name": "zebra", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen zebras.", "objects": [{"name": "zebra", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty zebras.", "objects": [{"name": "zebra", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven giraffes.", "objects": [{"name": "giraffe", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve giraffes.", "objects": [{"name": "giraffe", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen giraffes.", "objects": [{"name": "giraffe", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen giraffes.", "objects": [{"name": "giraffe", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen giraffes.", "objects": [{"name": "giraffe", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen giraffes.", "objects": [{"name": "giraffe", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen giraffes.", "objects": [{"name": "giraffe", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen giraffes.", "objects": [{"name": "giraffe", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen giraffes.", "objects": [{"name": "giraffe", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty giraffes.", "objects": [{"name": "giraffe", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven umbrellas.", "objects": [{"name": "umbrella", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve umbrellas.", "objects": [{"name": "umbrella", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen umbrellas.", "objects": [{"name": "umbrella", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen umbrellas.", "objects": [{"name": "umbrella", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen umbrellas.", "objects": [{"name": "umbrella", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen umbrellas.", "objects": [{"name": "umbrella", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen umbrellas.", "objects": [{"name": "umbrella", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen umbrellas.", "objects": [{"name": "umbrella", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen umbrellas.", "objects": [{"name": "umbrella", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty umbrellas.", "objects": [{"name": "umbrella", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven suitcases.", "objects": [{"name": "suitcase", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve suitcases.", "objects": [{"name": "suitcase", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen suitcases.", "objects": [{"name": "suitcase", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen suitcases.", "objects": [{"name": "suitcase", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen suitcases.", "objects": [{"name": "suitcase", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen suitcases.", "objects": [{"name": "suitcase", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen suitcases.", "objects": [{"name": "suitcase", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen suitcases.", "objects": [{"name": "suitcase", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen suitcases.", "objects": [{"name": "suitcase", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty suitcases.", "objects": [{"name": "suitcase", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven kites.", "objects": [{"name": "kite", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve kites.", "objects": [{"name": "kite", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen kites.", "objects": [{"name": "kite", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen kites.", "objects": [{"name": "kite", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen kites.", "objects": [{"name": "kite", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen kites.", "objects": [{"name": "kite", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen kites.", "objects": [{"name": "kite", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen kites.", "objects": [{"name": "kite", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen kites.", "objects": [{"name": "kite", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty kites.", "objects": [{"name": "kite", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven bottles.", "objects": [{"name": "bottle", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve bottles.", "objects": [{"name": "bottle", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen bottles.", "objects": [{"name": "bottle", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen bottles.", "objects": [{"name": "bottle", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen bottles.", "objects": [{"name": "bottle", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen bottles.", "objects": [{"name": "bottle", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen bottles.", "objects": [{"name": "bottle", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen bottles.", "objects": [{"name": "bottle", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen bottles.", "objects": [{"name": "bottle", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty bottles.", "objects": [{"name": "bottle", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven wine glasses.", "objects": [{"name": "wine glass", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve wine glasses.", "objects": [{"name": "wine glass", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen wine glasses.", "objects": [{"name": "wine glass", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen wine glasses.", "objects": [{"name": "wine glass", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen wine glasses.", "objects": [{"name": "wine glass", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen wine glasses.", "objects": [{"name": "wine glass", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen wine glasses.", "objects": [{"name": "wine glass", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen wine glasses.", "objects": [{"name": "wine glass", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen wine glasses.", "objects": [{"name": "wine glass", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty wine glasses.", "objects": [{"name": "wine glass", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven bananas.", "objects": [{"name": "banana", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve bananas.", "objects": [{"name": "banana", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen bananas.", "objects": [{"name": "banana", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen bananas.", "objects": [{"name": "banana", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen bananas.", "objects": [{"name": "banana", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen bananas.", "objects": [{"name": "banana", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen bananas.", "objects": [{"name": "banana", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen bananas.", "objects": [{"name": "banana", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen bananas.", "objects": [{"name": "banana", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty bananas.", "objects": [{"name": "banana", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven oranges.", "objects": [{"name": "orange", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve oranges.", "objects": [{"name": "orange", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen oranges.", "objects": [{"name": "orange", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen oranges.", "objects": [{"name": "orange", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen oranges.", "objects": [{"name": "orange", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen oranges.", "objects": [{"name": "orange", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen oranges.", "objects": [{"name": "orange", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen oranges.", "objects": [{"name": "orange", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen oranges.", "objects": [{"name": "orange", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty oranges.", "objects": [{"name": "orange", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven chairs.", "objects": [{"name": "chair", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve chairs.", "objects": [{"name": "chair", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen chairs.", "objects": [{"name": "chair", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen chairs.", "objects": [{"name": "chair", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen chairs.", "objects": [{"name": "chair", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen chairs.", "objects": [{"name": "chair", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen chairs.", "objects": [{"name": "chair", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen chairs.", "objects": [{"name": "chair", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen chairs.", "objects": [{"name": "chair", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty chairs.", "objects": [{"name": "chair", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven laptops.", "objects": [{"name": "laptop", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve laptops.", "objects": [{"name": "laptop", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen laptops.", "objects": [{"name": "laptop", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen laptops.", "objects": [{"name": "laptop", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen laptops.", "objects": [{"name": "laptop", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen laptops.", "objects": [{"name": "laptop", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen laptops.", "objects": [{"name": "laptop", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen laptops.", "objects": [{"name": "laptop", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen laptops.", "objects": [{"name": "laptop", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty laptops.", "objects": [{"name": "laptop", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven books.", "objects": [{"name": "book", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve books.", "objects": [{"name": "book", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen books.", "objects": [{"name": "book", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen books.", "objects": [{"name": "book", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen books.", "objects": [{"name": "book", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen books.", "objects": [{"name": "book", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen books.", "objects": [{"name": "book", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen books.", "objects": [{"name": "book", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen books.", "objects": [{"name": "book", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty books.", "objects": [{"name": "book", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eleven teddy bears.", "objects": [{"name": "teddy bear", "count": 11}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twelve teddy bears.", "objects": [{"name": "teddy bear", "count": 12}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with thirteen teddy bears.", "objects": [{"name": "teddy bear", "count": 13}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fourteen teddy bears.", "objects": [{"name": "teddy bear", "count": 14}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with fifteen teddy bears.", "objects": [{"name": "teddy bear", "count": 15}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with sixteen teddy bears.", "objects": [{"name": "teddy bear", "count": 16}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with seventeen teddy bears.", "objects": [{"name": "teddy bear", "count": 17}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with eighteen teddy bears.", "objects": [{"name": "teddy bear", "count": 18}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with nineteen teddy bears.", "objects": [{"name": "teddy bear", "count": 19}], "meta": {"benchmark": "d2d_style_large"}}
+{"prompt": "A realistic photo of a scene with twenty teddy bears.", "objects": [{"name": "teddy bear", "count": 20}], "meta": {"benchmark": "d2d_style_large"}}

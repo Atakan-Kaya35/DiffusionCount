@@ -177,9 +177,23 @@ Common keys:
 | `eval.split` | `heldout` | shapes to evaluate: `heldout`, `train`, `all` |
 | `eval.seeds` | 16 | number of seeds (0…seeds−1). The same seed is used for every count, which gives the per-seed histograms |
 | `eval.counts` | null | counts to evaluate (null = 1…N_max) |
-| `eval.hard_counter` | `color` | `color` (connected components) or `owlv2` |
+| `eval.hard_counter` | `color` | `color` (connected components), `owlv2` or `yolo` |
 | `eval.save_images` | true | save image grids per (colour, shape) |
 | `eval.clip` | false | compute CLIP score (downloads `openai/clip-vit-base-patch32`) |
+
+### eval.benchmark (CoCoCount, D2D-style, custom prompt files; see [benchmarks.md](benchmarks.md))
+
+| Key | Default | Description |
+|---|---|---|
+| `eval.benchmark.name` | null | null = synthetic prompts. Otherwise `cococount`, `d2d_small`, `d2d_multi`, `d2d_large`, `jsonl` (same as `--benchmark`) |
+| `eval.benchmark.path` | null | benchmark file. null = the default for that benchmark (`data_cache/benchmarks/CoCoCount.json`, `benchmarks/d2d_style_*.jsonl`) |
+| `eval.benchmark.seeds` | 4 | seeds per prompt (D2D averages over four), or `record` to use CoCoCount's per-record seeds |
+| `eval.benchmark.dedupe` | false | CoCoCount: keep prompts that differ only by seed once |
+| `eval.benchmark.counter` | `owlv2` | detector counter: `owlv2` or `yolo` (YOLOv9, Make It Count's protocol). The colour counter cannot count arbitrary objects |
+| `eval.benchmark.counter_kwargs` | `{}` | extra counter arguments, e.g. `{threshold: 0.3}` for OWLv2, `{conf: 0.25, weights: yolov9e.pt}` for YOLO |
+| `eval.benchmark.multi_object_count` | `sum` | the sampler takes one n. For multi-object prompts, `sum` conditions it on the total count and `skip` drops those prompts |
+| `eval.benchmark.batch_size` | 8 | images generated per batch |
+| `eval.benchmark.save_images` | false | save every image plus `manifest.jsonl`, so an external counter (CountGD) can score them |
 
 ## precheck (§8 pre-checks, §9 offline scan)
 

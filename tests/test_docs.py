@@ -8,7 +8,7 @@ from countsampler.utils.config import load_config
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = sorted((ROOT / "docs").rglob("*.md")) + [ROOT / "README.md"]
-PATH_PREFIXES = ("countsampler/", "configs/", "scripts/", "tests/", "docs/")
+PATH_PREFIXES = ("countsampler/", "configs/", "scripts/", "tests/", "docs/", "benchmarks/")
 
 
 def _flatten(d, prefix=""):

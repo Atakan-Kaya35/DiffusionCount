@@ -24,6 +24,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest"]
 wandb = ["wandb"]
+yolo = ["ultralytics"]   # YOLOv9 counter for CoCoCount (AGPL-3.0)
 
 [tool.setuptools.packages.find]
 include = ["countsampler*"]

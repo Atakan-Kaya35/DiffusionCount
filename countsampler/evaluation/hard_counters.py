@@ -1,11 +1,17 @@
 """Independent hard counters for evaluation (spec §4.2 Remark 3, §8).
 
 They have zero or undefined gradient and are never used as a training signal.
+Common interface: count(image, color, shape) -> CountResult. Benchmarks pass color=None and the
+class name as `shape`.
   * ColorComponentsCounter: HSV colour mask → morphological opening → connected components.
-    Built in and fast. Suited to the synthetic "n <colour> <shape>s" prompts. Touching objects
-    merge into one component and are under-counted (a known limitation).
-  * OwlV2Counter: open-vocabulary detector (transformers OWLv2) + NMS. Optional.
-  * CountGD: not pip-installable; wrap its predictor in a class with the same `count` signature.
+    Built in and fast. Suited to the synthetic "n <colour> <shape>s" prompts. It needs a colour.
+    Touching objects merge into one component and are under-counted (a known limitation).
+  * OwlV2Counter: open-vocabulary detector (transformers OWLv2) + NMS. Works for any noun. D2D uses
+    OWLv2 as its training critic.
+  * YoloCounter: YOLOv9 via the optional `ultralytics` package (AGPL-3.0). This is Make It Count's
+    CoCoCount protocol. It counts boxes whose COCO class name equals `shape`.
+  * CountGD (D2D's evaluation counter): not pip-installable. Wrap its predictor in a class with the
+    same `count` signature, or run it on images saved by the benchmark evaluation (manifest.jsonl).
 """
 from __future__ import annotations
 
@@ -68,6 +74,8 @@ class ColorComponentsCounter:
         self.open_iterations = open_iterations
 
     def mask(self, image, color: str) -> np.ndarray:
+        if color is None:
+            raise ValueError("ColorComponentsCounter needs a colour; use --counter owlv2 or yolo for benchmarks")
         img = _to_uint8(image)
         h, s, v = rgb_to_hsv(img)
         if color == "black":
@@ -135,7 +143,7 @@ class OwlV2Counter:
         from PIL import Image
 
         img = Image.fromarray(_to_uint8(image))
-        inputs = self.processor(text=[[f"a photo of a {color} {shape}"]], images=img, return_tensors="pt")
+        inputs = self.processor(text=[[detector_query(color, shape)]], images=img, return_tensors="pt")
         outputs = self.model(**{k: v.to(self.device) for k, v in inputs.items()})
         size = max(img.size)  # OWLv2 pads to a square
         res = self.processor.post_process_object_detection(
@@ -148,9 +156,40 @@ class OwlV2Counter:
         return CountResult(len(keep), centers)
 
 
-def build_hard_counter(name: str, **kwargs):
+class YoloCounter:
+    name = "yolo"
+
+    def __init__(self, weights: str = "yolov9e.pt", conf: float = 0.25, device="cuda"):
+        try:
+            from ultralytics import YOLO
+        except ImportError as exc:
+            raise ImportError("YoloCounter needs `pip install ultralytics` (AGPL-3.0)") from exc
+        self.model = YOLO(weights)
+        self.conf = conf
+        self.device = device
+
+    @torch.no_grad()
+    def count(self, image, color: str | None = None, shape: str | None = None) -> CountResult:
+        img = _to_uint8(image)
+        res = self.model.predict(img[..., ::-1].copy(), conf=self.conf, device=self.device, verbose=False)[0]
+        h, w = img.shape[:2]
+        keep = [i for i, c in enumerate(res.boxes.cls.tolist()) if res.names[int(c)] == shape]
+        xyxy = res.boxes.xyxy.cpu()
+        centers = [(float((xyxy[i, 0] + xyxy[i, 2]) / 2 / w), float((xyxy[i, 1] + xyxy[i, 3]) / 2 / h)) for i in keep]
+        return CountResult(len(keep), centers)
+
+
+def detector_query(color: str | None, shape: str) -> str:
+    """Text query for an open-vocabulary detector: 'a photo of a red circle' / 'a photo of a dog'."""
+    return f"a photo of a {color} {shape}" if color else f"a photo of a {shape}"
+
+
+def build_hard_counter(name: str, device=None, **kwargs):
+    """`device` is forwarded to the detector counters only."""
     if name in ("color", "color_components"):
         return ColorComponentsCounter(**kwargs)
     if name == "owlv2":
-        return OwlV2Counter(**kwargs)
-    raise KeyError(f"unknown hard counter '{name}' (color | owlv2)")
+        return OwlV2Counter(**kwargs, **({"device": str(device)} if device is not None else {}))
+    if name == "yolo":
+        return YoloCounter(**kwargs, **({"device": str(device)} if device is not None else {}))
+    raise KeyError(f"unknown hard counter '{name}' (color | owlv2 | yolo)")

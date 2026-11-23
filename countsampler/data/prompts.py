@@ -13,15 +13,21 @@ NUMBER_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "
                 "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen",
                 "nineteen", "twenty"]
 
-_IRREGULAR = {"cross": "crosses", "box": "boxes"}
+_IRREGULAR = {"cross": "crosses", "box": "boxes", "sheep": "sheep", "deer": "deer", "fish": "fish",
+              "mouse": "mice", "knife": "knives", "person": "people", "man": "men", "woman": "women",
+              "child": "children", "goose": "geese", "tooth": "teeth", "foot": "feet"}
 
 
 def pluralize(noun: str) -> str:
-    if noun in _IRREGULAR:
-        return _IRREGULAR[noun]
-    if noun.endswith(("s", "x", "z", "ch", "sh")):
-        return noun + "es"
-    return noun + "s"
+    """Plural of a (possibly multi-word) noun; only the last word changes ("wine glass" -> "wine glasses")."""
+    head, _, last = noun.rpartition(" ")
+    if last in _IRREGULAR:
+        plural = _IRREGULAR[last]
+    elif last.endswith(("s", "x", "z", "ch", "sh")):
+        plural = last + "es"
+    else:
+        plural = last + "s"
+    return f"{head} {plural}" if head else plural
 
 
 def count_phrase(n: int, fmt: str = "word") -> str:

@@ -78,8 +78,18 @@ eval:                          # spec §8 (scripts/evaluate.py)
   hard_counter: color          # color | owlv2 (independent of C_ψ)
   save_images: true
   clip: false
+  benchmark:                   # §8 "each on CoCoCount and the D2D benchmarks" (scripts/evaluate.py --benchmark)
+    name: null                 # null = synthetic prompts | cococount | d2d_small | d2d_multi | d2d_large | jsonl
+    path: null                 # null = default file per benchmark (see countsampler/data/benchmarks.py)
+    seeds: 4                   # seeds per prompt (D2D averages over four), or "record" = CoCoCount's per-record seeds
+    dedupe: false              # CoCoCount: keep prompts that differ only by seed once
+    counter: owlv2             # owlv2 | yolo (Make It Count's YOLOv9). CountGD: run it on saved images
+    counter_kwargs: {}         # e.g. {threshold: 0.3} for owlv2, {conf: 0.25, weights: yolov9e.pt} for yolo
+    multi_object_count: sum    # the sampler takes one n. For 2-object prompts: sum = total count | skip
+    batch_size: 8
+    save_images: false         # also writes manifest.jsonl for external counters
 
-precheck:                      # spec §8 pre-checks = §9 offline scan (scripts/precheck.py)
+precheck:                     # spec §8 pre-checks = §9 offline scan (scripts/precheck.py)
   sources: [synthetic, generated]
   counts: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   samples_per_count: 8
