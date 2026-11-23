@@ -1,0 +1,10 @@
+# Overlay for 8 GB cards (e.g. RTX 5060). Same effective batch, half the micro-batch.
+#   python scripts/train_sampler.py --config configs/method_a.yaml --config configs/gpu_8gb.yaml
+train:
+  eps_per_batch: 1
+  grad_accum: 2
+precheck:
+  batch_size: 4
+counter:
+  train:
+    batch_size: 32

@@ -1,0 +1,13 @@
+# Install PyTorch first with the CUDA 12.8 wheel for RTX 50xx:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu128
+torch>=2.4
+diffusers>=0.32
+transformers>=4.40
+accelerate>=0.30
+safetensors
+pyyaml
+pillow
+numpy
+scipy
+tqdm
+pytest

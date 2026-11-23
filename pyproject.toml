@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "countsampler"
+version = "0.1.0"
+description = "Count-conditioned noise sampler for frozen few-step text-to-image diffusion (CS485, Bilkent)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.4",            # RTX 50xx (sm_120) needs a CUDA 12.8 build, torch>=2.7
+    "diffusers>=0.32",       # non-reentrant checkpointing gated on torch.is_grad_enabled()
+    "transformers>=4.40",
+    "accelerate>=0.30",
+    "safetensors",
+    "pyyaml",
+    "pillow",
+    "numpy",
+    "scipy",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+wandb = ["wandb"]
+
+[tool.setuptools.packages.find]
+include = ["countsampler*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning", "ignore::FutureWarning"]

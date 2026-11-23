@@ -1,0 +1,31 @@
+# Method C: cross-attention peak separation with differentiable soft centres (spec §5).
+# Code: countsampler/novel/losses/peak.py, countsampler/novel/methods/method_c.py
+defaults: base.yaml
+
+experiment:
+  name: method_c
+
+method:
+  name: C
+  # Eq. (22). OPEN: loss weights.
+  weights: {act: 1.0, rep: 1.0, supp: 1.0, anc: 10.0, pri: 10.0, ord: 1.0}
+  stages:
+    - {start: 0, terms: [act, supp, anc, pri]}
+    - {start: 2000, terms: [act, supp, rep, anc, pri]}
+    - {start: 4000, terms: [act, supp, rep, anc, pri, ord]}
+  loss_steps: all
+  attention:
+    cross_layers: [up_blocks.2.attentions.0.transformer_blocks.0.attn2]   # OPEN: set by the offline scan
+    smoothing_sigma: 1.0
+    grid: null                 # null = the first layer's grid; or e.g. [32, 32] to resample
+  peak:
+    kmeans_iters: 3            # J
+    tau_q: 4.0                 # OPEN: assignment temperature (token units²)
+    tau_p: 0.1                 # OPEN: soft-max temperature for a_k
+    r_min: 3.0                 # OPEN: tokens. Set from shape size (radius 0.045-0.09 of the image ≈ 1.4-2.9 tokens at 32x32)
+    r_s: 2.5                   # OPEN: suppression radius (tokens)
+    peak_min_value: 0.1
+    supp_min_value: 0.0
+    fps_min_value: 0.0
+    eps: 1.0e-6
+    diag_peak_threshold: 0.3   # diagnostic only: NMS peaks above this vs n

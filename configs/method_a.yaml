@@ -1,0 +1,36 @@
+# Method A: spectral (eigengap) instance count on the self-attention graph (spec §3).
+# Code: countsampler/novel/losses/spectral.py, countsampler/novel/methods/method_a.py
+defaults: base.yaml
+
+experiment:
+  name: method_a
+
+method:
+  name: A
+  # Eq. (15). OPEN: loss weights.
+  weights: {cnt: 1.0, gap: 0.5, anc: 10.0, pri: 10.0, ord: 1.0}
+  # Stage 1 {cnt, anc, pri} -> stage 2 + gap -> stage 3 + ord (run g=log and g=lin separately).
+  stages:
+    - {start: 0, terms: [cnt, anc, pri]}
+    - {start: 2000, terms: [cnt, gap, anc, pri]}
+    - {start: 4000, terms: [cnt, gap, anc, pri, ord]}
+  loss_steps: all              # average over unrolled steps: all | last | [indices]
+  attention:
+    # OPEN, set by the offline scan. SD-Turbo 32x32 layers: down_blocks.1.attentions.{0,1}, up_blocks.2.attentions.{0,1,2}
+    self_layers: [up_blocks.2.attentions.0.transformer_blocks.0.attn1]
+    cross_layers: [up_blocks.2.attentions.0.transformer_blocks.0.attn2]   # only defines F (stop-grad)
+    smoothing_sigma: 0.5       # light smoothing of ā (token units)
+  spectral:
+    affinity: attention        # attention (decided) | feature_cosine (fallback variant)
+    K: 256                     # foreground cap, K ≤ 256
+    tau_a: 0.3                 # OPEN: ā threshold for F
+    gamma: {start: 1.0, end: 2.0, steps: 3000}   # OPEN: sharpening exponent γ ≥ 1, annealed
+    T: {start: 0.05, end: 0.02, steps: 3000}     # OPEN: soft-count temperature, annealed
+    tau: 0.1                   # OPEN: "near-zero" eigenvalue threshold in Eq. (12)
+    tau_g: 0.2                 # OPEN: gap threshold in Eq. (14)
+    ridge: 1.0e-3              # OPEN: degree ridge ρ
+    ridge_mode: relative       # relative (ρ · mean degree) | absolute
+    drop_self_loops: false     # spec keeps W_ii
+    eps_k: 0.1                 # ε_k in log(k̂ + ε_k)
+    huber_eta: 0.5             # η
+    min_foreground: 8          # mask samples with |F| below this (or ≤ n)

@@ -1,0 +1,17 @@
+# Overlay for SDXL-Turbo. Pass it AFTER a method config:
+#   python scripts/train_sampler.py --config configs/method_a.yaml --config configs/sdxl_turbo.yaml
+# The SDXL U-Net (2.6B) is about 3x SD-Turbo's: use one base noise per micro-batch on 16 GB.
+# SDXL 32x32 layers (at 512 px): down_blocks.1.attentions.{0,1}.transformer_blocks.{0,1},
+#                               up_blocks.1.attentions.{0,1,2}.transformer_blocks.{0,1}
+generator:
+  model_id: stabilityai/sdxl-turbo
+  family: sdxl
+
+train:
+  eps_per_batch: 1
+  grad_accum: 2
+
+method:
+  attention:
+    self_layers: [up_blocks.1.attentions.0.transformer_blocks.0.attn1]
+    cross_layers: [up_blocks.1.attentions.0.transformer_blocks.0.attn2]

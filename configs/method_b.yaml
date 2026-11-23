@@ -1,0 +1,26 @@
+# Method B: density-map counter loss on x̂0 (spec §4).
+# Code: countsampler/novel/losses/density.py, countsampler/novel/components/counter.py,
+#       countsampler/novel/methods/method_b.py
+# Prerequisite: python scripts/train_counter.py --config configs/counter.yaml
+defaults: base.yaml
+
+experiment:
+  name: method_b
+
+method:
+  name: B
+  # Eq. (17). OPEN: λ_den and the other weights.
+  weights: {den: 1.0, anc: 10.0, pri: 10.0, ord: 1.0}
+  stages:
+    - {start: 0, terms: [den, anc, pri]}
+    - {start: 3000, terms: [den, anc, pri, ord]}
+  loss_steps: all
+  density:
+    counter_ckpt: runs/counter/counter_best.pt
+    alpha: 1.0                 # OPEN: weight on under-counting
+    beta: 1.0                  # OPEN: weight on over-counting (incl. stray objects, n_k = 0)
+    variant: hinge             # hinge (Eq. 16) | tolerance | huber
+    tolerance: 0.25            # δ_c for the tolerance variant
+    huber_delta: 1.0
+    timestep_weight: constant  # constant | alpha_bar | threshold (constant for one-step Turbo)
+    timestep_threshold: 500

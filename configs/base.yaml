@@ -1,0 +1,107 @@
+# Shared defaults for every experiment. Method files inherit from this via `defaults:`.
+# Values marked OPEN are open choices in the spec (§9). Set them from the offline scan
+# (scripts/precheck.py) or by sweeping.
+
+experiment:
+  name: default
+  output_dir: runs
+  seed: 0
+  device: auto                 # auto | cuda | cuda:1 | cpu
+  wandb: false
+  wandb_project: count-sampler
+
+generator:                     # frozen G (spec §1)
+  model_id: stabilityai/sd-turbo   # or stabilityai/sdxl-turbo (also pass configs/sdxl_turbo.yaml)
+  family: auto                 # auto | sd | sdxl
+  variant: fp16                # download the fp16 weight files when available
+  dtype: bfloat16              # RTX 50xx: bf16 avoids fp16 gradient underflow through the U-Net
+  resolution: 512              # latent 4 x 64 x 64 -> D = 16384
+  timesteps: [999]             # one-step Turbo. [999, 499] = first two steps (§1)
+  input_scaling: pipeline      # pipeline: x_T = √(1−ᾱ_T)·z_n, same as diffusers' Turbo pipelines (z = ε gives the official baseline)
+                               # identity: x_T = z_n, the literal reading of §1 Eq. (1). The two differ by a 0.23% input scale
+  gradient_checkpointing: true
+  min_alpha_bar: 1.0e-4        # ᾱ_t clamp in Eq. (1). ᾱ_999 ≈ 4.7e-3 for SD's schedule
+
+data:                          # prompts p_n (spec §1, §7)
+  n_max: 10
+  colors: [red, green, blue, yellow, orange, purple]
+  train_shapes: [circle, square, triangle, star, hexagon]
+  heldout_shapes: [pentagon, diamond, cross]      # held out for testing (§7)
+  templates:
+    - "{count} {color} {shape}"
+    - "a photo of {count} {color} {shape}"
+    - "{count} {color} {shape} on a white background"
+  count_format: word           # word ("three") | digit ("3")
+  include_count: true          # false = ablation of §7: prompt "{color} {shape}s", the sampler carries n
+
+sampler:                       # Δφ, spec §2.1 (countsampler/novel/shared.py)
+  w: 1.0                       # OPEN: fixed mixing weight in z_n = ε + w Δφ
+  base_channels: 64
+  channel_mult: [1, 2, 2]      # 64x64 -> 32x32 -> 16x16
+  blocks_per_level: 1
+  mid_attention: true          # global self-attention at 16x16
+  cond_dim: 256
+  count_embed_dim: 64          # sinusoidal encoding of log n
+  count_embed_max_freq: 64.0
+  text_embed_dim: 128
+  use_text: true               # FiLM on pooled c̄ as well as n
+
+geometry:                      # spec §2.2 (countsampler/novel/shared.py)
+  delta: 0.3                   # OPEN: δ, anchor radius in normalised distance
+  g: log                       # log | lin (spec: run both separately for L_ord)
+  ord_form: regression         # regression (Eq. 5) | rank (Eq. 6)
+  rank_margin: 0.05            # μ
+  over: sampled                # sampled = across the J noises (§7 step 5) | all_counts = 1..N_max (Eq. 5 literally)
+
+train:                         # spec §7
+  steps: 6000
+  eps_per_batch: 2             # base noises ε per micro-batch
+  counts_per_eps: 4            # J ≈ 4 counts per ε (label count included). U-Net batch = eps_per_batch * J
+  grad_accum: 1
+  lr: 1.0e-4
+  weight_decay: 0.0
+  warmup_steps: 100
+  grad_clip: 1.0
+  log_every: 10
+  ckpt_every: 1000
+  resume: null                 # path to a sampler checkpoint
+  preview:
+    every: 500
+    seeds: [0, 1]
+    counts: [1, 2, 3, 4, 5, 6, 8, 10]
+    prompts: [[red, circle], [blue, pentagon]]
+
+eval:                          # spec §8 (scripts/evaluate.py)
+  split: heldout               # heldout | train | all (shapes)
+  seeds: 16
+  counts: null                 # null -> 1..n_max
+  hard_counter: color          # color | owlv2 (independent of C_ψ)
+  save_images: true
+  clip: false
+
+precheck:                      # spec §8 pre-checks = §9 offline scan (scripts/precheck.py)
+  sources: [synthetic, generated]
+  counts: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  samples_per_count: 8
+  batch_size: 8
+  seed: 0
+  timesteps: [999, 800, 600, 400, 200]   # synthetic source only (generated uses generator.timesteps[0])
+  resolutions: [16, 32]        # token-grid sides of the layers to scan
+  touching_frac: 0.4           # share of scenes with touching shapes
+  identical_frac: 0.5          # share of scenes with identical shapes
+  radius_range: [0.045, 0.09]
+  hard_counter: color
+  A:
+    affinities: [attention, feature_cosine]
+    gammas: [1.0, 2.0, 4.0]
+    taus: [0.05, 0.1, 0.2]
+    Ts: [0.01, 0.02, 0.05]
+    K: 256
+    tau_a: 0.3
+    smoothing_sigma: 0.5
+    ridge: 1.0e-3
+    ridge_mode: relative
+    drop_self_loops: false
+  C:
+    smoothing_sigmas: [0.0, 1.0]
+    thresholds: [0.2, 0.3, 0.5]

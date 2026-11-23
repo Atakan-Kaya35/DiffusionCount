@@ -1,0 +1,43 @@
+# Train the density counter C_ψ once, before Method B (spec §4.1).
+# Code: countsampler/novel/components/counter.py, countsampler/training/counter_trainer.py
+defaults: base.yaml
+
+experiment:
+  name: counter
+
+counter:
+  input_space: latent          # latent (preferred: reads x̂0 directly) | image (decode x̂0 with the VAE)
+  image_size: 256              # image mode only
+  latent_channels: 4
+  colors: null                 # null -> data.colors
+  shapes: null                 # null -> data.train_shapes + data.heldout_shapes
+  density_sigma_frac: 0.025    # Gaussian σ as a fraction of the output side (1.6 px at 64x64)
+  arch:
+    base_channels: 64
+    channel_mult: [1, 2, 4]
+    out_activation: softplus
+    head_bias_init: -10.0      # strongly negative: softplus(0) summed over H·W would be a large spurious count
+  dataset:
+    train_size: 20000
+    val_size: 2000
+    max_categories_per_image: 3
+    max_total_objects: 20
+    empty_prob: 0.05
+    touching_prob: 0.3
+    identical_prob: 0.3
+    heldout_combo_fraction: 0.1   # held-out (category, count) combinations for validation
+    radius_range: [0.045, 0.09]
+    background: random_light
+    cache_dir: data_cache/counter
+    harvested: []              # extra latent caches from scripts/harvest_generator_samples.py
+  image_aug: {prob: 0.5, contrast: [0.8, 1.2], blur_sigma_max: 2.0, noise_std: 0.1}   # before VAE encoding (latent mode)
+  online_aug: {prob: 0.8, contrast: [0.8, 1.2], blur_sigma_max: 1.0, noise_std: 0.3}  # every step ("heavy augmentation")
+  train:
+    epochs: 30
+    batch_size: 64
+    lr: 3.0e-4
+    weight_decay: 1.0e-4
+    mse_scale: 100.0           # s: MSE(s·D, s·target), targets are tiny
+    l1_weight: 0.1             # L1 between predicted and true per-channel counts
+    num_workers: 4
+    log_every: 50

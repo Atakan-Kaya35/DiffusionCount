@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Experiment outputs and caches
+runs/
+data_cache/
+wandb/
+*.pt
+*.ckpt
+*.safetensors
+
+# Course lecture slides (instructor's material, do not publish)
+prev_taught/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
