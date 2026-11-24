@@ -75,6 +75,10 @@ eval:                          # spec §8 (scripts/evaluate.py)
   split: heldout               # heldout | train | all (shapes)
   seeds: 16
   counts: null                 # null -> 1..n_max
+  template_index: 0            # index into data.templates. Training picks a template at random
+                               # from all of them, so 0 scores one phrasing out of three; it is
+                               # also the bare noun phrase, which SD-Turbo answers with tiling
+                               # (72% of baseline images have objects running off the frame)
   hard_counter: color          # color | owlv2 (independent of C_ψ)
   counter_kwargs: {threshold: 0.1, query_color: false}   # forwarded to the counter
                                # owlv2 defaults (threshold 0.3, colour in the query) make the

@@ -193,6 +193,7 @@ Euler characteristic is not, and drops by exactly one when two objects fuse.
 | `eval.counts` | null | counts to evaluate (null = 1…N_max) |
 | `eval.hard_counter` | `color` | `color` (connected components), `owlv2` or `yolo` |
 | `eval.counter_kwargs` | `{}` | forwarded to the counter. For `owlv2`, `{threshold: 0.1, query_color: false}` is recommended: at the 0.3 default with the colour in the query, "blue cross" returns nothing on 90 % of images and "red cross" on 70 %, against 2 % for "yellow cross" |
+| `eval.template_index` | 0 | index into `data.templates`. Training picks a template at random from all of them, so the default scores the sampler on one phrasing out of three — and `templates[0]` is the bare noun phrase, which SD-Turbo answers with edge-to-edge tiling (72 % of baseline images have objects running off the frame, so the true count is not well defined) |
 | `eval.save_images` | true | save image grids per (colour, shape) |
 | `eval.clip` | false | compute CLIP score (downloads `openai/clip-vit-base-patch32`) |
 

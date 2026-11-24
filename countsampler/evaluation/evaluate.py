@@ -33,7 +33,7 @@ def run_evaluation(cfg, generator, sampler, counter, out_dir: str | Path, *, spl
                    seeds: list[int] | None = None, counts: list[int] | None = None,
                    colors: list[str] | None = None, shapes: list[str] | None = None,
                    save_images: bool = False, clip: bool = False, timesteps=None,
-                   counter_batch: int = 8) -> dict:
+                   counter_batch: int = 8, template_index: int = 0) -> dict:
     out_dir = ensure_dir(out_dir)
     gen = generator
     device = gen.device
@@ -50,6 +50,13 @@ def run_evaluation(cfg, generator, sampler, counter, out_dir: str | Path, *, spl
     if sampler is not None:
         sampler.eval()
 
+    # Training samples a template at random from data.templates; evaluation used templates[0]
+    # unconditionally, so the sampler was scored on one phrasing out of the three it saw. That
+    # phrasing is also the bare noun phrase, which this generator answers with edge-to-edge
+    # tiling rather than countable objects.
+    tmpl = list(data.templates)
+    template = tmpl[int(template_index) % len(tmpl)]
+
     records, latencies, diversities = [], [], []
     for color in colors:
         for shape in shapes:
@@ -58,7 +65,7 @@ def run_evaluation(cfg, generator, sampler, counter, out_dir: str | Path, *, spl
                 e = torch.randn(1, *gen.latent_shape, generator=torch.Generator().manual_seed(int(s)))
                 for n in counts:
                     eps_list.append(e)
-                    prompts.append(prompter.prompt(n, color, shape)[0])
+                    prompts.append(prompter.prompt(n, color, shape, template)[0])
                     ns.append(n)
                     sds.append(s)
             eps = torch.cat(eps_list).to(device)
@@ -124,6 +131,7 @@ def run_evaluation(cfg, generator, sampler, counter, out_dir: str | Path, *, spl
     finite_rhos = [r for r in rhos if not np.isnan(r)]  # NaN when a seed's counts never vary
     metrics["seed_spearman_mean"] = float(np.mean(finite_rhos)) if finite_rhos else float("nan")
     metrics["seed_distinct_counts_mean"] = float(np.mean(distinct)) if distinct else float("nan")
+    metrics["template"] = template
 
     with open(out_dir / "records.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(records[0].keys()))

@@ -736,3 +736,83 @@ neither is reducible without changing the detector or the number of images. Sinc
 forces `eval.seeds` to stay at 16 (the baseline's own halves differ by 0.88 MAE), **about 97 min
 per evaluation is simply the price**, and the pipeline is planned around that rather than around
 a hoped-for speedup.
+
+### 2026-11-24 — Method D: a count objective that notices a merge
+
+Written in response to the Method C result, and **not yet run** — this entry records the design
+and its offline validation only.
+
+**The invariant Method C was missing.** Every term it optimises is unchanged when two objects
+fuse: centre positions, centre distances, and soft peak values inside a cluster all survive a
+merge, so one blob hosting n soft centres satisfies `L_act`, `L_rep` and `L_supp` at once. A count
+objective needs a quantity that strictly *decreases* on a merge. The Euler characteristic of a
+superlevel set is one, and it is free to compute:
+
+```
+chi = V - E + F   over the pixel cubical complex  =  #components - #holes
+```
+
+Verified on planted Gaussians at a hard threshold: **χ equals the object count exactly for
+k = 1, 2, 3, 4, 5, 6, 8, 10**, and merging two blobs takes χ from 2 to 1 at the moment they touch.
+
+**Three terms, each closing a hole the others leave open:**
+
+| term | form | what it forbids |
+|---|---|---|
+| `L_cc` | (log(1+χ) − log(1+n))² | wrong count. Log-ratio, so over- and under-counting cost the same — `L_supp`'s asymmetry is what pointed C at collapse |
+| `L_area` | relu(min_area − mass/χ)² | n single-token specks. At low occupancy χ ≈ HW·u, so a sparse field reaches any moderate count with nothing in the image. Measured: a speck field gives 1.09 tokens per component against 7.75 for real objects |
+| `L_bin` | mean(u(1−u)) | u drifting away from {0,1}, where χ stops meaning what it says |
+
+**The calibration was measured, and the first attempt was wrong.** A threshold relative to the
+map's *mean* gave χ = 3.2 for ten real objects while a structureless haze reached 11 — the
+degenerate solution sitting at an occupancy where `u(1−u)` is small, so the binarisation term never
+saw it. Thresholding on the map's **max** removes the hole at its source, because
+`object_attention_map` min-max normalises so the max is a stable reference while the mean moves
+with how much of the map is foreground. At `tau_frac` 0.5 and `temperature` 0.02 the soft χ matches
+the discrete χ within 0.5 for every k tested, and a uniform haze now saturates to a single
+component and is rejected by `L_cc` itself. The parameter sweep is in `tests/test_components.py`
+as assertions rather than in a notebook.
+
+**The count term is not staged.** Method C spent its first 2000 steps with nothing in the active
+set requiring count-dependence, and had learned a degenerate solution before `L_ord` switched on.
+
+**Declared limitation.** Method D still reads *attention*, so n strokes that draw n attention
+components satisfy it exactly as well as n objects do — the tally-mark regime Method C passed
+through at step 1000 remains reachable. Closing that needs a term grounded in the decoded image,
+which is Method B's territory. Every soft term ships with its discrete counterpart
+(`D/chi_hard`, `D/chi_soft_minus_hard`) because with Method C the discrete diagnostic disagreed
+with the differentiable loss for 1400 steps and the diagnostic was right.
+
+### 2026-11-24 — The counter repair, validated before the full re-run finished
+
+The frozen generator is deterministic given a seed, so the old baseline's saved grids are the same
+images the re-run is producing. Re-counting them with the repaired counter (CPU, 3 seeds × 10
+counts per cell) isolates the counter change exactly — same images, same seeds, only the
+measurement differs:
+
+| cell | old zero-rate | new zero-rate | old mean | new mean | old MAE | new MAE |
+|---|---|---|---|---|---|---|
+| blue cross | 93.3 % | **3.3 %** | 0.07 | 8.63 | 5.43 | **3.60** |
+| red cross | 50.0 % | **0.0 %** | 0.97 | 9.40 | 4.53 | **3.97** |
+| green cross | 0.0 % | 0.0 % | 6.57 | 8.73 | 2.20 | **3.37** |
+
+**The proper-noun catastrophe is gone.** "blue cross" went from returning nothing on 93 % of
+images to 3 %, and its mean count from 0.07 to 8.63 — on images that always contained roughly nine
+crosses. That cell is now measuring the generator instead of the phrase.
+
+**And MAE got worse where the counter already worked.** Green cross, which had no zero problem,
+moved from 2.20 to 3.37. This is the predicted direction and it is not a regression: at threshold
+0.1 the detector finds more of the objects that are genuinely there, and since the generator
+over-generates, finding more of them pushes the count further above n. The old number was low for
+the wrong reason — objects were being missed in a way that happened to cancel part of the
+over-generation error.
+
+**So the repair should not be reported as an accuracy improvement.** Overall MAE may move either
+way depending on the mix of cells; the three sampled here give −1.83, −0.56 and +1.17. What the
+repair buys is a measurement that means the same thing for every prompt, which is the precondition
+for comparing methods at all. The earlier `eval_baseline_owl` numbers were an average over cells
+measuring different things, one of which was measuring an insurance brand.
+
+**Note for the write-up:** the new means (8.6–9.4 against a requested mean of 5.5) are a cleaner
+statement of the over-generation problem than anything in the old protocol, where detector
+failures were masking it.
