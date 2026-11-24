@@ -1276,3 +1276,23 @@ symmetric residual, which the observed over-generation makes optimistic.
 This is why `d_white` — Method D, 32×32 layer, τ=0.70, trained *and* scored on countable scenes —
 runs first in the sweep. It is the only configuration where the analysis says a positive result is
 reachable.
+
+**Sweep revised on this result.** Every method variant now trains and evaluates on countable
+scenes, since the analysis says tiling prompts cannot yield positive skill whatever the method
+does. `d_screen` is kept on the default mixed templates as the control that isolates how much of
+`d_white` is the template rather than the method. Final order:
+
+| | run | what it tests |
+|---|---|---|
+| 1 | `d_white` | Method D, 32×32, τ=0.70, countable — every finding combined |
+| 2 | `d_screen` | same method, mixed templates — the template control |
+| 3 | `a_white` | Method A with `tau_g` fixed |
+| 4 | `c_white` | Method C with `tau_q`/`r_s` fixed |
+| 5 | `c_bal_white` | Method C with `act`×4, `supp`×0.25 |
+| 6 | `b_white` | Method B, image-grounded |
+| 7 | `b_screen` | Method B, mixed templates |
+| 8 | `d_delta_white` | Method D with δ=0.15 |
+
+Each pairs against a frozen baseline measured on **its own** task; comparing a countable-scene run
+against a tiling baseline would be comparing different tasks and would read as a large spurious
+win.
