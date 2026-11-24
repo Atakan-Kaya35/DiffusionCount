@@ -3,6 +3,55 @@
 One row per run, failed runs included. Keep the newest at the top. For the metrics, paste the relevant columns of
 `scripts/compare.py` output. Put longer notes and figures in a subsection below the table.
 
+## Summary of findings so far (2026-11-24)
+
+The sections below are chronological, including the readings that were later corrected — the
+corrections are part of the record. This is where they stand now.
+
+**On the frozen generator**
+1. It is not count-blind, but it is accurate only at **n = 1** (64 % exact). The response rises
+   steeply to n ≈ 3 and then flattens at about 8 objects: slope **+2.49** for n ≤ 3, **+0.27** for
+   n ≥ 4. Overall it is *worse than a constant* — MAE 4.88 against 2.50 for answering "5" every
+   time, a skill of **−0.95**.
+2. So the target is specific: extend a response that already works at small n into the range where
+   it saturates. Improving MAE without moving the n ≥ 4 slope means finding the best constant,
+   not counting.
+
+**On Method C (the only method measured end to end so far)**
+3. It reached **every one of its own objectives** — `loss/total` 3.872 → 0.125, `loss/rep` exactly
+   0.0 throughout, `loss/ord` 0.228 → 0.022 — while producing **one object for every requested
+   count**. The failure is in the objective, not the optimisation: `skipped` = 0, `norm_sq` ≈ 1.00,
+   gradients falling smoothly.
+4. Each term constrains a geometric *proxy* — attention-map shape, centre distances, latent
+   distances — and every proxy is invariant under merging two objects. Nothing in the set requires
+   the image to contain n objects, or to be the right colour: "blue pentagons" render **red** by
+   step 4000.
+5. Correction: collapse is a **local** minimum behind a barrier (k=2 costs 2.35 against 1.18 for
+   one blob and 0.17 for the correct layout), not the global optimum as first recorded.
+
+**On the measurement — the largest finding**
+6. The evaluation was measuring the counter more than the generator. The detector query hit proper
+   nouns: **"blue cross" returned nothing on 90 % of images, "red cross" on 70 %**, against 2 % for
+   "yellow cross", on images full of well-separated crosses. At n ≥ 5 exact accuracy was **3.65 %
+   against 3.72 % chance**.
+7. Repaired (threshold 0.3 → 0.1, colour dropped from the query). On rendered scenes with counts
+   known by construction the repaired counter scores **MAE 0.143** and the colour counter
+   **0.000** — but the two agree at only **r = 0.131** on generated images. A counter that is
+   perfect on real scenes and useless on generated ones means **the generated images are not
+   countable scenes**: 72 % of them have objects running off the frame.
+8. The prompt template is what decides that. `templates[0]` (the default, and the only one
+   evaluation ever used) yields edge-to-edge tiling; `templates[2]`, "… on a white background",
+   yields separated countable objects for the same prompt and seed. Training randomises over all
+   three templates, so the protocol was also scoring samplers on one phrasing out of three.
+
+**Open, and being run now**
+9. Methods A, B and D have not been measured. Three configuration bugs were found and fixed first,
+   two of them introduced by this session's own tuning (`tau_q` not rescaled for a 16×16 layer,
+   `r_s` below the grid diagonal, `tau_g` ≤ `tau` leaving `L_gap` with no gradient).
+10. **Method D** was written in response to finding 4: a count term built on the Euler
+    characteristic, which *does* drop when two objects merge. Validated offline (χ equals the true
+    count exactly for k = 1…10); not yet trained.
+
 | Date | Who | Run name | Method | Config / overrides | Commit | Steps | Held-out exact acc | MAE | seed ρ | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 2026-11-24 | Atakan | `eval_baseline_owl` | baseline | `configs/base.yaml` + `configs/gpu_8gb.yaml`, `eval.hard_counter=owlv2` | `f9e3559` | – | **0.118** | **4.880** | **0.302** | **The reference for every run below.** Frozen SD-Turbo, 16 seeds × 10 counts × 6 colours × 3 held-out shapes = 2880 images, 122 min. Exact accuracy is 0.642 at n=1 and ≤0.08 from n=3 on. Skill vs the best constant is **−0.95**: the frozen model is roughly twice as wrong as answering "5" every time. Full report: [results/eval_baseline_owl.md](results/eval_baseline_owl.md) |
@@ -816,3 +865,70 @@ measuring different things, one of which was measuring an insurance brand.
 **Note for the write-up:** the new means (8.6–9.4 against a requested mean of 5.5) are a cleaner
 statement of the over-generation problem than anything in the old protocol, where detector
 failures were masking it.
+
+### 2026-11-24 — How good is the ruler? Counter accuracy on images with known counts
+
+`ShapeRenderer` produces scenes containing exactly n objects by construction, so they give a
+ground truth the generated set cannot. Six scenes per count across four colours and the three
+held-out shapes, n = 1…8, counted three ways:
+
+| counter | MAE | exact |
+|---|---|---|
+| old OWLv2 (threshold 0.3, colour in query) | 0.548 | 78.6 % |
+| **repaired OWLv2** (threshold 0.1, shape only) | **0.143** | **85.7 %** |
+| `ColorComponentsCounter` | **0.000** | **100 %** |
+
+Three things follow.
+
+**The repair is a real improvement, not just a re-labelling.** MAE falls 3.8× on images whose count
+is known. The earlier caveat stands — it does not follow that MAE on *generated* images improves —
+but the instrument itself is measurably better.
+
+**The measurement noise floor on clean scenes is ~0.14 MAE.** Any claimed effect smaller than that
+is not distinguishable from the counter, before seed variance is even considered. (Seed variance
+is much larger: the baseline's own halves differ by 0.88.)
+
+**And the decisive one: both counters are near-perfect here and disagree wildly on generated
+imagery** — correlation 0.131, with the colour counter over-counting 2.4×. A counter that scores
+100 % on rendered scenes and is unusable on generated ones is not a broken counter. It means the
+generated images are not countable scenes. This matches the border statistic: 72.4 % of baseline
+images have the target colour touching the frame, so objects run off the edge and the true count
+is not defined, whatever counts.
+
+**This reframes the prompt-template question from a tuning choice into the central one.** The
+evaluation uses `data.templates[0]`, the bare noun phrase, which SD-Turbo answers with edge-to-edge
+tiling. `data.templates[2]` asks for objects "on a white background" — the same kind of scene the
+renderer makes and both counters count perfectly. If that template produces countable images, the
+evaluation becomes well posed and every method can be measured properly; if it does not, no
+objective and no counter can rescue the protocol, and that is itself the finding.
+
+Queued as its own run. Note the comparison must be baseline-to-baseline on the *same* template:
+switching templates changes the task, so numbers across templates are not comparable.
+
+### 2026-11-24 — Prompt template probe: templates[2] does produce countable scenes
+
+A CPU probe (SD-Turbo in float32, ~4 s per image, no GPU contention with the running evaluation)
+generated the same prompts and seeds under `data.templates[0]` and `data.templates[2]`.
+Figure: `runs/figures/template_probe2.png`, rows = template 0 seeds 0–1 then template 2 seeds 0–1.
+
+| prompt | templates[0] "three green crosses" | templates[2] "… on a white background" |
+|---|---|---|
+| three green crosses | crosses fused into an edge-to-edge lattice on textured ground | **three separated crosses on white** |
+| two yellow diamonds | a field of gem facets filling the frame | **exactly two gems on white** |
+| three red circles | overlapping discs running off every edge | discs on white, still over-generated |
+
+**The first probe said the opposite and was wrong.** It used "blue pentagons" only, which tiles
+under every phrasing, and concluded that no template helps. That is the second time in this
+session a single (colour, shape) cell has produced a confident wrong reading — the first was "red
+pentagon" for the baseline count response. Prompts in this set do not behave alike, and no
+conclusion should be drawn from one of them.
+
+**Why this outranks the method queue.** Both counters score ~0 MAE on countable scenes and agree
+at r=0.131 on tiling, so the template decides whether anything here is measurable at all. Running
+four methods against templates[0] would produce a consistent comparison on a task where the
+quantity being compared is undefined for three quarters of the images.
+
+**Queue reordered.** The master pipeline keeps the two stages already paid for — the
+repaired-counter baseline, and Method C measured against it — and is then stopped before Method B
+so the template comparison can run. Which template the remaining methods train and evaluate on is
+a decision to take on those numbers, not in advance.
