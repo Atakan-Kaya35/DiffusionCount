@@ -1087,3 +1087,51 @@ the baseline) and the per-n sd are the quantities to watch; MAE on its own will 
 **Caveat on the degenerate row.** A per-(n, colour, shape, seed) calibration scores MAE 0.000, but
 those four fields uniquely identify a single record, so each "group" has one element and the result
 is vacuous. It is recorded here only so nobody later mistakes it for a meaningful ceiling.
+
+### 2026-11-24 — Is the variance learnable? A held-out test, and a trap I walked into
+
+**First, the mistake.** The obvious way to ask how much of the count variance the sampler could
+correct is to group records by everything the sampler observes — (n, colour, shape, seed) — and
+measure the within-group spread. That returns "100 % of variance explained, MAE 0.000", which is
+meaningless: those four fields uniquely identify a single record, so every group has one element.
+This log had already flagged exactly that degeneracy one section earlier, and the analysis walked
+into it anyway. Recorded because the number looks like a spectacular result and is worth nothing.
+
+**Done properly**, by fitting a correction on seeds 0–7 and scoring it on seeds 8–15, so no group
+can be a single record and the question becomes what a method could *learn* rather than memorise:
+
+| correction, fitted on seeds 0–7, scored on seeds 8–15 | MAE | skill |
+|---|---|---|
+| none | 8.972 | −2.589 |
+| global affine inverse of `counted = a·n + b` | **3.849** | −0.540 |
+| per-(colour, shape) affine inverse | 10.730 | **−3.292** |
+
+Two conclusions, both unwelcome and both useful.
+
+**A global correction generalises, and is still not enough.** Inverting the fitted response more
+than halves the error on unseen seeds, 8.97 → 3.85, and remains well short of the 2.50 constant
+bar. This is consistent with the ceiling analysis: the correction fixes bias, and bias is only half
+the problem.
+
+**Per-prompt correction overfits badly — worse than doing nothing.** The marginal variance table
+below makes colour and shape look like strong, usable structure (at n = 5, shape accounts for sd
+4.34 of a total 8.00, more than seed's 2.23), but fitting on half the seeds and testing on the
+other half gives MAE 10.73 against 8.97 for no correction at all. Those per-prompt effects are
+largely sampling noise at this many records per cell, not a stable property of the prompt.
+
+| n | total sd | by seed | by colour | by shape |
+|---|---|---|---|---|
+| 1 | 2.92 | 0.95 | 0.52 | 0.93 |
+| 5 | 8.00 | 2.23 | 2.87 | 4.34 |
+| 10 | 9.28 | 2.07 | 4.15 | 0.79 |
+
+**Design consequence.** A method that conditions strongly on the prompt to correct counts is
+fitting noise. The usable signal in this decomposition is global, and global correction caps out
+below the constant bar. What remains is genuine per-image variance reduction — making the generator
+produce a more consistent number for a given (ε, n) — which is exactly the thing none of the four
+methods' objectives measures.
+
+**Caveat on the analogy.** These corrections are applied to counts after the fact; a sampler
+instead changes what is generated. The numbers bound the structure of the error, not literally what
+a sampler can reach. A sampler that genuinely narrows the output distribution is doing something
+none of these post-hoc corrections can.
