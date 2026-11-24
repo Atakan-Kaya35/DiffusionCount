@@ -16,6 +16,7 @@ import torch
 
 from ..data.prompts import PromptSampler
 from ..utils.misc import ensure_dir, save_image_grid, to_uint8_images
+from .hard_counters import count_images
 from .metrics import ClipScorer, count_metrics, nn_regularity, pairwise_diversity
 
 
@@ -31,7 +32,8 @@ def _spearman(x, y) -> float:
 def run_evaluation(cfg, generator, sampler, counter, out_dir: str | Path, *, split: str = "heldout",
                    seeds: list[int] | None = None, counts: list[int] | None = None,
                    colors: list[str] | None = None, shapes: list[str] | None = None,
-                   save_images: bool = False, clip: bool = False, timesteps=None) -> dict:
+                   save_images: bool = False, clip: bool = False, timesteps=None,
+                   counter_batch: int = 8) -> dict:
     out_dir = ensure_dir(out_dir)
     gen = generator
     device = gen.device
@@ -71,8 +73,13 @@ def run_evaluation(cfg, generator, sampler, counter, out_dir: str | Path, *, spl
             latencies.append((time.perf_counter() - t0) / len(ns))
             u8 = to_uint8_images(imgs)
             clip_vals = clip_scorer(u8, prompts) if clip_scorer else [float("nan")] * len(ns)
+            # Every image in this (colour, shape) block shares one detector query, so they can go
+            # through the counter in batches. One forward per image dominated the run time before.
+            results = []
+            for s0 in range(0, len(ns), counter_batch):
+                results += count_images(counter, list(u8[s0:s0 + counter_batch]), color, shape)
             for i in range(len(ns)):
-                res = counter.count(u8[i], color, shape)
+                res = results[i]
                 records.append({"color": color, "shape": shape, "heldout_shape": shape in heldout_set,
                                 "seed": sds[i], "n": ns[i], "counted": res.count,
                                 "regularity": nn_regularity(res.centers), "clip": float(clip_vals[i])})

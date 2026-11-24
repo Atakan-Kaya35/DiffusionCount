@@ -41,6 +41,31 @@ def _load(d: Path) -> dict[tuple, int]:
     return out
 
 
+def _zero_rates(ref: dict, cand: dict, shared: list) -> str:
+    """Share of images the counter finds nothing in.
+
+    A jump here means the detector stopped recognising the object at all, rather than counting it
+    wrongly - the signature of a run that drifted in colour, shape or style away from the prompt.
+    """
+    r0 = np.mean([ref[k] == 0 for k in shared])
+    c0 = np.mean([cand[k] == 0 for k in shared])
+    out = [f"\n**Zero-detection rate** (counter found nothing)\n",
+           f"  reference: {100 * r0:.1f}%   candidate: {100 * c0:.1f}%   "
+           f"change: {100 * (c0 - r0):+.1f} points\n"]
+    by_color: dict[str, list] = {}
+    for k in shared:
+        by_color.setdefault(k[0], []).append(k)
+    out.append("\n| colour | ref zero % | cand zero % | ref mean | cand mean |")
+    out.append("\n|---|---|---|---|---|")
+    for col in sorted(by_color):
+        ks = by_color[col]
+        out.append(f"\n| {col} | {100 * np.mean([ref[k] == 0 for k in ks]):.1f} | "
+                   f"{100 * np.mean([cand[k] == 0 for k in ks]):.1f} | "
+                   f"{np.mean([ref[k] for k in ks]):.2f} | "
+                   f"{np.mean([cand[k] for k in ks]):.2f} |")
+    return "".join(out) + "\n"
+
+
 def _boot(per_seed: dict[str, list[float]], reps: int = 2000, seed: int = 0) -> tuple[float, float]:
     """Resample whole seeds: records sharing a seed share a noise vector and are not independent."""
     seeds = sorted(per_seed)
@@ -96,6 +121,17 @@ def main() -> None:
         v = np.asarray(by_n[n], dtype=float)
         print(f"| {n} | {len(v)} | {v.mean():+.3f} | {100 * (v < 0).mean():.1f} | "
               f"{100 * (v > 0).mean():.1f} |")
+
+    print(_zero_rates(ref, cand, shared))
+
+    # Response slope: the quantity that separates "counts better" from "found a better constant".
+    t = np.asarray([int(k[3]) for k in shared], dtype=float)
+    for label, src in (("reference", ref), ("candidate", cand)):
+        p = np.asarray([src[k] for k in shared], dtype=float)
+        hi = t >= 4
+        print(f"  {label}: slope(all)={np.polyfit(t, p, 1)[0]:+.3f}  "
+              f"slope(n>=4)={np.polyfit(t[hi], p[hi], 1)[0]:+.3f}  "
+              f"counted mean={p.mean():.2f}")
 
 
 if __name__ == "__main__":

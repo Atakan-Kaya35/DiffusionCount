@@ -140,23 +140,41 @@ class OwlV2Counter:
 
     @torch.no_grad()
     def count(self, image, color: str, shape: str | None = None) -> CountResult:
+        return self.count_batch([image], color, shape)[0]
+
+    @torch.no_grad()
+    def count_batch(self, images, color: str, shape: str | None = None) -> list[CountResult]:
+        """Count a list of images sharing one query in a single forward pass.
+
+        One image per forward is what dominates evaluation cost here: a 2880-image run spends most
+        of its time in 2880 separate detector calls. The detector is applied per image and the
+        post-processing is per image either way, so batching changes throughput, not results —
+        `tests/test_hard_counters.py` pins that equivalence.
+        """
         from PIL import Image
 
-        img = Image.fromarray(_to_uint8(image))
-        inputs = self.processor(text=[[detector_query(color, shape)]], images=img, return_tensors="pt")
+        if not images:
+            return []
+        imgs = [Image.fromarray(_to_uint8(im)) for im in images]
+        query = detector_query(color, shape)
+        inputs = self.processor(text=[[query]] * len(imgs), images=imgs, return_tensors="pt")
         outputs = self.model(**{k: v.to(self.device) for k, v in inputs.items()})
-        size = max(img.size)  # OWLv2 pads to a square
+        # OWLv2 pads each image to a square, so the target size is its longer side.
+        sizes = torch.tensor([[max(im.size), max(im.size)] for im in imgs], device=self.device)
         # transformers >= 5 renamed this method; accept both so the counter works on 4.x and 5.x.
         post = (getattr(self.processor, "post_process_grounded_object_detection", None)
                 or self.processor.post_process_object_detection)
-        res = post(outputs, threshold=self.threshold,
-                   target_sizes=torch.tensor([[size, size]], device=self.device))[0]
-        boxes, scores = res["boxes"].cpu(), res["scores"].cpu()
-        keep = _nms(boxes, scores, self.nms_iou) if len(scores) else []
-        w, h = img.size
-        centers = [(float((boxes[i, 0] + boxes[i, 2]) / 2 / w), float((boxes[i, 1] + boxes[i, 3]) / 2 / h))
-                   for i in keep]
-        return CountResult(len(keep), centers)
+        results = post(outputs, threshold=self.threshold, target_sizes=sizes)
+
+        out = []
+        for im, res in zip(imgs, results):
+            boxes, scores = res["boxes"].cpu(), res["scores"].cpu()
+            keep = _nms(boxes, scores, self.nms_iou) if len(scores) else []
+            w, h = im.size
+            out.append(CountResult(len(keep), [
+                (float((boxes[i, 0] + boxes[i, 2]) / 2 / w),
+                 float((boxes[i, 1] + boxes[i, 3]) / 2 / h)) for i in keep]))
+        return out
 
 
 class YoloCounter:
@@ -180,6 +198,31 @@ class YoloCounter:
         xyxy = res.boxes.xyxy.cpu()
         centers = [(float((xyxy[i, 0] + xyxy[i, 2]) / 2 / w), float((xyxy[i, 1] + xyxy[i, 3]) / 2 / h)) for i in keep]
         return CountResult(len(keep), centers)
+
+
+def count_images(counter, images, color: str, shape: str | None = None) -> list[CountResult]:
+    """Count a list of images, using the counter's batched path when it has one.
+
+    Only the detector counters gain from batching; the colour counter is CPU work per image and
+    has no batched path, so it falls back to the loop.
+
+    Evaluation runs the detector alongside the generator and the VAE on one 8 GB card, so a batch
+    that fits in isolation may not fit here. Rather than lose an hour-long evaluation to an OOM,
+    halve the batch and retry, down to one image at a time. Counts are unaffected: batching is a
+    throughput change only (see tests/test_hard_counters.py).
+    """
+    batched = getattr(counter, "count_batch", None)
+    if batched is None:
+        return [counter.count(im, color, shape) for im in images]
+    try:
+        return batched(images, color, shape)
+    except torch.cuda.OutOfMemoryError:
+        if len(images) == 1:
+            raise
+        torch.cuda.empty_cache()
+        half = len(images) // 2
+        return (count_images(counter, images[:half], color, shape)
+                + count_images(counter, images[half:], color, shape))
 
 
 def detector_query(color: str | None, shape: str) -> str:

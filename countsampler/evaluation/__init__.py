@@ -6,6 +6,7 @@ from .hard_counters import (
     OwlV2Counter,
     YoloCounter,
     build_hard_counter,
+    count_images,
     detector_query,
 )
 from .metrics import ClipScorer, count_metrics, nn_regularity, pairwise_diversity
