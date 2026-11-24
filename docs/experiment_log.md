@@ -974,3 +974,116 @@ rather than the model, produced the headline number — after the proper-noun ze
 counter/generated-image disagreement. The pattern is consistent enough to be worth stating as a
 rule for the write-up: **on this task, validate the measurement against known counts before
 reporting anything derived from it.**
+
+### 2026-11-24 — Baseline re-measured (`eval_baseline_fix`): the model does track the count
+
+2880 images, same frozen model, same 16 seeds, same prompts as `eval_baseline_owl`. **Only the
+counter changed.** Figure: `runs/figures/baseline_repaired.png`.
+
+| metric | old protocol | repaired | change |
+|---|---|---|---|
+| zero-detection rate | 17.5 % | **1.0 %** | −16.5 pts |
+| **slope (n ≥ 4)** | +0.273 | **+1.031** | **+0.758** |
+| slope (all n) | +0.696 | +1.643 | +0.947 |
+| Pearson r | +0.310 | +0.529 | +0.218 |
+| `seed_spearman_mean` | 0.302 | **0.667** | +0.365 |
+| counted mean | 6.51 | 12.89 | +6.38 |
+| MAE | 4.880 | **8.166** | +3.286 |
+| skill vs constant | −0.952 | **−2.266** | −1.314 |
+
+**The saturation was the instrument.** The correction predicted from the CPU probe is confirmed at
+full scale: the response slope above n = 4 goes from +0.27 to **+1.03**, which is essentially
+perfect marginal tracking — each additional requested object yields one additional generated
+object. The old counter's misses rose with n (22.2 % zeros at n = 9–10 against 0.0 % now), and
+that is exactly what pulled the old curve flat. `seed_spearman_mean` more than doubling says the
+same thing independently.
+
+**What the frozen model actually does**, for n ≥ 4:
+
+```
+counted = 1.031 · n  +  8.51
+```
+
+Slope one, offset **+8.5 objects**. It is not failing to count; it is counting and then adding a
+large near-constant surplus. That is a different and far more tractable problem than a flat
+response: a bias can be removed, a dead signal cannot.
+
+**MAE got much worse, and that is correct.** 4.88 → 8.17, skill −0.95 → −2.27. The old number was
+low because the counter was missing objects that were always there, and those misses partly
+cancelled the over-generation. Two errors in opposite directions reading as accuracy. The repaired
+number is larger and *true*.
+
+**How much of the error is calibration:**
+
+| | MAE |
+|---|---|
+| frozen baseline as measured | 8.166 |
+| subtract the fitted offset (−8.51) | 6.317 |
+| rescale counts to match the requested mean (×0.43) | **2.420** |
+| best constant predictor | 2.500 |
+
+A single global multiplicative rescale takes the baseline from skill −2.27 to **+0.03** — just past
+the constant bar. So essentially the whole error is a calibration surplus sitting on top of a count
+signal that already tracks.
+
+**Consequence for the methods.** The target is now specific and modest: remove a multiplicative
+over-generation of roughly 2.3× while preserving a slope that is already 1.0. Every method result
+measured before this point was scored against a baseline whose response curve was distorted, and
+the pre-registered criteria — written around "lift the n ≥ 4 slope" — need restating: **the slope
+is already there. The thing to fix is the surplus.** A method that improves MAE while flattening
+the slope would now be a clear regression.
+
+**Caveat.** MAE ≈ 2.42 after perfect global calibration is the ceiling for a *global* correction,
+and it barely clears the constant bar, because per-image variance around the mean is large. A
+sampler that only rescales the whole distribution gains little; what would pay is reducing the
+spread at fixed n.
+
+### 2026-11-24 — Ceiling analysis: the error is half variance, and centring alone cannot win
+
+With a trustworthy baseline it is finally possible to ask what *any* method could achieve on this
+generator. Decomposing the baseline's error at each requested count:
+
+| n | counted mean | bias | sd | MAE |
+|---|---|---|---|---|
+| 1 | 2.57 | +1.57 | 2.92 | 1.63 |
+| 3 | 10.23 | +7.23 | 5.60 | 7.33 |
+| 5 | 14.34 | +9.34 | 8.00 | 9.82 |
+| 7 | 15.74 | +8.74 | 8.49 | 9.85 |
+| 10 | 19.12 | +9.12 | 9.28 | 10.95 |
+
+**Bias and spread are the same order of magnitude.** That is the fact the whole project turns on.
+Simulating a method that centres the distribution perfectly at each n and shrinks the spread by a
+factor s:
+
+| s | MAE | skill |
+|---|---|---|
+| 1.0 — perfect centring, spread untouched | 5.459 | **−1.184** |
+| 0.8 | 4.368 | −0.747 |
+| 0.6 | 3.276 | −0.310 |
+| 0.5 | 2.730 | −0.092 |
+| **0.4** | 2.184 | **+0.126** |
+| 0.3 | 1.638 | +0.345 |
+
+**A method that removes the entire +8.5 surplus and does nothing else scores −1.18, worse than
+answering "5" to everything.** The spread must fall to roughly **40 %** of its current value before
+skill turns positive at all. This is the quantitative statement of why the task is hard, and it
+was invisible under the old counter.
+
+**It also explains the one correction that did work.** The global ×0.43 rescale reached skill
++0.032 not by centring — it leaves the mean at 6.1 when 5 is asked — but because multiplying the
+counts by 0.43 shrinks the spread by 0.43 as well. It beat the bar through variance reduction,
+achieved incidentally.
+
+**The success criterion, restated for the third and hopefully last time.** The pre-registered
+version asked for the n ≥ 4 slope to rise; the slope is already +1.03. The revision after the
+baseline asked for the surplus to be removed; that alone scores −1.18. The target is:
+
+> reduce the conditional spread of the count at fixed n to under ~40 % of the frozen model's,
+> while keeping the response slope near 1 and the mean near n.
+
+Equivalently: make the generator *consistent*, not merely unbiased. `seed_spearman_mean` (0.667 on
+the baseline) and the per-n sd are the quantities to watch; MAE on its own will keep misleading.
+
+**Caveat on the degenerate row.** A per-(n, colour, shape, seed) calibration scores MAE 0.000, but
+those four fields uniquely identify a single record, so each "group" has one element and the result
+is vacuous. It is recorded here only so nobody later mistakes it for a meaningful ceiling.
