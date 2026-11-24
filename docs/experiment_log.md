@@ -1135,3 +1135,43 @@ methods' objectives measures.
 instead changes what is generated. The numbers bound the structure of the error, not literally what
 a sampler can reach. A sampler that genuinely narrows the output distribution is doing something
 none of these post-hoc corrections can.
+
+### 2026-11-24 — Screening sweep: six variants, short runs, paired evaluation
+
+Running one full method at a time (6000 steps plus a 16-seed evaluation, ~3.3 h each) tests about
+three ideas a night. The sweep below tests six in roughly the same budget, by shortening the
+training and — more importantly — cutting the evaluation to 8 seeds.
+
+**Why 8 seeds is sound here, when 16 was required before.** The 16-seed requirement came from
+*marginal* means: the baseline's own halves differ by 0.88 MAE. A **paired** comparison removes
+that variance, because both runs see identical prompts, seeds and noise. Simulating a method that
+genuinely shrinks each image's error by 25 %:
+
+| seeds | effect | 95 % CI half-width | detected |
+|---|---|---|---|
+| 4 | −2.04 | 0.306 | yes |
+| 8 | −2.04 | 0.246 | yes |
+| 16 | −2.04 | 0.183 | yes |
+
+Even four seeds separates it. Eight is used, against a matching 8-seed slice of the frozen
+baseline. Full 16-seed numbers are reserved for whatever wins.
+
+**The variants, each targeting something the analysis identified:**
+
+| run | change | reason |
+|---|---|---|
+| `d_screen` | Method D | the only count term that is symmetric in over/under-counting *and* drops when objects merge |
+| `a_screen` | Method A, `tau_g` 0.2 → 0.45 | `L_gap` previously read 0 across its whole useful range |
+| `c_screen` | Method C, `tau_q` 4.0 → 1.0, `r_s` 1.25 → 1.5 | the k-means kernel was wider than the separation it had to enforce |
+| `c_balance` | Method C, `act` ×4, `supp` ×0.25 | `L_supp` was 3.60 of a 3.87 total and punishes extra peaks far harder than missing ones — the asymmetry that aimed C at collapse |
+| `b_screen` | Method B | the only error signal grounded in the decoded image rather than attention geometry |
+| `d_delta` | Method D, `delta` 0.3 → 0.15 | δ=0.3 let the latent drift far enough to lose colour fidelity |
+
+**A scheduling fact that unblocked this.** `PromptSampler.sample` picks a template at random per
+batch, so training is template-agnostic and the prompt-template question is purely a measurement
+choice, settleable afterwards on any checkpoint. It does not gate method training, so the sweep
+runs first and the template comparison becomes an evaluation-only addendum.
+
+**What counts as success**, per the ceiling analysis: not a lower MAE on its own. The baseline
+already has slope +1.03, and perfect centring without variance reduction scores −1.18. The
+quantities to read are the **per-n spread** and `seed_spearman_mean`, with MAE as a secondary.
