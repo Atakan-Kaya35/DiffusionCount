@@ -9,10 +9,13 @@ The sections below are chronological, including the readings that were later cor
 corrections are part of the record. This is where they stand now.
 
 **On the frozen generator**
-1. It is not count-blind, but it is accurate only at **n = 1** (64 % exact). The response rises
-   steeply to n ≈ 3 and then flattens at about 8 objects: slope **+2.49** for n ≤ 3, **+0.27** for
-   n ≥ 4. Overall it is *worse than a constant* — MAE 4.88 against 2.50 for answering "5" every
-   time, a skill of **−0.95**.
+1. It is not count-blind, and it is accurate at **n = 1** (64 % exact). Overall it is *worse than
+   a constant* — MAE 4.88 against 2.50 for answering "5" every time, a skill of **−0.95**.
+   ⚠️ **The slope figures first recorded here (+2.49 for n ≤ 3, +0.27 for n ≥ 4) are an artefact
+   of the broken counter** and are superseded — see "The 'saturation at ~8 objects' was
+   substantially a counter artefact" below. Excluding the counter's zero-detections from the same
+   records already raises the n ≥ 4 slope to +0.479, and a probe with the repaired counter gives
+   +1.000. The definitive curve is pending `eval_baseline_fix`.
 2. So the target is specific: extend a response that already works at small n into the range where
    it saturates. Improving MAE without moving the n ≥ 4 slope means finding the best constant,
    not counting.
@@ -932,3 +935,42 @@ quantity being compared is undefined for three quarters of the images.
 repaired-counter baseline, and Method C measured against it — and is then stopped before Method B
 so the template comparison can run. Which template the remaining methods train and evaluate on is
 a decision to take on those numbers, not in advance.
+
+### 2026-11-24 — The "saturation at ~8 objects" was substantially a counter artefact
+
+A CPU count-response probe (n = 1…8, four prompts × two seeds, repaired counter, no GPU
+contention) against the figure this log has quoted since the baseline landed:
+
+| measurement | counter | slope (n ≥ 4) |
+|---|---|---|
+| `eval_baseline_owl`, as reported | old (threshold 0.3, colour in query) | **+0.273** |
+| same records, zero-detections excluded | old | **+0.479** |
+| CPU probe, templates[0] | repaired | **+1.000** |
+| CPU probe, templates[2] | repaired | **+1.925** |
+
+**Mechanism.** The old counter's zero-rate climbs with the requested count — 14.2 % at n = 1,
+20.1 % at n = 7, 22.2 % at n = 9 and 10 — because denser scenes with smaller objects fall below a
+threshold set three times too high. Dropped detections at the top of the range pull the fitted
+response flat. Simply excluding the zeros from the *same* records raises the slope by 75 %, and
+measuring properly with the repaired counter raises it further.
+
+**What this revises.** The claim that the frozen model "tracks the count to n ≈ 3 and then
+saturates at about 8 objects" is the single most repeated finding in this log, and it is now
+suspect. The frozen generator appears to track the requested count considerably further than the
+broken instrument suggested; what it does is **over-generate roughly in proportion** (counted mean
+9.9 against a requested mean of 4.5 on the probe) rather than flatten. Over-generation with a
+slope near 1 is a different problem from saturation, and a more tractable one — a multiplicative
+bias can be corrected where a flat response cannot.
+
+**Not yet settled, and deliberately not rewritten in the summary until it is.** The probe is 64
+images per template on CPU in float32, against 2880 on GPU in bfloat16 for the real run, and it
+covers n = 1…8 rather than 1…10. `eval_baseline_fix` is in progress and will give the definitive
+count-response curve with the repaired counter. The honest position until then: the old slope of
++0.273 is an artefact of the measurement, the true value is higher, and the magnitude is pending.
+
+**Methodological note.** Every method result so far was scored against a baseline whose response
+curve was distorted this way. That is the third finding in this session where the instrument,
+rather than the model, produced the headline number — after the proper-noun zero-rate and the
+counter/generated-image disagreement. The pattern is consistent enough to be worth stating as a
+rule for the write-up: **on this task, validate the measurement against known counts before
+reporting anything derived from it.**
