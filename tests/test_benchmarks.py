@@ -55,7 +55,7 @@ def test_pluralize_irregular_and_multiword():
 
 def test_load_cococount(tmp_path):
     p = tmp_path / "CoCoCount.json"
-    p.write_text(json.dumps(COCOCOUNT_SAMPLE))
+    p.write_text(json.dumps(COCOCOUNT_SAMPLE), encoding="utf-8")
     items = load_cococount(p)
     assert len(items) == 4
     assert items[0].prompt == "A photo of three ties on the ground"
@@ -67,7 +67,7 @@ def test_load_cococount(tmp_path):
 def test_jsonl_roundtrip_and_shorthand(tmp_path):
     p = tmp_path / "b.jsonl"
     p.write_text('{"prompt": "three dogs", "object": "dog", "count": 3, "seed": 5}\n\n'
-                 '{"prompt": "two cats and a dog", "objects": [{"name": "cat", "count": 2}, {"name": "dog", "count": 1}]}\n')
+                 '{"prompt": "two cats and a dog", "objects": [{"name": "cat", "count": 2}, {"name": "dog", "count": 1}]}\n', encoding="utf-8")
     items = load_jsonl(p)
     assert items[0].objects == [ObjectCount("dog", 3)] and items[0].seed == 5
     assert items[1].total_count == 3 and items[1].seed is None
@@ -131,7 +131,7 @@ def test_benchmark_scoring(tiny_gen, tmp_path):
     assert m["out_of_train_range"] == {"image_exact_acc": 0.0, "num_images": 2}
     assert m["multi_object"] == {"image_exact_acc": 0.5, "num_images": 4}
     assert all(color is None for color, _ in counter.queries)
-    manifest = (tmp_path / "b" / "manifest.jsonl").read_text().splitlines()
+    manifest = (tmp_path / "b" / "manifest.jsonl").read_text(encoding="utf-8").splitlines()
     assert len(manifest) == 10 and (tmp_path / "b" / json.loads(manifest[0])["file"]).exists()
 
 
@@ -149,10 +149,10 @@ def test_benchmark_policies_and_record_seeds(tiny_gen, tmp_path):
 
 def test_compare_groups_synthetic_and_benchmark_runs(tmp_path):
     (tmp_path / "syn").mkdir()
-    (tmp_path / "syn" / "metrics.json").write_text(json.dumps({"overall": {"exact_acc": 0.25}}))
+    (tmp_path / "syn" / "metrics.json").write_text(json.dumps({"overall": {"exact_acc": 0.25}}), encoding="utf-8")
     (tmp_path / "bench").mkdir()
     (tmp_path / "bench" / "metrics.json").write_text(json.dumps(
-        {"benchmark": "cococount", "image_exact_acc_mean_over_seeds": 0.5, "object": {"exact_acc": 0.5}}))
+        {"benchmark": "cococount", "image_exact_acc_mean_over_seeds": 0.5, "object": {"exact_acc": 0.5}}), encoding="utf-8")
     out = subprocess.run([sys.executable, str(ROOT / "scripts" / "compare.py"), str(tmp_path / "syn"),
                           str(tmp_path / "bench")], capture_output=True, text=True, check=True).stdout
     assert "### synthetic prompts" in out and "### cococount" in out and "0.500" in out and "0.250" in out

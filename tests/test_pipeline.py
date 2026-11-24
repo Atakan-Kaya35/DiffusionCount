@@ -97,7 +97,7 @@ def test_evaluation_runs(tiny_gen, tmp_path):
         m = run_evaluation(cfg, tiny_gen, sampler, ColorComponentsCounter(), out, split="all", seeds=[0, 1],
                            counts=[1, 2], colors=["red"], save_images=True)
         assert "overall" in m and (out / "per_seed_hist.csv").exists()
-        assert json.loads((out / "metrics.json").read_text())["overall"]["n"] == 2 * 2 * 3
+        assert json.loads((out / "metrics.json").read_text(encoding="utf-8"))["overall"]["n"] == 2 * 2 * 3
 
 
 def test_prechecks_run(tiny_gen, tmp_path):

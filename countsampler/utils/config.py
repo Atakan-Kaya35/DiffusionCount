@@ -66,7 +66,7 @@ def _load_raw(path: Path, seen: tuple[Path, ...] = ()) -> dict:
     path = path.resolve()
     if path in seen:
         raise ValueError(f"circular `defaults:` chain at {path}")
-    raw = yaml.safe_load(path.read_text()) or {}
+    raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     parents = raw.pop("defaults", None) or []
     if isinstance(parents, str):
         parents = [parents]
@@ -107,5 +107,5 @@ def load_config(paths: str | Path | Iterable[str | Path], overrides: Iterable[st
 
 def save_config(cfg: dict, path: str | Path) -> None:
     Path(path).parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w") as fh:
+    with open(path, "w", encoding="utf-8") as fh:
         yaml.safe_dump(to_dict(cfg), fh, sort_keys=False)

@@ -117,14 +117,14 @@ def run_benchmark_evaluation(cfg, generator, sampler, counter, items: list[Bench
     if clips:
         metrics["clip_score"] = float(np.mean(clips))
 
-    with open(out_dir / "records.csv", "w", newline="") as fh:
+    with open(out_dir / "records.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(records[0].keys()) if records else ["item"])
         w.writeheader()
         w.writerows(records)
     if img_dir is not None:  # manifest for counting the saved images with an external counter (e.g. CountGD)
-        with open(out_dir / "manifest.jsonl", "w") as fh:
+        with open(out_dir / "manifest.jsonl", "w", encoding="utf-8") as fh:
             for im in images:
                 fh.write(json.dumps({"file": f"images/{im['file']}", "prompt": im["prompt"], "seed": im["seed"],
                                      "objects": [{"name": o.name, "count": o.count} for o in im["objects"]]}) + "\n")
-    (out_dir / "metrics.json").write_text(json.dumps(metrics, indent=2))
+    (out_dir / "metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
     return metrics

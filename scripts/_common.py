@@ -9,6 +9,14 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+# Diagnostics print spec symbols (k̂, γ, λ). On Windows stdout defaults to the locale
+# codepage (cp1252), which cannot encode them and aborts the run mid-scan.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")
+    except (AttributeError, OSError):
+        pass
+
 from countsampler.utils.config import load_config  # noqa: E402
 
 

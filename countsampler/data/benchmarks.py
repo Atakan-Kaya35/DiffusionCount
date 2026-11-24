@@ -74,7 +74,7 @@ def load_cococount(path: str | Path, dedupe: bool = False) -> list[BenchmarkItem
     number, int_number, seed}. `object` is the COCO class name. With `dedupe`, prompts that differ only
     by seed are kept once (161 distinct prompts in the release, per later work)."""
     items, seen = [], set()
-    for r in json.loads(Path(path).read_text()):
+    for r in json.loads(Path(path).read_text(encoding="utf-8")):
         if dedupe and r["prompt"] in seen:
             continue
         seen.add(r["prompt"])
@@ -89,7 +89,7 @@ def load_jsonl(path: str | Path) -> list[BenchmarkItem]:
          {"prompt": ..., "objects": [{"name": "dog", "count": 3}, ...], "seed": 7}
       or the single-object shorthand {"prompt": ..., "object": "dog", "count": 3}. `seed` is optional."""
     items = []
-    for line in Path(path).read_text().splitlines():
+    for line in Path(path).read_text(encoding="utf-8").splitlines():
         if not line.strip():
             continue
         r = json.loads(line)
@@ -101,7 +101,7 @@ def load_jsonl(path: str | Path) -> list[BenchmarkItem]:
 
 def save_jsonl(items: list[BenchmarkItem], path: str | Path) -> None:
     Path(path).parent.mkdir(parents=True, exist_ok=True)
-    Path(path).write_text("".join(json.dumps(it.to_json()) + "\n" for it in items))
+    Path(path).write_text("".join(json.dumps(it.to_json()) + "\n" for it in items), encoding="utf-8")
 
 
 def _phrase(n: int, name: str, count_format: str) -> str:

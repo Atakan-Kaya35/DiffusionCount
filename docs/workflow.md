@@ -151,6 +151,25 @@ Each prints a markdown table (one table per benchmark, if you mix them). Paste t
 - `nn_regularity_cv`: low values mean grid-like layouts, a possible sign of signal hacking (§8).
 - `diversity`: if it collapses compared with the baseline, the sampler found a degenerate solution.
 
+Always compare against the frozen baseline evaluated with the **same counter**. Without it there is
+no way to tell a sampler that learned to count from a generator that was already roughly right.
+
+## 5b. Record the result
+
+`compare.py` gives the cross-run headline. For the full record of a single run — environment,
+resolved config, checkpoint hashes, per-stage training curves and the complete metrics including
+the per-count breakdown — use:
+
+```bash
+python scripts/report_run.py runs/method_c --out docs/results/method_c.md
+```
+
+It also prints the quantity `compare.py` cannot: the **best-constant-predictor MAE** on the very
+same records, and the skill score `1 − MAE/bar`. A sampler that ignores the prompt still posts a
+finite MAE, so a raw MAE on its own never establishes that counting works. Keep the generated
+reports in [results/](results/README.md) and put the headline row in
+[experiment_log.md](experiment_log.md).
+
 ## 6. Variants and ablations
 
 All variants are config overrides. Use a distinct `experiment.name` for each.

@@ -146,8 +146,11 @@ class OwlV2Counter:
         inputs = self.processor(text=[[detector_query(color, shape)]], images=img, return_tensors="pt")
         outputs = self.model(**{k: v.to(self.device) for k, v in inputs.items()})
         size = max(img.size)  # OWLv2 pads to a square
-        res = self.processor.post_process_object_detection(
-            outputs, threshold=self.threshold, target_sizes=torch.tensor([[size, size]], device=self.device))[0]
+        # transformers >= 5 renamed this method; accept both so the counter works on 4.x and 5.x.
+        post = (getattr(self.processor, "post_process_grounded_object_detection", None)
+                or self.processor.post_process_object_detection)
+        res = post(outputs, threshold=self.threshold,
+                   target_sizes=torch.tensor([[size, size]], device=self.device))[0]
         boxes, scores = res["boxes"].cpu(), res["scores"].cpu()
         keep = _nms(boxes, scores, self.nms_iou) if len(scores) else []
         w, h = img.size

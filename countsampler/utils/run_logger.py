@@ -12,7 +12,7 @@ class RunLogger:
                  run_name: str | None = None, config: dict | None = None):
         self.out_dir = Path(out_dir)
         self.out_dir.mkdir(parents=True, exist_ok=True)
-        self._fh = open(self.out_dir / "log.jsonl", "a")
+        self._fh = open(self.out_dir / "log.jsonl", "a", encoding="utf-8")
         self._t0 = time.time()
         self._wandb = None
         if use_wandb:

@@ -16,17 +16,19 @@ method:
     - {start: 4000, terms: [cnt, gap, anc, pri, ord]}
   loss_steps: all              # average over unrolled steps: all | last | [indices]
   attention:
-    # OPEN, set by the offline scan. SD-Turbo 32x32 layers: down_blocks.1.attentions.{0,1}, up_blocks.2.attentions.{0,1,2}
-    self_layers: [up_blocks.2.attentions.0.transformer_blocks.0.attn1]
-    cross_layers: [up_blocks.2.attentions.0.transformer_blocks.0.attn2]   # only defines F (stop-grad)
+    # Set from the offline scan (2026-11-24, runs/precheck_ext + runs/precheck_owl). This 32x32 layer
+    # is the best on the generated source (MAE 5.24, r=+0.46) and near-best on synthetic (2.36 vs
+    # 2.30). Training reads one-step samples from pure noise, so the generated source decides.
+    self_layers: [down_blocks.1.attentions.1.transformer_blocks.0.attn1]
+    cross_layers: [down_blocks.1.attentions.1.transformer_blocks.0.attn2]   # only defines F (stop-grad)
     smoothing_sigma: 0.5       # light smoothing of ā (token units)
   spectral:
     affinity: attention        # attention (decided) | feature_cosine (fallback variant)
     K: 256                     # foreground cap, K ≤ 256
     tau_a: 0.3                 # OPEN: ā threshold for F
-    gamma: {start: 1.0, end: 2.0, steps: 3000}   # OPEN: sharpening exponent γ ≥ 1, annealed
+    gamma: {start: 2.0, end: 4.0, steps: 3000}   # OPEN: annealed toward γ=4, the scan optimum over {1,2,4,8,16}
     T: {start: 0.05, end: 0.02, steps: 3000}     # OPEN: soft-count temperature, annealed
-    tau: 0.1                   # OPEN: "near-zero" eigenvalue threshold in Eq. (12)
+    tau: 0.3                   # OPEN: "near-zero" eigenvalue threshold in Eq. (12). Scan best on generated
     tau_g: 0.2                 # OPEN: gap threshold in Eq. (14)
     ridge: 1.0e-3              # OPEN: degree ridge ρ
     ridge_mode: relative       # relative (ρ · mean degree) | absolute

@@ -121,7 +121,7 @@ def paired_cross(self_name: str, info) -> str | None:
 def _write_csv(path: Path, rows: list[dict]) -> None:
     if not rows:
         return
-    with open(path, "w", newline="") as fh:
+    with open(path, "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()))
         w.writeheader()
         w.writerows(rows)

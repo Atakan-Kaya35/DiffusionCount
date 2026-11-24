@@ -27,12 +27,12 @@ def _slug(heading: str) -> str:
 
 
 def _anchors(md: Path) -> set[str]:
-    return {_slug(m.group(1)) for m in re.finditer(r"^#{1,6}\s+(.*)$", md.read_text(), flags=re.M)}
+    return {_slug(m.group(1)) for m in re.finditer(r"^#{1,6}\s+(.*)$", md.read_text(encoding="utf-8"), flags=re.M)}
 
 
 @pytest.mark.parametrize("cfg_path", sorted((ROOT / "configs").rglob("*.yaml")), ids=lambda p: p.name)
 def test_every_config_key_is_documented(cfg_path):
-    documented = set(re.findall(r"`([A-Za-z_][\w.]*)`", (ROOT / "docs" / "configuration.md").read_text()))
+    documented = set(re.findall(r"`([A-Za-z_][\w.]*)`", (ROOT / "docs" / "configuration.md").read_text(encoding="utf-8")))
     missing = []
     for key in _flatten(load_config(cfg_path)):
         parent = key.rsplit(".", 1)[0]
@@ -44,7 +44,7 @@ def test_every_config_key_is_documented(cfg_path):
 @pytest.mark.parametrize("md", DOCS, ids=lambda p: str(p.relative_to(ROOT)))
 def test_relative_links_and_anchors_resolve(md):
     broken = []
-    for target in re.findall(r"\]\(([^)\s]+)\)", md.read_text()):
+    for target in re.findall(r"\]\(([^)\s]+)\)", md.read_text(encoding="utf-8")):
         if target.startswith(("http://", "https://", "mailto:")):
             continue
         file_part, _, anchor = target.partition("#")
@@ -59,7 +59,7 @@ def test_relative_links_and_anchors_resolve(md):
 @pytest.mark.parametrize("md", DOCS, ids=lambda p: str(p.relative_to(ROOT)))
 def test_backticked_repo_paths_exist(md):
     missing = []
-    for token in re.findall(r"`([^`\s]+)`", md.read_text()):
+    for token in re.findall(r"`([^`\s]+)`", md.read_text(encoding="utf-8")):
         path = token.split("::")[0]
         if path.startswith(PATH_PREFIXES) and not any(c in path for c in "*<>{}") and not (ROOT / path).exists():
             missing.append(token)

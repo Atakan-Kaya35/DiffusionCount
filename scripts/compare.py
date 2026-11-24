@@ -42,7 +42,7 @@ def main() -> None:
     args = ap.parse_args()
     groups = defaultdict(list)
     for d in args.dirs:
-        m = json.loads((Path(d) / "metrics.json").read_text())
+        m = json.loads((Path(d) / "metrics.json").read_text(encoding="utf-8"))
         groups[m.get("benchmark", "synthetic prompts")].append((d, m))
     for kind, rows in groups.items():
         table(kind, rows, SYNTHETIC_COLUMNS if kind == "synthetic prompts" else BENCHMARK_COLUMNS)

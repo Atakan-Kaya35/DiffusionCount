@@ -104,7 +104,7 @@ def run_evaluation(cfg, generator, sampler, counter, out_dir: str | Path, *, spl
     for r in records:
         per_seed.setdefault((r["seed"], r["color"], r["shape"]), []).append((r["n"], r["counted"]))
     rhos, distinct = [], []
-    with open(out_dir / "per_seed_hist.csv", "w", newline="") as fh:
+    with open(out_dir / "per_seed_hist.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(["seed", "color", "shape"] + [f"n={n}" for n in counts] + ["spearman", "distinct_counts"])
         for (s, c, sh), pairs in sorted(per_seed.items()):
@@ -118,9 +118,9 @@ def run_evaluation(cfg, generator, sampler, counter, out_dir: str | Path, *, spl
     metrics["seed_spearman_mean"] = float(np.mean(finite_rhos)) if finite_rhos else float("nan")
     metrics["seed_distinct_counts_mean"] = float(np.mean(distinct)) if distinct else float("nan")
 
-    with open(out_dir / "records.csv", "w", newline="") as fh:
+    with open(out_dir / "records.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(records[0].keys()))
         w.writeheader()
         w.writerows(records)
-    (out_dir / "metrics.json").write_text(json.dumps(metrics, indent=2))
+    (out_dir / "metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
     return metrics

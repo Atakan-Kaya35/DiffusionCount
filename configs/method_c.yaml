@@ -15,17 +15,21 @@ method:
     - {start: 4000, terms: [act, supp, rep, anc, pri, ord]}
   loss_steps: all
   attention:
-    cross_layers: [up_blocks.2.attentions.0.transformer_blocks.0.attn2]   # OPEN: set by the offline scan
-    smoothing_sigma: 1.0
+    # Set from the offline scan (2026-11-24, runs/precheck_ext + runs/precheck_owl): this layer is
+    # the best on BOTH sources - synthetic r(peaks,n)=+0.64, generated/OWLv2 r=+0.51.
+    cross_layers: [up_blocks.1.attentions.1.transformer_blocks.0.attn2]
+    smoothing_sigma: 1.0       # scan: sigma=1.0 beats 0.0 decisively (0.0 fires ~72 peaks regardless of n)
     grid: null                 # null = the first layer's grid; or e.g. [32, 32] to resample
   peak:
     kmeans_iters: 3            # J
     tau_q: 4.0                 # OPEN: assignment temperature (token units²)
     tau_p: 0.1                 # OPEN: soft-max temperature for a_k
-    r_min: 3.0                 # OPEN: tokens. Set from shape size (radius 0.045-0.09 of the image ≈ 1.4-2.9 tokens at 32x32)
-    r_s: 2.5                   # OPEN: suppression radius (tokens)
+    # The scan chose a 16x16 layer, so the token-unit radii are halved from their 32x32 values:
+    # shape radius 0.045-0.09 of the image = 0.7-1.4 tokens at 16x16 (was 1.4-2.9 at 32x32).
+    r_min: 1.5                 # OPEN: tokens (was 3.0 for a 32x32 layer)
+    r_s: 1.25                  # OPEN: suppression radius, tokens (was 2.5 for a 32x32 layer)
     peak_min_value: 0.1
     supp_min_value: 0.0
     fps_min_value: 0.0
     eps: 1.0e-6
-    diag_peak_threshold: 0.3   # diagnostic only: NMS peaks above this vs n
+    diag_peak_threshold: 0.5   # diagnostic only: NMS peaks above this vs n (scan best)
