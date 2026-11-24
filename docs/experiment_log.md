@@ -1593,3 +1593,13 @@ comparison.
 And the degeneracy guard earns its place twice over: it flagged this run on the images'
 *content* (82 % empty, counted mean 0.19, slope +0.023) at a point when every error statistic
 said the method had worked.
+
+**Operational: background work survives a session restart, monitoring does not.** The Claude
+session ended and reported all 19 background tasks stopped. In fact every GPU and CPU job was
+still running — the evaluation, the sweep's shell, the re-count — because they were orphaned
+rather than killed. What died was the *task tracking* and the result watchers. The recovery is to
+re-attach by inspecting `runs/` and the process list, not to restart the work: relaunching the
+sweep would have discarded a 13/18 evaluation and started a second GPU job alongside the first.
+
+Worth knowing for a long overnight run: **check what is actually running before assuming a
+reported stop is real.**
