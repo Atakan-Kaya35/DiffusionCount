@@ -1488,3 +1488,14 @@ variant.
 inflated by the double-counting found later. The comparison between them is unaffected — both
 sides measured identically — and the degeneracy is not a counter artefact: 82 % empty images is
 not something a suppression rule invents.
+
+**Operational note: CPU work is not free alongside GPU work.** The "re-count on CPU for free"
+claim above needs qualifying. With the re-count running, the GPU evaluation slowed from 5.4 to
+**13 minutes per grid** — a 2.4× slowdown — because the evaluation's own CPU-side work (VAE decode
+scheduling, image encoding, data movement) was competing for cores against a process using 16
+torch threads at 93 % total load. The GPU was not the bottleneck; feeding it was.
+
+Dropping the re-count to `BelowNormal` priority and raising the evaluation to `AboveNormal`
+restores the ordering without losing the 57 minutes already spent. The general point for this
+machine: **an 8 GB GPU pipeline is partly CPU-bound, so "idle CPU" is not actually free capacity**
+— it should be used at lower priority, or the GPU work pays for it.
