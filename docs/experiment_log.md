@@ -1419,3 +1419,14 @@ default, padded coordinates, and nested boxes. Every one inflated or distorted t
 three of the four were predicted by the evaluation audit before being found. The conclusion for the
 write-up is not "the counter was bad" but something sharper: **on a task measured by a learned
 detector, the detector is a component of the system and needs the same validation as the model.**
+
+**Re-measuring the baseline without re-generating it.** The evaluation saves every image, and the
+generator is deterministic given a seed, so a *counter* change can be applied to the 2880 existing
+grid cells directly — no GPU, no regeneration. `scratchpad/recount.py` does this on CPU alongside
+the running GPU work and writes `runs/eval_baseline_nms/` in the same schema, so the existing
+analysis tools read it unchanged. It costs CPU time that was otherwise idle and frees the GPU
+entirely for the sweep.
+
+This is worth remembering as a general property of the setup: **any change to how images are
+scored can be re-measured for free; only changes to how they are generated need the GPU.** Three
+of the four measurement defects found today (query, threshold, suppression) are scoring changes.
