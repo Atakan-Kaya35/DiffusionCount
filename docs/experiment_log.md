@@ -1235,3 +1235,44 @@ pentagon for the baseline response, blue pentagon for the template probe, and no
 for the attention structure. Each time the first reading came from an unrepresentative slice. The
 rule that keeps earning its place: **before concluding a signal is absent, check whether the input
 was capable of carrying it.**
+
+### 2026-11-24 — The countable template cuts the baseline spread by 58 %, which changes the verdict
+
+Measured on CPU alongside the running evaluation: the frozen baseline, same seeds and prompts,
+under the two phrasings. Four prompts × three seeds × n ∈ {1,2,3,4,6,8}, repaired counter.
+
+| | spread | MAE | slope (n ≥ 4) | counted per n (1,2,3,4,6,8) |
+|---|---|---|---|---|
+| `templates[0]` (bare noun phrase) | 5.30 | 6.43 | +1.42 | 2.2, 3.9, 7.8, 12.1, 17.5, 17.8 |
+| `templates[2]` (countable scenes) | **2.22** | 4.46 | +1.88 | 1.2, 4.6, 6.2, 9.0, 13.1, 16.5 |
+
+**Spread falls 58 %.** The ceiling analysis established that spread, not bias, is what decides
+whether anything here can beat a constant predictor. Carrying that through, with the
+best-constant bar for n ∈ {1,2,3,4,6,8} at 2.000:
+
+| | if a method centred the distribution perfectly | skill |
+|---|---|---|
+| `templates[0]`, spread 5.30 | MAE 4.128 | **−1.064** — still loses |
+| `templates[2]`, spread 2.22 | MAE 1.840 | **+0.080** — wins |
+
+**On countable scenes, removing the bias alone is enough for positive skill. On the tiling prompts
+it is not, however good the method.** That is the sharpest statement of what the prompt template
+was costing: not accuracy, but the *possibility* of success.
+
+And removing bias is precisely what a count loss does — every method pushes the counted value
+toward n. The thing none of them can do is reduce variance, and on countable scenes they no longer
+have to.
+
+**Both failures are still present on `templates[2]`** and should not be glossed over: the counted
+mean is 8.43 against a requested mean of 4.0, so the generator still roughly doubles the count, and
+the n ≥ 4 slope of +1.88 overshoots rather than tracking. The claim is narrow — the *residual*
+after centring is now small enough to clear the bar, not that the task is solved.
+
+**Caveat.** 72 images on CPU in float32 against 1440 on GPU in bfloat16 for the sweep's reference
+run. The direction is large and consistent across all four prompts, but the magnitude is an
+estimate until `eval_baseline_white_s8` lands. The simulated centring also assumes a roughly
+symmetric residual, which the observed over-generation makes optimistic.
+
+This is why `d_white` — Method D, 32×32 layer, τ=0.70, trained *and* scored on countable scenes —
+runs first in the sweep. It is the only configuration where the analysis says a positive result is
+reachable.
