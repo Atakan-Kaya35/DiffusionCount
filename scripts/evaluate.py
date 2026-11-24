@@ -76,7 +76,8 @@ def main() -> None:
             multi_object_count=bcfg.get("multi_object_count", "sum"), batch_size=int(bcfg.get("batch_size", 8)),
             save_images=save_images or bool(bcfg.get("save_images", False)), clip=clip)
     else:
-        counter = build_hard_counter(args.counter or ev.get("hard_counter", "color"))
+        counter = build_hard_counter(args.counter or ev.get("hard_counter", "color"),
+                                     device=gen.device, **to_dict(ev.get("counter_kwargs") or {}))
         out_dir = args.out_dir or (run_root / "eval" if args.ckpt else "runs/eval_baseline")
         n_seeds = int(args.seeds or ev.get("seeds", 16))
         metrics = run_evaluation(cfg, gen, sampler, counter, out_dir, split=args.split or ev.get("split", "heldout"),

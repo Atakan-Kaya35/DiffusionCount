@@ -29,7 +29,10 @@ method:
     gamma: {start: 2.0, end: 4.0, steps: 3000}   # OPEN: annealed toward γ=4, the scan optimum over {1,2,4,8,16}
     T: {start: 0.05, end: 0.02, steps: 3000}     # OPEN: soft-count temperature, annealed
     tau: 0.3                   # OPEN: "near-zero" eigenvalue threshold in Eq. (12). Scan best on generated
-    tau_g: 0.2                 # OPEN: gap threshold in Eq. (14)
+    # Must exceed tau plus a few T, or L_gap is satisfied before the spurious group stops
+    # being counted. With tau=0.3, T->0.02: at lambda=0.2 L_gap is already 0 while the soft
+    # count still reads 3.993 for n=3. The whole useful range got no gradient.
+    tau_g: 0.45                # OPEN: gap threshold in Eq. (14), > tau + a few T
     ridge: 1.0e-3              # OPEN: degree ridge ρ
     ridge_mode: relative       # relative (ρ · mean degree) | absolute
     drop_self_loops: false     # spec keeps W_ii

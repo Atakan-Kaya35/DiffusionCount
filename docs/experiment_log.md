@@ -608,3 +608,103 @@ bootstrap sd of 0.17 and a 95 % range of [4.51, 5.17]. Two consequences, both no
    sharing a seed share a noise vector and are not independent. Unpaired comparison of marginal
    means, which `compare.py` does, is not sensitive enough here and should not be the basis for a
    verdict.
+
+### 2026-11-24 — Correction: the collapse is a local minimum behind a barrier, not the optimum
+
+An audit of the loss code against the specs, plus direct probes of `peak_losses` at the shipped
+settings, correct the earlier reading in this log. Loss of the three method terms for n=3 against
+the number of objects actually present (16×16 map, σ=1 blobs, `tau_q`=1.0, `r_s`=1.5):
+
+| objects k | 1 | 2 | **3** | 4 | 5 | 6 | 8 | 10 |
+|---|---|---|---|---|---|---|---|---|
+| `L_act` | 0.184 | **2.353** | 0.166 | 0.038 | 0.073 | 0.137 | 0.097 | 0.080 |
+| `L_supp` | 0.000 | 0.000 | 0.000 | 3.000 | 3.520 | 7.587 | 5.598 | 6.280 |
+| **total** | 1.184 | 2.353 | **0.166** | 3.038 | 3.593 | 7.724 | 5.695 | 6.360 |
+
+**The correct layout is the global minimum**, seven times better than the collapsed one. The
+earlier entries called collapse "a near-global optimum of the stage-1 objective"; that was wrong.
+What is true is narrower and more useful:
+
+1. **Collapse is a local minimum.** From k=1 (1.184) both neighbours are uphill: k=2 costs 2.353
+   and k=4 costs 3.038. Once there, gradient descent cannot leave.
+2. **The barrier is the farthest-point fill.** At k=2 with n=3, `init_centers` has only two local
+   maxima to use and places the third centre by farthest-point selection into empty space, where
+   a_k ≈ 0.5 and `L_act = −(1/n)Σ log a_k` explodes to 2.353 — fourteen times its value at the
+   correct layout. Having *fewer* objects than requested is punished far harder than having one.
+3. **The asymmetry points at collapse.** `L_supp` punishes extra peaks brutally (3.0 at k=4, 7.6 at
+   k=6) while under-counting costs almost nothing (`L_supp` = 0 at k=1). The frozen baseline
+   over-generates — about 8 objects when 3 are asked — so training starts at k≈8 (loss 5.695) and
+   *both* directions are downhill: toward k=3 (0.166) and toward k=1 (1.184). The route to k=1 is
+   the easy one, because suppressing everything needs no selectivity, and it is a trap once reached.
+
+That is a materially different claim from "no term requires n objects". The terms do encode n
+objects; the landscape between over-generation and the right answer is what defeats them.
+
+**Three configuration bugs, two of them introduced by the tuning committed in `d8b3837`:**
+
+| config | was | now | why |
+|---|---|---|---|
+| `method.peak.tau_q` (C) | 4.0 | **1.0** | τ_q is in tokens² (`peak.py`: `−d2/tau_q`). Halving lengths for the 16×16 layer required *quartering* it. At 4.0 the assignment kernel is √(τ_q/2)=1.41 tokens wide — wider than the `r_min`=1.5 separation it must enforce, so soft k-means cannot hold two centres apart |
+| `method.peak.r_s` (C) | 1.25 | **1.5** | local maxima come from 3×3 max-pool, whose diagonal neighbour is at √2=1.414 tokens. Below that a centre does not cover its own neighbourhood, so an object's own peak enters the suppression set and `L_supp` pushes it down while `L_act` pushes it up |
+| `method.spectral.tau_g` (A) | 0.2 | **0.45** | must exceed `tau` plus a few `T`. Measured with the real `soft_count`/`gap_loss` at n=3, τ=0.3, T=0.02: at λ=0.20 `L_gap` is already exactly 0 while the soft count still reads **3.993**. The entire useful range λ ∈ [0.20, 0.34] received no gradient |
+
+The first two came from halving C's radii for the 16×16 layer without rescaling the quantities that
+depend on them; the third from taking τ=0.3 off the scan without re-checking τ_g against it.
+Method A had not yet run, so its fix lands before the run rather than after.
+
+**One claim not reproduced.** The audit reported that `tau_q`=1.0 deepens the correct minimum about
+thirtyfold. Probing the real `peak_losses` with planted Gaussians, the collapsed-minus-correct
+margin moves only from 1.1145 to 1.1469 (+3 %). The two probes construct the collapsed scene
+differently and the discrepancy is unresolved. The `tau_q` change is kept because the units
+argument is sound on its own, but **no measured thirtyfold improvement should be quoted.**
+
+### 2026-11-24 — The evaluation was measuring the counter, not the generator
+
+An audit of the evaluation protocol against `runs/eval_baseline_owl` found the instrument
+unreliable enough that **no conclusion drawn from it about n ≥ 5 is safe.** Verified directly
+against the 2880 baseline records:
+
+**The detector query matches proper nouns.** Zero-detection rate by prompt:
+
+| prompt | blue cross | red cross | orange cross | purple cross | green cross | yellow cross |
+|---|---|---|---|---|---|---|
+| returns nothing | **90.0 %** | **70.0 %** | 19.4 % | 13.1 % | 6.9 % | 1.9 % |
+| mean count | 0.11 | 0.45 | 4.21 | — | — | — |
+
+The two catastrophic cells are exactly the two phrases that name an organisation — *Blue Cross*,
+*Red Cross*. `detector_query` builds `"a photo of a blue cross"`, whose text embedding is dominated
+by the emblem rather than by a blue cruciform object. The audit established the zero images are
+not empty: 99.2 % of them have the target colour over ≥10 % of the image, mean colour coverage in
+zero cells (43.5 %) is indistinguishable from non-zero cells (47.7 %), and 459 of 503 contain three
+or more separate colour components. The detector is failing, not the generator.
+
+**At n ≥ 5 the measurement is at chance.** Exact accuracy 3.65 % against 3.72 % for drawing from
+the detector's own observed count distribution. The two counters available in this repository agree
+on these images with correlation 0.131.
+
+**Three repairs, now the default in `configs/base.yaml`:**
+
+| setting | was | now | why |
+|---|---|---|---|
+| `threshold` | 0.3 | **0.1** | 0.3 is three times the library default and the model card's value; counts flicker 0↔11 between visually near-identical adjacent-n images, the signature of sitting on a threshold |
+| `query_color` | colour in the query | **false** | removes the proper-noun confound; colour fidelity is better measured separately, which the colour-drift finding makes necessary anyway |
+| centre coordinates | `x/w, y/h` | `x/side, y/side` | boxes return in padded-square pixels, so both axes normalise by the longer side. Harmless on the 512×512 synthetic set, wrong on the benchmark photos |
+
+**Consequence: the baseline and Method C are being re-measured.** `eval_baseline_owl` and the
+numbers quoted from it earlier in this log are retained as a record of the old protocol, but
+`eval_baseline_fix` supersedes them and every method is compared against that. Method C's
+evaluation was stopped two grids in rather than spend two hours on the broken instrument.
+
+**Not changed, and worth a separate experiment.** `PromptSampler.prompt` always uses
+`data.templates[0]`, the bare noun phrase `"{count} {color} {shape}"`, so SD-Turbo answers with
+edge-to-edge decorative tiling: 72.4 % of baseline images have the target colour touching the
+border, meaning objects run off the frame and the true count is not even well defined.
+`data.templates[2]` (`"… on a white background"`) exists and is never used. Switching it would
+likely be the single largest change to MAE of anything identified — but it changes the *task*
+rather than fixing the instrument, so it belongs in its own clearly-labelled run, not folded
+silently into the protocol.
+
+**Also deferred, with the evidence recorded:** `nn_regularity_cv` is not count-invariant (its
+uniform-random null rises from 0.342 at k=3 to 0.555 at k=30, so it mostly reads how many boxes the
+detector produced) and is available on only 58 % of records, skewed by colour (blue 26 %, green
+77 %). It should be replaced by a null-corrected statistic such as Clark–Evans before being quoted.

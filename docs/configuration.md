@@ -128,10 +128,10 @@ Common keys:
 | `method.spectral.affinity` | `attention` | `attention` (Eq. 10) or `feature_cosine` (Remark 2 fallback) |
 | `method.spectral.K` | 256 | **OPEN.** Foreground cap |
 | `method.spectral.tau_a` | 0.3 | **OPEN.** ā threshold for F |
-| `method.spectral.gamma` | `{start: 1, end: 2, steps: 3000}` | **OPEN.** γ, a scalar or a linear anneal `{start, end, steps[, begin]}` |
+| `method.spectral.gamma` | `{start: 2, end: 4, steps: 3000}` | **OPEN.** γ, a scalar or a linear anneal `{start, end, steps[, begin]}` |
 | `method.spectral.T` | `{start: 0.05, end: 0.02, steps: 3000}` | **OPEN.** Soft-count temperature, scalar or anneal |
-| `method.spectral.tau` | 0.1 | **OPEN.** Near-zero eigenvalue threshold τ |
-| `method.spectral.tau_g` | 0.2 | **OPEN.** Gap threshold τ_g |
+| `method.spectral.tau` | 0.3 | **OPEN.** Near-zero eigenvalue threshold τ |
+| `method.spectral.tau_g` | 0.45 | **OPEN.** Gap threshold τ_g. Must exceed `tau` plus a few `T`, or L_gap reads 0 while the spurious group is still counted |
 | `method.spectral.ridge` | 1e-3 | **OPEN.** Degree ridge ρ |
 | `method.spectral.ridge_mode` | `relative` | `relative` (ρ × mean foreground degree) or `absolute` |
 | `method.spectral.drop_self_loops` | false | zero W_ii |
@@ -160,15 +160,15 @@ Common keys:
 | `method.attention.smoothing_sigma` | 1.0 | smoothing of ā, in tokens |
 | `method.attention.grid` | null | resample ā to this `[h, w]` grid (default: the first layer's grid) |
 | `method.peak.kmeans_iters` | 3 | **OPEN.** J soft k-means iterations |
-| `method.peak.tau_q` | 4.0 | **OPEN.** Assignment temperature (tokens²) |
+| `method.peak.tau_q` | 1.0 | **OPEN.** Assignment temperature (tokens²). Scales as the *square* of the token radii, so halving `r_min`/`r_s` for a 16×16 layer quarters this |
 | `method.peak.tau_p` | 0.1 | **OPEN.** Soft-max temperature for a_k |
-| `method.peak.r_min` | 3.0 | **OPEN.** Repulsion radius (tokens). Set from shape size |
-| `method.peak.r_s` | 2.5 | **OPEN.** Suppression radius (tokens) |
+| `method.peak.r_min` | 1.5 | **OPEN.** Repulsion radius (tokens). Set from shape size |
+| `method.peak.r_s` | 1.5 | **OPEN.** Suppression radius (tokens). Keep ≥ √2: local maxima come from a 3×3 max-pool, so below that a centre does not cover its own diagonal neighbours |
 | `method.peak.peak_min_value` | 0.1 | minimum ā for maxima that seed centres |
 | `method.peak.supp_min_value` | 0.0 | minimum ā for maxima counted in L_supp |
 | `method.peak.fps_min_value` | 0.0 | farthest-point candidates need ā ≥ this |
 | `method.peak.eps` | 1e-6 | ε in Eq. 19 |
-| `method.peak.diag_peak_threshold` | 0.3 | threshold of the `C/*` peak diagnostics |
+| `method.peak.diag_peak_threshold` | 0.5 | threshold of the `C/*` peak diagnostics |
 
 ## eval (§8, `scripts/evaluate.py`)
 
@@ -178,6 +178,7 @@ Common keys:
 | `eval.seeds` | 16 | number of seeds (0…seeds−1). The same seed is used for every count, which gives the per-seed histograms |
 | `eval.counts` | null | counts to evaluate (null = 1…N_max) |
 | `eval.hard_counter` | `color` | `color` (connected components), `owlv2` or `yolo` |
+| `eval.counter_kwargs` | `{}` | forwarded to the counter. For `owlv2`, `{threshold: 0.1, query_color: false}` is recommended: at the 0.3 default with the colour in the query, "blue cross" returns nothing on 90 % of images and "red cross" on 70 %, against 2 % for "yellow cross" |
 | `eval.save_images` | true | save image grids per (colour, shape) |
 | `eval.clip` | false | compute CLIP score (downloads `openai/clip-vit-base-patch32`) |
 

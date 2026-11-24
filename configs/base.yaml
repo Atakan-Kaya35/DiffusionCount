@@ -76,6 +76,10 @@ eval:                          # spec §8 (scripts/evaluate.py)
   seeds: 16
   counts: null                 # null -> 1..n_max
   hard_counter: color          # color | owlv2 (independent of C_ψ)
+  counter_kwargs: {threshold: 0.1, query_color: false}   # forwarded to the counter
+                               # owlv2 defaults (threshold 0.3, colour in the query) make the
+                               # detector miss whole prompts: "blue cross" returns nothing on 90% of
+                               # images, "red cross" on 70%, against 2% for "yellow cross"
   save_images: true
   clip: false
   benchmark:                   # §8 "each on CoCoCount and the D2D benchmarks" (scripts/evaluate.py --benchmark)

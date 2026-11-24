@@ -129,7 +129,16 @@ class OwlV2Counter:
     name = "owlv2"
 
     def __init__(self, model_id: str = "google/owlv2-base-patch16-ensemble", threshold: float = 0.3,
-                 nms_iou: float = 0.5, device="cuda"):
+                 nms_iou: float = 0.5, device="cuda", query_color: bool = True):
+        """`query_color=False` asks for the shape alone, e.g. "a photo of a cross".
+
+        Putting the colour in the query makes the detector match proper nouns. Measured on the
+        frozen baseline's 2880 images: "blue cross" returns nothing on 90 % of images and "red
+        cross" on 70 %, against 2 % for "yellow cross" and 7 % for "green cross" — and those zero
+        images are full of well-separated, high-contrast crosses. The two catastrophic cells are
+        exactly the two phrases that name an organisation. Colour is better checked separately,
+        which also keeps "did it draw the right colour" from contaminating "how many are there".
+        """
         from transformers import Owlv2ForObjectDetection, Owlv2Processor
 
         self.processor = Owlv2Processor.from_pretrained(model_id)
@@ -137,6 +146,7 @@ class OwlV2Counter:
         self.threshold = threshold
         self.nms_iou = nms_iou
         self.device = device
+        self.query_color = query_color
 
     @torch.no_grad()
     def count(self, image, color: str, shape: str | None = None) -> CountResult:
@@ -156,7 +166,7 @@ class OwlV2Counter:
         if not images:
             return []
         imgs = [Image.fromarray(_to_uint8(im)) for im in images]
-        query = detector_query(color, shape)
+        query = detector_query(color if self.query_color else None, shape)
         inputs = self.processor(text=[[query]] * len(imgs), images=imgs, return_tensors="pt")
         outputs = self.model(**{k: v.to(self.device) for k, v in inputs.items()})
         # OWLv2 pads each image to a square, so the target size is its longer side.
@@ -170,10 +180,14 @@ class OwlV2Counter:
         for im, res in zip(imgs, results):
             boxes, scores = res["boxes"].cpu(), res["scores"].cpu()
             keep = _nms(boxes, scores, self.nms_iou) if len(scores) else []
-            w, h = im.size
+            # Boxes come back in PADDED-square pixel coordinates, so both axes normalise by the
+            # longer side. Dividing y by the unpadded height stretches centres on non-square
+            # images and can push them past 1 - harmless on the 512x512 synthetic set, wrong on
+            # the benchmark photos.
+            side = max(im.size)
             out.append(CountResult(len(keep), [
-                (float((boxes[i, 0] + boxes[i, 2]) / 2 / w),
-                 float((boxes[i, 1] + boxes[i, 3]) / 2 / h)) for i in keep]))
+                (float((boxes[i, 0] + boxes[i, 2]) / 2 / side),
+                 float((boxes[i, 1] + boxes[i, 3]) / 2 / side)) for i in keep]))
         return out
 
 

@@ -22,12 +22,20 @@ method:
     grid: null                 # null = the first layer's grid; or e.g. [32, 32] to resample
   peak:
     kmeans_iters: 3            # J
-    tau_q: 4.0                 # OPEN: assignment temperature (token units²)
+    # tau_q is in tokens^2 (peak.py: -d2/tau_q), so halving lengths for the 16x16 layer
+    # means QUARTERING it. At 4.0 the assignment kernel is sqrt(tau_q/2)=1.41 tokens wide -
+    # wider than the r_min=1.5 separation it must enforce, so soft k-means cannot hold two
+    # centres apart and the collapsed and correct layouts differ by 0.6% of the loss.
+    tau_q: 1.0                 # OPEN: assignment temperature (token units²)
     tau_p: 0.1                 # OPEN: soft-max temperature for a_k
     # The scan chose a 16x16 layer, so the token-unit radii are halved from their 32x32 values:
     # shape radius 0.045-0.09 of the image = 0.7-1.4 tokens at 16x16 (was 1.4-2.9 at 32x32).
     r_min: 1.5                 # OPEN: tokens (was 3.0 for a 32x32 layer)
-    r_s: 1.25                  # OPEN: suppression radius, tokens (was 2.5 for a 32x32 layer)
+    # Floor of 1.5: local maxima come from 3x3 max-pool, whose diagonal neighbour sits at
+    # sqrt(2)=1.414 tokens. Below that a centre does not cover its own neighbourhood, so an
+    # object's peak lands in the suppression set and L_supp pushes it down while L_act
+    # pushes it up - directly opposed gradients on the same tokens.
+    r_s: 1.5                   # OPEN: suppression radius, tokens (was 2.5 for a 32x32 layer)
     peak_min_value: 0.1
     supp_min_value: 0.0
     fps_min_value: 0.0
