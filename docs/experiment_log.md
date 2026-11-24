@@ -9,16 +9,16 @@ The sections below are chronological, including the readings that were later cor
 corrections are part of the record. This is where they stand now.
 
 **On the frozen generator**
-1. It is not count-blind, and it is accurate at **n = 1** (64 % exact). Overall it is *worse than
-   a constant* — MAE 4.88 against 2.50 for answering "5" every time, a skill of **−0.95**.
-   ⚠️ **The slope figures first recorded here (+2.49 for n ≤ 3, +0.27 for n ≥ 4) are an artefact
-   of the broken counter** and are superseded — see "The 'saturation at ~8 objects' was
-   substantially a counter artefact" below. Excluding the counter's zero-detections from the same
-   records already raises the n ≥ 4 slope to +0.479, and a probe with the repaired counter gives
-   +1.000. The definitive curve is pending `eval_baseline_fix`.
-2. So the target is specific: extend a response that already works at small n into the range where
-   it saturates. Improving MAE without moving the n ≥ 4 slope means finding the best constant,
-   not counting.
+1. **Use `runs/eval_baseline_nms` — see "THE BASELINE, corrected" below.** Every earlier baseline
+   figure in this log was measured with a counter that had three separate defects, and both the
+   "it saturates" and the "it tracks almost perfectly" readings were artefacts. Corrected: MAE
+   **5.210**, skill **−1.084**, exact **0.1455**, spread **6.01**, and for n ≥ 4
+   `counted = 0.595·n + 4.96`. Per shape the slope is +1.91 (cross), +0.52 (diamond) and
+   **−0.65** (pentagon), so the aggregate describes none of them.
+2. The target: **halve the conditional spread** (6.01 → ~3.0), which is where centring plus
+   variance reduction first clears the constant bar. Centring alone scores −0.996. Improving MAE
+   without moving the spread or the slope means finding the best constant, not counting — Method C
+   did exactly that and the degeneracy guard in `scripts/compare_paired.py` now catches it.
 
 **On Method C (the only method measured end to end so far)**
 3. It reached **every one of its own objectives** — `loss/total` 3.872 → 0.125, `loss/rep` exactly
@@ -1499,3 +1499,65 @@ Dropping the re-count to `BelowNormal` priority and raising the evaluation to `A
 restores the ordering without losing the 57 minutes already spent. The general point for this
 machine: **an 8 GB GPU pipeline is partly CPU-bound, so "idle CPU" is not actually free capacity**
 — it should be used at lower priority, or the GPU work pays for it.
+
+### 2026-11-24 — THE BASELINE, corrected. Supersedes every earlier baseline number in this log
+
+`runs/eval_baseline_nms`: the same 2880 images as `eval_baseline_fix`, re-counted on CPU with all
+three counter repairs (threshold 0.1, colour out of the query, containment suppression). Nothing
+about the generator changed.
+
+| | original protocol | intermediate | **corrected** |
+|---|---|---|---|
+| | thr 0.3, colour query, IoU NMS | thr 0.1, shape query, IoU NMS | **+ containment** |
+| MAE | 4.880 | 8.166 | **5.210** |
+| skill | −0.952 | −2.266 | **−1.084** |
+| exact | 0.1181 | 0.0622 | **0.1455** |
+| slope (n ≥ 4) | +0.273 | +1.031 | **+0.595** |
+| spread | 5.67 | 7.15 | **6.01** |
+| counted mean | 6.51 | 12.89 | **7.46** |
+| zero rate | 17.5 % | 1.0 % | **1.6 %** |
+
+**Both of this log's earlier headline claims about the slope were wrong, in opposite directions.**
+The original protocol's +0.273 said the generator saturates; that was missed detections flattening
+the curve. The intermediate +1.031 said it tracks the count almost perfectly; that was duplicate
+boxes amplifying the response, since more objects produce more nested detections. The truth is
+**+0.595** — partial tracking with partial saturation — and the fitted relationship for n ≥ 4 is
+
+```
+counted = 0.595 · n + 4.96
+```
+
+not the `1.031·n + 8.51` recorded earlier. The surplus is about 5 objects, not 8.5.
+
+**Per shape, and the shapes could hardly be more different:**
+
+| shape | MAE | spread | slope (n ≥ 4) | counted mean | exact |
+|---|---|---|---|---|---|
+| cross | **3.89** | **4.29** | **+1.906** | 7.54 | **0.184** |
+| diamond | 5.82 | 5.77 | +0.523 | 8.89 | 0.150 |
+| pentagon | 5.92 | 6.17 | **−0.645** | 5.95 | 0.102 |
+
+**Pentagon's response slope is negative.** Asking for more pentagons produces *fewer* detected
+objects. Cross overshoots at +1.906, diamond under-tracks at +0.523. Averaging a +1.9, a +0.5 and
+a −0.6 into a single +0.595 describes none of them. Per-shape reporting is not a refinement here,
+it is required for the number to mean anything.
+
+**Ceiling, recomputed.** A method that centres the distribution at each n and shrinks the spread by
+a factor s:
+
+| s | MAE | skill |
+|---|---|---|
+| 1.00 — centring only | 4.991 | −0.996 |
+| 0.70 | 3.494 | −0.397 |
+| **0.50** | 2.496 | **+0.002** |
+| 0.40 | 1.996 | +0.201 |
+
+The bar is **halve the spread**, from 6.01 to about 3.0 — easier than the 40 % the inflated data
+implied, and still demanding. Centring alone remains insufficient, which was the one conclusion
+that survived all three protocols.
+
+**What this supersedes.** Every absolute baseline figure earlier in this log — the +8.5 surplus,
+the spread of 7.15, the 40 % threshold, the "slope is already 1.0, the methods need only remove
+the bias" framing — is replaced by the table above. The *relative* comparisons (Method C against
+`eval_baseline_fix`) remain valid because both sides used one protocol, but Method C must be
+re-scored against this baseline before it goes in any final table.
