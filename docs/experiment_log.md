@@ -1753,3 +1753,20 @@ against a δ budget of 0.30 and fell back to 0.045, and `d_pair_mean` stayed at 
 latent barely differed between counts. If the clip was what prevented the updates accumulating,
 `d_anchor` should now climb and keep climbing. If it stalls at the same place, the problem is the
 objective or the generator, not the optimiser, and raising the clip was the wrong lever.
+
+**Operational: `sh.exe` is not `bash.exe`, and orphaned chains keep going.** Clearing processes
+before the rerun took four attempts because every filter was written as
+`Name -eq 'bash.exe'`, while the chain shells were running as **`sh.exe`** — the scripts are
+launched with `bash` but re-exec through `sh`, so the filter silently matched nothing and the
+shells survived each sweep. Two consequences followed:
+
+- A surviving shell restarted the default-template baseline at 23:58:44, one minute before the
+  rerun, and the two shared the GPU. The rerun produced no log line for nine minutes and looked
+  hung; it was simply getting half a card.
+- Killing that baseline did not stop the shell, which moved on to its *next* variant (`d_screen`)
+  and started a second training job, which then outlived its parent as an orphan.
+
+The reliable procedure is to match on the **command line** rather than the process name, trace
+`ParentProcessId` to find what is spawning the work, and kill the parent before the child —
+otherwise the parent simply starts the next stage. Confirm with `nvidia-smi` memory rather than a
+process count: 7640 MiB with "one" job running is the signal that something else is on the card.
