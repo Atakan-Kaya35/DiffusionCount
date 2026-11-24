@@ -112,6 +112,31 @@ def main() -> None:
                "candidate worse" if lo > 0 else
                "no significant difference")
     print(f"  verdict: **{verdict}**")
+
+    # A lower MAE is not a better model. The frozen generator over-counts, so a sampler that
+    # produces almost nothing scores well on MAE while carrying no count information at all.
+    # Method C did exactly this: MAE 8.166 -> 5.311, "candidate better", while emitting 0.19
+    # objects per image and dropping the response slope from +1.031 to +0.023.
+    cm = np.mean([cand[k] for k in shared])
+    rm = np.mean([ref[k] for k in shared])
+    czero = np.mean([cand[k] == 0 for k in shared])
+    t = np.asarray([int(k[3]) for k in shared], float)
+    c = np.asarray([cand[k] for k in shared], float)
+    hi_n = t >= 4
+    slope = np.polyfit(t[hi_n], c[hi_n], 1)[0] if hi_n.sum() > 2 else float("nan")
+    warn = []
+    if czero > 0.4:
+        warn.append(f"{100 * czero:.0f}% of images contain nothing the counter can find")
+    if cm < 0.5 * t.mean():
+        warn.append(f"counted mean {cm:.2f} against a requested mean of {t.mean():.2f}")
+    if slope < 0.2:
+        warn.append(f"response slope {slope:+.3f} - the count is no longer followed")
+    if warn:
+        print()
+        print("  *** DEGENERATE: a lower error here does not mean a better model ***")
+        for w in warn:
+            print(f"    - {w}")
+        print(f"    reference emitted {rm:.2f} objects per image, candidate {cm:.2f}")
     print(f"  improved on {100 * (arr < 0).mean():.1f}% of images, "
           f"worse on {100 * (arr > 0).mean():.1f}%, unchanged on {100 * (arr == 0).mean():.1f}%\n")
 

@@ -1430,3 +1430,61 @@ entirely for the sweep.
 This is worth remembering as a general property of the setup: **any change to how images are
 scored can be re-measured for free; only changes to how they are generated need the GPU.** Three
 of the four measurement defects found today (query, threshold, suppression) are scoring changes.
+
+### 2026-11-24 — Method C "wins" on MAE and is a total failure
+
+`c_tuned_s0` evaluated against `eval_baseline_fix` — same seeds, same prompts, same counter, 2880
+images each.
+
+```
+MAE  8.166 -> 5.311      better by 2.855
+paired verdict: candidate better, 95% CI [-3.64, -2.07]
+improved on 58.2% of images, worse on 31.7%
+```
+
+By mean absolute error, by skill (−2.266 → −1.125) and by a seed-bootstrapped paired test on
+identical images, Method C is a clear improvement. It is not:
+
+| | baseline | Method C |
+|---|---|---|
+| counted mean | 12.89 | **0.19** |
+| zero-detection rate | 1 % | **82 %** |
+| slope (n ≥ 4) | +1.031 | **+0.023** |
+| `seed_spearman_mean` | +0.667 | **−0.421** |
+| spread | 7.15 | 0.29 |
+
+**It emits almost nothing.** 82 % of its images contain no object the counter can find, and the
+mean count is 0.19 against a requested mean of 5.50. The frozen generator *over*-counts, so a
+sampler that produces nothing lands closer to n on average than one that produces too much. The
+spread collapse of −96 % is not consistency, it is emptiness.
+
+The pre-registered criteria called this exactly: *"degenerate: MAE improves while the slope goes
+flatter"*. The slope went from +1.031 to +0.023 — the count is no longer followed at all — and the
+seed correlation went **negative**.
+
+**This is the justification for everything built around the headline number today.** Reported as
+MAE plus a significance test — the obvious way — Method C is a publishable improvement. Reported
+with the response slope, the counted mean and the zero rate, it is obviously broken. The same run,
+the same data, opposite conclusions.
+
+`scripts/compare_paired.py` now refuses to let that pass. It flags a degenerate win when the
+candidate's zero rate exceeds 40 %, its counted mean falls below half the requested mean, or its
+response slope drops under +0.2, and prints what the two runs actually emitted:
+
+```
+  verdict: **candidate better**
+
+  *** DEGENERATE: a lower error here does not mean a better model ***
+    - 82% of images contain nothing the counter can find
+    - counted mean 0.19 against a requested mean of 5.50
+    - response slope +0.023 - the count is no longer followed
+    reference emitted 12.89 objects per image, candidate 0.19
+```
+
+The guard stays silent on a healthy comparison. It will now run automatically on every sweep
+variant.
+
+**Caveat.** Both runs here were scored with the old suppression rule, so the absolute figures are
+inflated by the double-counting found later. The comparison between them is unaffected — both
+sides measured identically — and the degeneracy is not a counter artefact: 82 % empty images is
+not something a suppression rule invents.
