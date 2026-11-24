@@ -1675,3 +1675,43 @@ sampler within 3000 steps — `loss/area` is usually 0 and `loss/bin` ~0.002, so
 the whole gradient against `anc` and `pri` at weight 10 — or it is correctly finding that this
 generator cannot do better and is staying near the identity it was initialised at. The weights are
 the first thing to vary if the former.
+
+### 2026-11-24 — Why Method D barely moves: the gradient is large, noisy, and clipped to nothing
+
+The obvious explanation for a near-identity sampler is a weak loss. Measured over the first 600
+steps, against Method C which moved a great deal:
+
+| | `loss/total` | `grad_norm` | `d_anchor_mean` |
+|---|---|---|---|
+| Method D (`d_white`) | 0.508 | **141.3** | 0.065 |
+| Method C (`c_tuned_s0`) | 1.865 | **33.7** | 0.210 |
+
+**Method D's gradient is four times larger than Method C's and it moves three times less.** The
+loss is not too weak. Two things are:
+
+**`grad_clip` is 1.0 and the gradient norm is two orders of magnitude above it.** Method D's
+grad_norm runs min 16.8, median 112.7, max 594.3, and **100 % of steps are clipped** — by a median
+factor of 113. Only the update *direction* survives; magnitude is discarded on every step of every
+run. This is not specific to Method D: Method C's 33.7 is clipped by 34×. The configured value was
+never revisited against a measured gradient.
+
+**The direction is inconsistent.** Method D's gradient norm varies 35× between steps because χ is
+estimated from the 8 samples in a micro-batch (`eps_per_batch` 1 × `counts_per_eps` 4 ×
+`grad_accum` 2) and `D/chi_hard` bounces between 3.6 and 12 across consecutive logged steps. With
+magnitude clipped away, inconsistent directions cancel and the latent stays where it started —
+which is exactly what `d_anchor` peaking at 0.089 and returning to 0.045 looks like.
+
+Method C's gradient pointed the same way every step — *suppress everything* — so its updates
+accumulated and it reached the δ boundary by step 500. A consistent wrong direction moves further
+than an inconsistent right one.
+
+**Two candidate fixes, neither yet run:**
+
+1. **Raise `grad_clip`.** At 1.0 it is binding on every step of every method in this project. The
+   value should be set from the measured distribution, not left at a default that silently
+   discards 99 % of the signal.
+2. **Reduce the gradient noise.** More samples per step via `grad_accum`, at a proportional cost
+   in wall time — `grad_accum` 2 → 4 halves the step rate and reduces the noise by √2.
+
+The first is free and the more likely culprit. It is also a project-wide finding: every result in
+this log was produced under a clip that binds on every step.
