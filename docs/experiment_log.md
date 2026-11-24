@@ -1296,3 +1296,42 @@ does. `d_screen` is kept on the default mixed templates as the control that isol
 Each pairs against a frozen baseline measured on **its own** task; comparing a countable-scene run
 against a tiling baseline would be comparing different tasks and would read as a large spurious
 win.
+
+### 2026-11-24 — The three held-out shapes are three different tasks, and the evaluation averages them
+
+Breaking the repaired baseline down by shape (all six colours, 16 seeds):
+
+| shape | MAE | spread | slope (n ≥ 4) | counted mean | exact |
+|---|---|---|---|---|---|
+| cross | **4.79** | **4.57** | **+1.807** | 9.35 | 0.116 |
+| diamond | 8.80 | 5.29 | +1.115 | 14.01 | 0.032 |
+| pentagon | 10.92 | 8.54 | **+0.171** | 15.31 | 0.039 |
+
+**Pentagon has essentially no count response** — slope +0.17, against +1.81 for cross. The
+"saturation" this log spent the afternoon characterising is largely a pentagon effect; crosses and
+diamonds track the request. SD-Turbo renders "pentagon" as a tiled polygon pattern rather than as
+discrete objects (visible in `runs/figures/template_probe.png`, where blue pentagons tile under
+every phrasing), so part of the evaluation is asking for something the generator cannot draw
+discretely.
+
+By colour the spread is narrower but still real: blue MAE 4.81 and counted mean 8.34, against
+yellow 10.14 and 15.38.
+
+**Consequence: the headline number averages a task that works with one that does not.** A method
+that improves crosses would be masked by pentagons, and a method that only looks good on pentagons
+is probably exploiting noise. Per-shape breakdowns should be reported alongside every method
+result, which `scripts/compare_paired.py` already supports through its per-colour table and should
+be extended to shape.
+
+**Some (prompt, seed) rows already beat the constant bar.** Of the 288 (colour, shape, seed) rows,
+**20 (7 %) have MAE below 2.5** without any sampler at all. The best is blue cross seed 3 at MAE
+1.20, counting 2, 3, 7, 5, 5, 6, 7, 5, 9, 8 for n = 1…10 — genuinely tracking. The worst is green
+pentagon seed 5 at MAE 23.70, counting 7, 37, 27, 33, 24, 30, 31, 32, 36, 35. Every one of the six
+best rows is a cross; the three worst are pentagons.
+
+This reframes the sampler's job in the most concrete terms yet: **the frozen generator already
+counts well for 7 % of (prompt, seed) combinations. The task is to make the other 93 % behave like
+those.** Δφ is a function of ε, so it observes exactly what distinguishes a good seed from a bad
+one — though the earlier held-out test is a caution that fitting per-prompt corrections to this
+structure overfits, so the usable version of this has to generalise across seeds, not memorise
+them.
