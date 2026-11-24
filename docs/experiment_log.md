@@ -708,3 +708,31 @@ silently into the protocol.
 uniform-random null rises from 0.342 at k=3 to 0.555 at k=30, so it mostly reads how many boxes the
 detector produced) and is available on only 58 % of records, skewed by colour (blue 26 %, green
 77 %). It should be replaced by a null-corrected statistic such as Clark–Evans before being quoted.
+
+### 2026-11-24 — Correction: batching the counter bought ~20 %, not 2–3×
+
+Measured against the first grids of `eval_baseline_fix`: **5.4 min per grid of 160 images, against
+6.8 min for the original unbatched `eval_baseline_owl` run** — a 20 % saving, and the full
+evaluation falls from about 122 min to about 97 min. The commit message for `32ae566` framed
+evaluation as dominated by one-forward-per-image detector calls; that framing was wrong.
+
+The reasoning error is worth recording because it is a general one: **batching a vision transformer
+amortises kernel-launch and Python overhead, it does not reduce FLOPs.** OWLv2 processes a
+960×960 input per image whether it is called 160 times or 20 times with batches of 8, so the GPU
+work is unchanged and only the per-call overhead disappears. The optimisation is still correct and
+worth keeping — counts are identical, verified at batch 2/4/8 — but it is a 20 % saving, not a
+structural one.
+
+Two other candidates were measured and ruled out rather than assumed:
+
+- `_nms` is a pure-Python O(n²) loop, so lowering the threshold from 0.3 to 0.1 (which returns far
+  more boxes) was a plausible regression. Measured: 10.5 ms at 100 boxes, i.e. 1.7 s per 160-image
+  grid against 324 s total. Not material.
+- Model loading accounts for roughly the first 2–3 minutes of a run, which is why the first grid
+  always looks slower than the rest.
+
+The real cost is the detector's forward pass at 960×960 plus the VAE decode at 512×512, and
+neither is reducible without changing the detector or the number of images. Since seed variance
+forces `eval.seeds` to stay at 16 (the baseline's own halves differ by 0.88 MAE), **about 97 min
+per evaluation is simply the price**, and the pipeline is planned around that rather than around
+a hoped-for speedup.

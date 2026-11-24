@@ -170,6 +170,20 @@ Common keys:
 | `method.peak.eps` | 1e-6 | ε in Eq. 19 |
 | `method.peak.diag_peak_threshold` | 0.5 | threshold of the `C/*` peak diagnostics |
 
+## Method D (`configs/method_d.yaml`)
+
+Connected-component count on the object cross-attention map. Exists because every Method C term is
+invariant under merging two objects, so one blob hosting n soft centres satisfies all of them; the
+Euler characteristic is not, and drops by exactly one when two objects fuse.
+
+| key | default | meaning |
+|---|---|---|
+| `method.components.tau_frac` | 0.5 | **OPEN.** Occupancy threshold as a fraction of the map's **max** (not its mean — `object_attention_map` min-max normalises, so the max is the stable reference). At 0.5 with `temperature` 0.02 the soft χ equals the true object count exactly for k = 1, 2, 3, 5, 8, 10 |
+| `method.components.temperature` | 0.02 | **OPEN.** Sigmoid width of the soft occupancy. Too wide and χ stops tracking the discrete count |
+| `method.components.min_area` | 3.0 | **OPEN.** Tokens per component below which `L_area` bites. Without it, n single-token specks reach χ = n with no objects present |
+| `method.components.hard_threshold` | 0.5 | diagnostic only: fraction of the max used for the discrete χ logged beside the soft one |
+| `method.components.eps` | 1e-6 | numerical floor |
+
 ## eval (§8, `scripts/evaluate.py`)
 
 | Key | Default | Description |

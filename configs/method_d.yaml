@@ -1,0 +1,35 @@
+# Method D: differentiable connected-component count on the object cross-attention map.
+# Code: countsampler/novel/losses/components.py, countsampler/novel/methods/method_d.py
+#
+# Method C reached every one of its own objectives over 6000 steps while producing a single object
+# for every requested count, because all of its terms are invariant under merging two objects.
+# L_cc is built on the Euler characteristic chi = V - E + F, which is not: merging lowers it by
+# exactly one. Verified on planted Gaussians - chi equals the object count exactly for k = 1..10.
+defaults: base.yaml
+
+experiment:
+  name: method_d
+
+method:
+  name: D
+  weights: {cc: 1.0, bin: 1.0, area: 1.0, anc: 10.0, pri: 10.0, ord: 1.0}
+  stages:
+    # No staging of the count term: Method C spent its first 2000 steps with nothing requiring
+    # count-dependence and learned a degenerate solution before ord could object.
+    - {start: 0, terms: [cc, bin, area, anc, pri]}
+    - {start: 3000, terms: [cc, bin, area, anc, pri, ord]}
+  loss_steps: all
+  attention:
+    # Same layer as Method C: best on BOTH pre-check sources (synthetic r=+0.64, generated r=+0.51).
+    cross_layers: [up_blocks.1.attentions.1.transformer_blocks.0.attn2]
+    smoothing_sigma: 1.0
+    grid: null
+  components:
+    # Calibrated on planted Gaussians: at these values the soft chi equals the true object
+    # count exactly for k = 1, 2, 3, 5, 8, 10. Threshold is a fraction of the map's MAX
+    # (stable, since object_attention_map min-max normalises), not of its mean.
+    tau_frac: 0.5              # OPEN: threshold as a fraction of the map's max
+    temperature: 0.02          # OPEN: sigmoid width of the soft occupancy
+    min_area: 3.0              # OPEN: tokens per component below which the area term bites
+    hard_threshold: 0.5        # diagnostic only: the discrete chi logged beside the soft one
+    eps: 1.0e-6
