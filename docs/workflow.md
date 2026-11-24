@@ -154,6 +154,23 @@ Each prints a markdown table (one table per benchmark, if you mix them). Paste t
 Always compare against the frozen baseline evaluated with the **same counter**. Without it there is
 no way to tell a sampler that learned to count from a generator that was already roughly right.
 
+## 5a. The results table
+
+```bash
+python scripts/results_table.py runs/eval_baseline_nms runs/d_white/eval --shapes
+```
+
+`compare.py` leads with MAE, which on this task is the most misleading number available. The frozen
+generator over-counts, so a sampler that emits almost nothing scores *well* on MAE while carrying
+no count information: Method C improved MAE by 2.855 against the baseline it was measured on,
+significant on a paired test, while producing 0.19 objects per image and 82 % empty images.
+
+`results_table.py` leads with the quantities that separate counting from not counting — **spread**
+(what the ceiling analysis says must roughly halve), **slope per shape** (the aggregate hides that
+cross is +1.91 and pentagon −0.65 on the frozen baseline), and the **counted mean and zero rate**,
+where a degenerate run is obvious and nowhere else. It marks such runs **⚠ degenerate** rather
+than letting a good MAE speak for them.
+
 ## 5b. Record the result
 
 `compare.py` gives the cross-run headline. For the full record of a single run — environment,
