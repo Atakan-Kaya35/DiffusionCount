@@ -1636,3 +1636,42 @@ trend is −0.016 per step, which extrapolated over 3000 steps would reach −48
 flatten or reverse. If it does not flatten, Method D overshoots into *under*-counting, which is the
 same destination Method C reached by a different route. Watching whether it settles near zero is
 now the live question, and the degeneracy guard will catch the endpoint either way.
+
+### 2026-11-24 — Correction: Method D's "clear trend" was a dip in a truncated series
+
+The previous entry reported the over-count falling monotonically across 100-step blocks, with
+t = −2.86 on a first-half/second-half comparison, and called it "not noise". That test was run on
+the series truncated at step 290. Extending it:
+
+| block | `chi_hard − n` | `geom/d_anchor_mean` | `geom/d_pair_mean` |
+|---|---|---|---|
+| 0–100 | +2.76 | 0.026 | 0.0007 |
+| 100–200 | +1.73 | 0.083 | 0.0014 |
+| 200–300 | **−0.11** | 0.089 | 0.0024 |
+| 300–400 | **+1.90** | 0.082 | 0.0016 |
+| 400–600 | **+2.86** | 0.045 | 0.0010 |
+
+The over-count returned to its starting value. **The significance test was correct about the data
+it was given and the data was half the story** — the window happened to end at the bottom of a
+dip. Running a two-sample test on a time series truncated at the current step is a way of
+discovering that the series went down recently, not that it has a trend. This log already carries
+the same error in another form: a positive skill on crosses computed from a 144-image sample that
+dropped the hardest counts.
+
+**Where Method D actually stands at step 600.** The sampler has moved barely at all:
+`d_anchor_mean` 0.045 against a δ budget of 0.30, having peaked at 0.089 and come *back*, and
+`d_pair_mean` 0.001, meaning the latent is essentially identical across counts. The step-500
+previews (`runs/figures/d_white_step500.png`) match the frozen baseline closely, which is exactly
+what a near-identity sampler should produce.
+
+**This is still a meaningful difference from Method C.** At step 500 Method C had driven
+`d_anchor` to 0.29, destroyed the images into washed-out fields with blue borders, and begun
+shifting blue pentagons toward red. Method D at the same step has intact, countable images with
+correct colours. The failure mode being avoided is real; what is missing is any evidence of the
+method *doing* something.
+
+**Two readings, and the run will separate them.** Either the objective is too weak to move the
+sampler within 3000 steps — `loss/area` is usually 0 and `loss/bin` ~0.002, so `L_cc` is carrying
+the whole gradient against `anc` and `pri` at weight 10 — or it is correctly finding that this
+generator cannot do better and is staying near the identity it was initialised at. The weights are
+the first thing to vary if the former.
