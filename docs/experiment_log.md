@@ -1715,3 +1715,41 @@ than an inconsistent right one.
 
 The first is free and the more likely culprit. It is also a project-wide finding: every result in
 this log was produced under a clip that binds on every step.
+
+### 2026-11-25 — grad_clip set from the measured distribution (1.0 → 200)
+
+**Correction to the previous entry first.** It quoted Method C's gradient norm as 33.7 against
+Method D's 141.3. Those are *means*, inflated by outliers. The medians are **2.2 for Method C and
+93.5 for Method D** — so at `grad_clip` 1.0 the clip reduces Method C's typical step by 2.2× and
+Method D's by 93×, a 40× asymmetry rather than the 4× implied. The conclusion holds and is
+stronger than stated.
+
+Percentiles over the first 860 steps:
+
+| run | p10 | p25 | p50 | p75 | p90 | max |
+|---|---|---|---|---|---|---|
+| Method D | 40.7 | 64.8 | **93.5** | 179.2 | 274.3 | 594.3 |
+| Method C | 1.2 | 1.5 | **2.2** | 4.6 | 20.8 | 165.3 |
+
+**Choosing the value from the data.** A clip should tame outliers, not the typical step. For
+Method D:
+
+| clip | steps clipped | median reduction |
+|---|---|---|
+| 1.0 (default) | 100 % | 93.5× |
+| 50 | 81 % | 2.5× |
+| 100 | 48 % | 1.8× |
+| **200** | **16.5 %** | **1.7×** |
+| 300 | 9 % | 1.4× |
+
+**200** is the rerun's value: the typical step (93.5) passes untouched, p90 (274) is trimmed 1.4×
+and the worst (594) 3×.
+
+`d_white` at clip 1.0 is preserved as **`d_white_clip1`** (860 steps) so the two are comparable at
+matched steps — the only change between them is the clip.
+
+**What would count as the clip being the cause.** At clip 1.0, `d_anchor_mean` peaked at 0.089
+against a δ budget of 0.30 and fell back to 0.045, and `d_pair_mean` stayed at 0.001, meaning the
+latent barely differed between counts. If the clip was what prevented the updates accumulating,
+`d_anchor` should now climb and keep climbing. If it stalls at the same place, the problem is the
+objective or the generator, not the optimiser, and raising the clip was the wrong lever.
