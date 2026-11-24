@@ -1175,3 +1175,63 @@ runs first and the template comparison becomes an evaluation-only addendum.
 **What counts as success**, per the ceiling analysis: not a lower MAE on its own. The baseline
 already has slope +1.03, and perfect centring without variance reduction scores −1.18. The
 quantities to read are the **per-n spread** and `seed_spearman_mean`, with MAE as a secondary.
+
+### 2026-11-24 — Method D pre-flight on real attention maps: the layer and the threshold were both wrong
+
+Method D was calibrated on planted Gaussians. Before spending a GPU slot on it, the same loss was
+run on **real** cross-attention maps from the frozen generator (CPU, no contention with the
+running evaluation). Three things came out, in order.
+
+**1. The surrogate is faithful; the threshold was not.** `chi_soft` tracks `chi_hard` on real maps
+at correlation **0.995**, mean absolute difference 0.26 — the differentiable relaxation is sound.
+But at `tau_frac` = 0.5 (the planted-Gaussian value) a real map is 77–80 % foreground, so it
+collapses to one blob and χ = 1 whatever n is:
+
+| prompt | n=2 | n=4 | n=8 | occupancy |
+|---|---|---|---|---|
+| red circles | 1.0 | 1.0 | 1.0 | 0.77–0.80 |
+| green crosses | 1.0 | 1.0 | 1.0 | 0.44–0.55 |
+| blue diamonds | 1.3 | 2.4 | 6.1 | 0.18–0.27 |
+
+Real attention maps are far less peaked than planted Gaussians. Calibrating a relaxation on
+synthetic inputs and shipping it is the same class of error as the config bugs earlier in this log.
+
+**2. A near-miss: "attention does not carry the count".** Sweeping the threshold on real maps, the
+best 16×16 setting gave χ = 1.2, 2.2, 3.0, 2.5, 2.9 for n = 1, 2, 4, 6, 8 — saturating at about
+three components. Repeating across 16×16, 32×32 and 64×64 layers, no resolution tracked n
+(correlations +0.26 to +0.49; at 64×64, n=1 fragmented into 14 components). The conclusion drawn
+was that the object cross-attention map simply does not encode count as separable regions, which
+would condemn Methods A, C and D together.
+
+**3. The control that overturned it.** All of those images were generated from
+`data.templates[0]`, the bare noun phrase that produces edge-to-edge tiling. Repeating with
+`data.templates[2]`, the countable phrasing, on identical seeds and prompts:
+
+| layer, threshold | n=1 | 2 | 3 | 4 | 6 | 8 | corr(χ, n) |
+|---|---|---|---|---|---|---|---|
+| 16×16, τ=0.70, tiling prompts | 1.6 | 2.1 | 2.1 | 1.6 | 2.6 | 2.9 | +0.839 |
+| 32×32, τ=0.70, **tiling prompts** | 4.3 | 3.0 | 3.5 | 5.2 | 3.5 | 5.1 | **+0.422** |
+| 32×32, τ=0.70, **countable prompts** | 2.5 | 4.3 | 4.2 | 5.4 | 7.2 | 9.2 | **+0.989** |
+
+**The attention map does encode the count — when the image actually contains countable objects.**
+At a 32×32 layer on countable scenes, χ tracks the requested count at r = +0.989. On tiling
+prompts the same layer gives +0.42, because there is no count in the image to encode.
+
+**Two configuration consequences**, both now in `configs/method_d.yaml`:
+
+- `cross_layers` moves to a **32×32** layer (`up_blocks.2.attentions.0…attn2`), not the 16×16 one
+  the pre-check chose. The pre-check scanned tiling images, where every layer is equally
+  uninformative, so it was choosing between equally bad options.
+- `tau_frac` 0.5 → **0.70**, calibrated on real maps rather than synthetic ones.
+
+**And one training consequence, which may matter more than either.** `PromptSampler.sample` draws
+uniformly from `data.templates`, so only about a third of training batches use the phrasing where
+the count signal exists at all. The sweep's first run restricts `data.templates` to the countable
+phrasing for **training as well as evaluation**, paired against a frozen baseline measured the same
+way. If any configuration in this project is going to work, this is the one.
+
+**Method, for the write-up.** This is the third time a conclusion reversed on a control: red
+pentagon for the baseline response, blue pentagon for the template probe, and now tiling prompts
+for the attention structure. Each time the first reading came from an unrepresentative slice. The
+rule that keeps earning its place: **before concluding a signal is absent, check whether the input
+was capable of carrying it.**
