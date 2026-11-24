@@ -1561,3 +1561,35 @@ the spread of 7.15, the 40 % threshold, the "slope is already 1.0, the methods n
 the bias" framing — is replaced by the table above. The *relative* comparisons (Method C against
 `eval_baseline_fix`) remain valid because both sides used one protocol, but Method C must be
 re-scored against this baseline before it goes in any final table.
+
+### 2026-11-24 — Method C's "win" was the inflated baseline
+
+Placing Method C beside the corrected baseline, both on the same 2880 images:
+
+| | MAE | skill | slope (n ≥ 4) | counted mean | zero rate |
+|---|---|---|---|---|---|
+| `eval_baseline_nms` (corrected) | **5.210** | −1.084 | +0.595 | 7.46 | 1.6 % |
+| `c_tuned_s0/eval_fix` (old suppression) | 5.311 | −1.125 | +0.023 | 0.19 | 82 % |
+
+**Method C is worse than doing nothing.** Its reported advantage of 2.855 MAE, significant on a
+seed-bootstrapped paired test over identical images, existed only because the baseline it was
+measured against was inflated by double-counting. Against a correctly counted baseline the
+advantage is −0.10 — a small loss.
+
+The two runs still used different suppression rules, so this is not yet a like-for-like number.
+But the direction is safe to state in advance: the containment fix removes *duplicate* detections,
+and 82 % of Method C's images contain nothing to duplicate, so its counts can barely move while
+the baseline's fell from 12.89 to 7.46. The re-count is running to confirm it rather than leave it
+as an inference.
+
+**Two lessons, both worth the write-up.**
+
+A degenerate solution can beat a *broken* measurement by a significant margin on the correct
+statistical test. The paired bootstrap was right about what it measured — Method C really is
+closer to n than the over-counting baseline was — and the conclusion was still wrong, because the
+reference was wrong. Significance testing protects against noise, not against a mis-specified
+comparison.
+
+And the degeneracy guard earns its place twice over: it flagged this run on the images'
+*content* (82 % empty, counted mean 0.19, slope +0.023) at a point when every error statistic
+said the method had worked.
