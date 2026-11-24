@@ -87,3 +87,37 @@ def test_count_images_halves_the_batch_on_out_of_memory():
     out = count_images(Flaky(), imgs, "red", "circle")
     assert [r.count for r in out] == list(range(8))   # order and values survive the retries
     assert 8 in seen and 2 in seen                    # tried big, settled smaller
+
+
+def _box(x1, y1, x2, y2):
+    return [float(x1), float(y1), float(x2), float(y2)]
+
+
+def test_nms_suppresses_a_box_nested_in_a_larger_one():
+    """IoU cannot express nesting: a small box inside a big one has IoU = small/big, which is
+    smallest exactly when the nesting is worst. The detector fires on both a single object and on
+    a group of them, so without a containment rule the count inflates."""
+    import torch
+
+    from countsampler.evaluation.hard_counters import _nms
+
+    boxes = torch.tensor([_box(0, 0, 100, 100), _box(40, 40, 60, 60)])
+    scores = torch.tensor([0.9, 0.5])
+    assert len(_nms(boxes, scores, 0.5, containment=2.0)) == 2   # containment disabled
+    assert len(_nms(boxes, scores, 0.5)) == 1                    # containment on
+
+
+@pytest.mark.parametrize("boxes,expected,label", [
+    ([_box(0, 0, 30, 30), _box(70, 70, 100, 100)], 2, "well separated"),
+    ([_box(0, 0, 30, 30), _box(30, 0, 60, 30)], 2, "touching"),
+    ([_box(0, 0, 30, 30), _box(15, 0, 45, 30)], 2, "half overlapping"),
+])
+def test_nms_keeps_genuinely_distinct_objects(boxes, expected, label):
+    """The containment rule must not merge real neighbours - the synthetic scenes place objects
+    touching on purpose."""
+    import torch
+
+    from countsampler.evaluation.hard_counters import _nms
+
+    got = _nms(torch.tensor(boxes), torch.tensor([0.9, 0.8]), 0.5)
+    assert len(got) == expected, label

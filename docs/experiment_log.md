@@ -1335,3 +1335,87 @@ those.** Δφ is a function of ε, so it observes exactly what distinguishes a g
 one — though the earlier held-out test is a caution that fitting per-prompt corrections to this
 structure overfits, so the usable version of this has to generalise across seeds, not memorise
 them.
+
+### 2026-11-24 — The counter was double-counting: nested boxes that IoU cannot suppress
+
+Raised from inspection of `runs/figures/baseline_what_it_draws.png`: the blue-cross image at n = 4
+visibly contains four crosses and the counter returned five. Drawing the detector's boxes
+(`runs/figures/cross_detections.png`) shows why — one box spans a *pair* of crosses while others
+sit on the individual ones, and all survive non-maximum suppression.
+
+**IoU structurally cannot fix this.** For a small box of area a nested inside a large box of area
+A, the IoU is a/A — smallest exactly when the nesting is most severe. OWLv2 routinely fires on both
+a single object and on a group of them, so plain IoU at 0.5 keeps both and the count inflates. A
+containment test (intersection over the *smaller* area) expresses what IoU cannot for boxes of very
+different size.
+
+`_nms` now suppresses a lower-scoring box when the overlap covers ≥ 80 % of its own area, alongside
+the existing IoU test. On the blue-cross row:
+
+| asked | old NMS | with containment |
+|---|---|---|
+| 1 | 1 | 1 |
+| 2 | 3 | **2** |
+| 3 | 4 | **3** |
+| 4 | 6 | **4** |
+| 5 | 6 | **5** |
+| 6 | 6 | 5 |
+
+Exact for n = 1…5, against being wrong on every count but n = 1 before.
+
+**The rule must not merge real neighbours**, since the synthetic scenes place objects touching on
+purpose. Pinned in `tests/test_hard_counters.py`: well-separated, touching and half-overlapping
+pairs all survive; only the nested pair is suppressed.
+
+**This is the fourth measurement defect found today**, after the proper-noun query, the threshold
+set three times the library default, and the padded-coordinate bug — and the first found by
+looking at the pictures rather than at the numbers. The evaluation audit predicted it
+("concentric duplicates survive unless their widths are within 1.41×") and recommended exactly
+this fix; it was deferred as "not the main lever", which was wrong.
+
+**Consequence.** `eval_baseline_fix` and Method C's evaluation were both computed with the old
+rule and will need re-measuring. Before spending GPU on that, the effect is being quantified
+across all three shapes on CPU, because a fix validated on the one case that motivated it is not
+evidence.
+
+### 2026-11-24 — Quantified: the containment fix, and the frozen model beating the bar on crosses
+
+144 images (4 colours × 3 shapes × 2 seeds × n ∈ {1,2,3,4,6,8}), same detector and threshold, only
+the suppression rule changed. Best-constant bar for this count set is 2.000.
+
+| shape | old MAE | **new MAE** | old exact | **new exact** | counted mean | **new skill** |
+|---|---|---|---|---|---|---|
+| all | 4.10 | **2.95** | 0.11 | **0.29** | 7.67 → 5.15 | −0.475 |
+| **cross** | 3.23 | **1.81** | 0.15 | **0.33** | 7.06 → 4.85 | **+0.095** |
+| diamond | 4.02 | **2.92** | 0.10 | **0.33** | 8.02 → 5.79 | −0.460 |
+| pentagon | 5.06 | **4.12** | 0.08 | **0.21** | 7.94 → 4.79 | −1.060 |
+
+**Exact accuracy nearly triples** (0.11 → 0.29) and MAE falls 28 % with no change to the
+generator, the threshold or the query — only to how overlapping boxes are suppressed.
+
+**On crosses, the frozen baseline now beats the constant predictor: skill +0.095.** That is the
+first positive skill recorded in this project, and it comes from the *unmodified* generator. The
+sampler is not needed to clear the bar on that shape; it is needed to extend it to the others.
+
+**Much of the "over-generation" was the detector, not the generator.** The counted-to-requested
+ratio falls from 1.92× to 1.29× overall, and from 1.99× to 1.20× on pentagons. This log has
+described a generator that "counts, then adds a large surplus" and quantified that surplus at
++8.5 objects; a substantial part of it was one box drawn around a group of objects while others
+were drawn around its members.
+
+**What this invalidates, again.** `eval_baseline_owl`, `eval_baseline_fix` and Method C's
+evaluation were all computed with the old suppression rule. Every absolute figure derived from
+them — the +8.5 offset, the spread of 7.15, the ceiling analysis thresholds — is inflated by
+double-counting and needs recomputing. The *relative* comparisons within each protocol remain
+valid, since both sides were measured the same way.
+
+**The sweep inherits the fix**, since its baselines and variants all run after it. Each sweep
+comparison is therefore internally consistent. Method C's evaluation, still running against
+`eval_baseline_fix`, is consistent with *that* baseline but not with the sweep's — a caveat to
+carry rather than a result to discard.
+
+**Pattern, now with four instances.** Proper-noun queries, a threshold three times the library
+default, padded coordinates, and nested boxes. Every one inflated or distorted the headline, and
+three of the four were predicted by the evaluation audit before being found. The conclusion for the
+write-up is not "the counter was bad" but something sharper: **on a task measured by a learned
+detector, the detector is a component of the system and needs the same validation as the model.**

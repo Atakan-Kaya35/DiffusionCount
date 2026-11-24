@@ -105,9 +105,23 @@ class ColorComponentsCounter:
         return CountResult(len(keep), centers, [float(areas[i]) for i in keep])
 
 
-def _nms(boxes: torch.Tensor, scores: torch.Tensor, iou: float) -> list[int]:
+def _nms(boxes: torch.Tensor, scores: torch.Tensor, iou: float,
+         containment: float = 0.8) -> list[int]:
+    """Greedy NMS with a containment rule as well as the usual IoU test.
+
+    IoU alone cannot suppress a box nested inside a much larger one: for a small box of area a
+    inside a big box of area A the IoU is a/A, which is small exactly when the nesting is most
+    severe. On this data the detector routinely fires both on a single object and on a group of
+    them, so plain IoU keeps both and the count inflates. Measured on "four blue crosses", a
+    visibly 2x2 image: six boxes kept, of which one spans a pair and one sits on the junction.
+
+    `containment` suppresses a lower-scoring box when the overlap covers that fraction of
+    *its own* area (intersection over the smaller area), which is the quantity IoU cannot express
+    for boxes of very different size.
+    """
     order = scores.argsort(descending=True)
     keep = []
+    area = lambda b: (b[..., 2] - b[..., 0]).clamp_min(0) * (b[..., 3] - b[..., 1]).clamp_min(0)  # noqa: E731
     while order.numel():
         i = int(order[0])
         keep.append(i)
@@ -119,9 +133,10 @@ def _nms(boxes: torch.Tensor, scores: torch.Tensor, iou: float) -> list[int]:
         x2 = torch.minimum(boxes[i, 2], boxes[rest, 2])
         y2 = torch.minimum(boxes[i, 3], boxes[rest, 3])
         inter = (x2 - x1).clamp_min(0) * (y2 - y1).clamp_min(0)
-        area = lambda b: (b[..., 2] - b[..., 0]) * (b[..., 3] - b[..., 1])  # noqa: E731
-        ious = inter / (area(boxes[i]) + area(boxes[rest]) - inter + 1e-9)
-        order = rest[ious <= iou]
+        ai, ar = area(boxes[i]), area(boxes[rest])
+        ious = inter / (ai + ar - inter + 1e-9)
+        iomin = inter / (torch.minimum(ai, ar) + 1e-9)
+        order = rest[(ious < iou) & (iomin < containment)]
     return keep
 
 
