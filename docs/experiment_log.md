@@ -1603,3 +1603,36 @@ sweep would have discarded a 13/18 evaluation and started a second GPU job along
 
 Worth knowing for a long overnight run: **check what is actually running before assuming a
 reported stop is real.**
+
+### 2026-11-24 — Method D, first 300 steps: the over-count is falling
+
+`d_white` — Method D, 32×32 layer, τ=0.70, trained and scored on countable scenes — logged in
+100-step blocks:
+
+| block | `D/chi_hard_minus_n` | `D/chi_hard` | soft/hard ratio |
+|---|---|---|---|
+| 0–100 | **+2.76** | 8.39 | 0.54 |
+| 100–200 | **+1.73** | 7.22 | 0.58 |
+| 200–300 | **−0.11** | 5.50 | **0.69** |
+
+First-half against second-half: −2.32, standard error 0.81, **t = −2.86**. That is not noise.
+Two things are moving in the right direction at once: the discrete component count is approaching
+the requested count, and the differentiable surrogate is converging on the discrete one it stands
+in for (0.54 → 0.69), because training sharpens the attention map and a sharper map is where the
+relaxation is faithful.
+
+**Mechanically clean.** Zero skipped steps, 1.2 s/step, 6.55 GB stable. `loss/area` is usually 0,
+so objects are above the size floor, and `loss/bin` sits near 0.002, so the occupancy field stays
+near-binary — the uniform-haze degeneracy the design analysis predicted is not occurring.
+
+**What this is not.** This is `chi_hard` on the *attention map*, the method's own diagnostic. Method
+C improved its own objective by 31× while producing one object per image and then none. A count of
+attention components is not a count of objects: **n tally marks would satisfy it exactly as well as
+n objects**, which is the limitation declared when Method D was written. The evaluation with OWLv2
+on the decoded images is the test that matters, and the previews are the first visual check.
+
+**The specific risk now.** At step 290 the over-count is −0.11, essentially on target. The fitted
+trend is −0.016 per step, which extrapolated over 3000 steps would reach −48 — absurd, so it must
+flatten or reverse. If it does not flatten, Method D overshoots into *under*-counting, which is the
+same destination Method C reached by a different route. Watching whether it settles near zero is
+now the live question, and the degeneracy guard will catch the endpoint either way.
