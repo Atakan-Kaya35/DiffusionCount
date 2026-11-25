@@ -2589,3 +2589,90 @@ to report success during total failure, and the second time the *same* number mi
 after the first collapse I fixed the symptom I could see rather than checking whether the
 arithmetic of the all-zeros solution matched the loss I was reading. It did, exactly, and one
 division would have shown it.
+
+### 2026-11-25 — flat-lay confirmed on the full evaluation: skill +0.299, a new best
+
+The template probe's ranking held. `a flat lay photo of {count} {color} {shape} on a white
+background`, full 18-cell 8-seed evaluation, counted identically to every other run:
+
+| run | MAE | skill | spread | slope n ≥ 4 | counted mean | zero % | exact |
+|---|---|---|---|---|---|---|---|
+| baseline, countable scenes | 4.632 | −0.853 | 4.11 | +1.550 | 9.29 | 0.7 | 0.151 |
+| + per-shape remapping | 2.296 | +0.082 | 2.74 | +1.017 | 6.51 | 0.3 | 0.213 |
+| baseline, **flat lay** | 3.754 | −0.502 | 3.36 | +1.464 | 8.32 | 2.4 | 0.177 |
+| **flat lay + per-shape remapping** | **1.753** | **+0.299** | **2.29** | **+0.919** | **5.44** | 2.2 | **0.267** |
+
+**Counted mean 5.44 against a requested mean of 5.50, slope +0.919, spread 2.29.** That is a
+near-calibrated generator, reached with no training at all.
+
+Verified both ways with the paired bootstrap:
+
+- against the baseline: mean change **−3.574**, 95 % CI **[−4.734, −2.690]**, better on 69.3 % of
+  images and worse on 7.8 %;
+- against the previous best (`remap_white_shape`): mean change **−0.531**, 95 % CI
+  **[−0.803, −0.166]**, verdict *candidate better*, improved on 41.6 % and worse on 24.3 %.
+
+The second comparison is the one that matters — flat-lay beats the previously secured result on
+its own terms, on the same cells and seeds, with a confidence interval clear of zero.
+
+Note that the probe's +0.231 and this +0.299 are not the same measurement and should not be read
+as agreement in magnitude; the probe was 9 cells × 3 seeds held out on one seed. What transferred
+was the **ranking**, which is all a probe of that size can be asked for. Global remapping on
+flat-lay scores +0.280 against per-shape's +0.299, so on this template the phrasing does nearly
+all of the work and the per-shape refinement adds little.
+
+**Four times now, prompt phrasing has moved the result more than any trained method.** Bare noun
+→ countable scene → flat lay, and the remapping on top of each.
+
+### 2026-11-25 — Method B collapses too, and `geom/d_x0_mean` is what caught it
+
+The counter finally trained. `present_weight: 20.0` fixed the class imbalance exactly as intended:
+
+| epoch | `mae_present` | `exact_present` | `stray_mass` | `exact_heldout_combo` |
+|---|---|---|---|---|
+| 0 | 4.171 | 0.1007 | 0.9882 | 0.1095 |
+| 15 | 1.922 | 0.5464 | 0.2258 | 0.5652 |
+| 29 | **1.813** | **0.6356** | 0.1556 | **0.6672** |
+
+Against all-zeros (`mae_present` 5.32, `exact_present` 0.0000) that is a working counter, and it
+generalises to held-out (category, count) combinations at 0.667 exact. Two failed attempts, then
+the right fix.
+
+**But pre-check B says it cannot read the generator.** On 160 generated images:
+
+```
+corr(counter, requested n)  +0.050      <- the counter barely tracks the count at all
+corr(OWLv2,   requested n)  +0.658
+corr(counter, OWLv2)        +0.281      <- the one that decides Method B
+counter mean 1.89    OWLv2 mean 8.43    requested mean 5.50
+```
+
+It reads **1.89 objects where the detector sees 8.43**. This is exactly the synthetic-to-x̂0 gap
+`docs/workflow.md` warns about, and it means Method B's entire gradient is a signal correlated
+0.281 with the thing being scored.
+
+**Method B was trained anyway and collapsed completely.** 100 % of images empty, `counted mean
+0.00`, flagged degenerate:
+
+| block | `d_x0` | `d_anchor` | `d_pair` | `B/count_abs_err` |
+|---|---|---|---|---|
+| 0–300 | 2.23 | 0.200 | 0.142 | 5.32 |
+| 600–1000 | 2.64 | 0.271 | 0.213 | 5.52 |
+| 2500–3100 | **2.69** | **0.267** | 0.219 | 5.59 |
+
+**Read the two distance columns against each other.** `d_anchor` sits at 0.267 — inside the
+δ = 0.3 budget, so `L_anc` never fired, exactly as in both Method D runs. `d_x0` is **2.69**: the
+output moved ten times further than the noise did. That is the diagnostic added this session after
+the Method D collapse, and it is the only number in the log that shows the failure as it happens.
+It did its job on the first run it was present for.
+
+`d_pair` reached 0.219, so `L_ord` again produced a genuinely count-dependent perturbation — the
+sampler learned to destroy the image *differently for each count*.
+
+**What this establishes.** Three methods — C, D and now B — have now collapsed the generator by
+finding an adversarial direction inside the z-space budget, and the one grounded in the decoded
+image collapsed the same way as the two grounded in attention. Being image-based is not by itself
+protection when the image model is a small CNN that reads 1.89 where the truth is 8.43: the
+sampler simply fools it. The constraint has to be on the output, which is what `L_x0anc` is for
+and what has not yet been run: every collapse so far would have been caught by a hinge at any
+δ_x well below 2.69.
