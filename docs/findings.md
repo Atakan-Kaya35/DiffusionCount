@@ -19,54 +19,74 @@ saved grids. Results fitted on even seeds are always scored on odd seeds.
 
 ---
 
-## 1. What beats the baseline
+## 1. The research direction, and what the prompt numbers are for
+
+**The count must leave the prompt.** With the number in the text, CLIP already does part of the
+counting, so no experiment can separate the sampler's contribution from the text encoder's — the
+result is uninterpretable whichever way it comes out. The direction of this work is therefore the
+`data.include_count: false` setting: the prompt reads `"a flat lay photo of blue crosses on a
+white background"` for **every** n, identical string, unconditional plural so n = 1 does not leak.
+The frozen generator then produces the same image for every count and its response is **flat by
+construction, slope exactly 0**, so any skill above the constant predictor belongs to Δφ alone.
+Pass or fail, with nothing to hide behind.
+
+### Prompt remapping is a measurement, not a method
+
+Earlier work here found that issuing a *different* number than the one wanted scores well:
+per-shape remapping reaches skill **+0.082** on the countable template and **+0.299** on the
+flat-lay one, against a raw baseline of −0.853, verified by paired bootstrap. **That is recorded
+as a diagnostic of how broken the count channel is, and is not a direction this project should
+follow.** The honest reading is damning rather than encouraging: *lying to the model about the
+number works better than asking it correctly.*
+
+It is unacceptable as a method for concrete reasons, not only aesthetic ones:
+
+- it repairs nothing — it exploits a measured bias while the architecture stays exactly as wrong;
+- it is a per-shape lookup table that **cannot extrapolate** to a new shape without refitting;
+- it is **quantised** — 4 of 10 targets are unreachable because the generator's step is about two
+  objects and an integer prompt grid can only land on every other count;
+- and it keeps the number in the prompt, which is the contamination above.
+
+What it does establish, and what is worth carrying forward, is the *size and shape of the defect*:
+`counted ≈ 1.5–2 n` with a **near-zero offset**, so the count reaches the model and is then scaled.
+That is a calibration failure of a channel that works, which is a far more tractable problem than
+a channel that does not.
 
 | | MAE | skill | kind |
 |---|---|---|---|
-| frozen baseline, bare-noun prompts | 5.210 | **−1.084** | |
-| frozen baseline, countable-scene prompts | 4.632 | **−0.853** | prompt |
-| global prompt remapping | 2.460 | **+0.016** | prompt, held out |
-| **per-shape prompt remapping** | **2.296** | **+0.082** | prompt, held out |
-| per-(colour, shape) remapping | 2.485 | +0.006 | **overfits** |
-| — measurement-side affine correction | 1.649 | +0.341 | not generative |
+| frozen baseline, bare-noun prompts | 5.210 | −1.084 | |
+| frozen baseline, countable-scene prompts | 4.632 | −0.853 | prompt |
+| frozen baseline, flat-lay prompts | 3.754 | −0.502 | prompt |
+| per-shape remapping, countable | 2.296 | +0.082 | **diagnostic only** |
+| per-shape remapping, flat-lay | 1.753 | +0.299 | **diagnostic only** |
 | — measurement-side median inversion | 1.479 | +0.408 | not generative |
 
-**Per-shape prompt remapping at +0.082 is the best generation-side result**, and the first thing in
-this project to beat the constant predictor by changing what is generated rather than how it is
-scored. It needs no training. Per-(colour, shape) has 170 free choices against 680 training rows
-and does worse, which is how the granularity was chosen rather than assumed.
+**No trained sampler has beaten anything.** Method C emitted 0.19 objects per image; Methods D and
+B each collapsed the generator (§4). The samplers are the open question; the rows above are the
+problem statement.
 
-It is reproducible from the repository and verified by the project's own tools, not by an ad-hoc
-script:
+### Is the count-free design even reachable?
 
-```bash
-python scripts/remap_prompts.py runs/eval_baseline_white_s8 --out runs/remap_white_shape --by shape
-python scripts/compare_paired.py runs/eval_baseline_white_s8 runs/remap_white_shape
-python scripts/results_table.py runs/eval_baseline_white_s8 runs/remap_white_shape --shapes
-```
+Δφ must drag x̂0 from where the count-free prompt lands to where each count lives. Measured:
 
-| | MAE | skill | spread | slope n ≥ 4 | counted mean | zero % | exact |
-|---|---|---|---|---|---|---|---|
-| baseline | 4.632 | −0.853 | 4.11 | +1.550 | 9.29 | 0.7 | 0.151 |
-| **remapped, per shape** | **2.296** | **+0.082** | **2.74** | **+1.017** | 6.51 | 0.3 | **0.213** |
+| | d(x̂0) |
+|---|---|
+| adjacent counts (n, n+1) | 0.536 |
+| full span, 1 ↔ 10 | **0.965** |
+| furthest count from the count-free start | **1.002** |
+| where the decode stops being a scene | **≈ 1.17** |
 
-Paired over the scored seeds: mean change in absolute count error **−3.043**, 95 % bootstrap CI
-**[−4.135, −2.134]**, improved on 64.9 % of images and worse on 10.1 %. The degeneracy guard does
-not fire: the zero rate is unchanged at 0.3 %, the counted mean is 6.51 against a requested mean of
-5.5, and the slope over n ≥ 4 moves from +1.550 to **+1.017**. The spread falls 4.11 → 2.74, which
-is the halving the ceiling analysis said positive skill would require.
+**It fits.** The whole count range lives inside ~1.0 of x̂0 distance — not 9 × 0.536 = 4.8, which
+is what a straight line would cost — and every count is inside the safe budget. The 1.002 is an
+upper bound besides, since the sampler need not land on the count-in-prompt image specifically;
+any image with n objects will do and some are nearer. The margin is only 15 %, so δ_x ≈ 1.1.
 
-The last two rows are **not methods**. They correct the counted value after the fact and are
-recorded as the ceiling a generative method could aim at.
-
-**No trained sampler has beaten the baseline.** Method C emitted **0.19 objects per image** with
-82 % of images empty — its MAE of 5.311 is essentially the score for predicting zero every time,
-which is why `results_table.py` marks such runs degenerate rather than crediting the MAE. (That
-5.311 was counted at 512 px against a 256 px baseline, so the two numbers are not strictly
-comparable — see §5 — but a run producing 0.19 objects per image is degenerate at any resolution,
-and that is what the conclusion rests on.) Both Method D variants destroyed the generator (§4).
-
----
+Two details from the same matrix. The spacing **shrinks as n grows** (0.67 for 1→2, 0.41 for
+7→8), which is the shape `g_log` in `L_ord` assumes — but log predicts a 5.3× ratio where the
+measurement gives 1.6×, so the spec's metric is right in form and far too aggressive in degree.
+And the count-free prompt lands **near the high counts** (0.60 to n = 10, 0.97 to n = 1): a bare
+plural renders as *many*, so the sampler's work is nearly all at the low end, and that is where it
+should be expected to fail first.
 
 ## 2. The frozen generator already hears the count
 

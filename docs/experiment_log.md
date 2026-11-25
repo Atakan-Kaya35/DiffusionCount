@@ -2676,3 +2676,55 @@ protection when the image model is a small CNN that reads 1.89 where the truth i
 sampler simply fools it. The constraint has to be on the output, which is what `L_x0anc` is for
 and what has not yet been run: every collapse so far would have been caught by a hinge at any
 δ_x well below 2.69.
+
+### 2026-11-26 — direction change: the count leaves the prompt
+
+**Prompt remapping is rejected as a direction.** It scores well — +0.082 on the countable
+template, +0.299 on flat-lay, both verified by paired bootstrap — and it is being kept in the log
+as a *diagnostic*, not carried forward as a method. The objections are concrete:
+
+- it repairs nothing; the architecture stays exactly as wrong and the bias is merely exploited;
+- it is a per-shape lookup table that cannot extrapolate to a new shape without refitting;
+- it is quantised: the generator's step is about two objects, so an integer prompt grid reaches
+  only every other count and 4 of 10 targets are unreachable by construction;
+- and, the deepest problem, **it keeps the number in the prompt**. With the count in the text,
+  CLIP is already doing part of the counting, so no experiment in this setting can separate the
+  sampler's contribution from the text encoder's. The result is uninterpretable as research
+  whichever way it comes out — which is a stronger objection than the result being inelegant, and
+  one that applies equally to every count-in-prompt run in this log, including the method runs.
+
+What remapping does establish, and what is worth keeping: `counted ≈ 1.5–2 n` with a **near-zero
+offset**. The count reaches the model and is then scaled. That is a calibration failure of a
+channel that works, not a channel that is absent.
+
+**The direction is `data.include_count: false`.** The prompt becomes
+`"a flat lay photo of blue crosses on a white background"` for every n — identical string,
+unconditional plural so n = 1 does not leak through the singular. The frozen generator then
+produces the same image for every count, its response is flat by construction with slope exactly
+zero, and any skill above the constant predictor is attributable to Δφ alone. The objective is
+expressed and falsifiable: the mechanism either carries the count or it does not.
+
+**Feasibility, measured before committing a training run.** With the count gone from the text,
+Δφ must move x̂0 from where the count-free prompt lands to where each count lives:
+
+| | d(x̂0) |
+|---|---|
+| adjacent counts (n, n+1) | 0.536 |
+| full span 1 ↔ 10 | **0.965** |
+| furthest count from the count-free start | **1.002** |
+| collapse threshold (measured earlier) | **≈ 1.17** |
+
+**It fits.** The whole range sits inside ~1.0, not the 4.8 that nine linear steps of 0.536 would
+cost, so the counts lie on a compact curved manifold rather than a line. And 1.002 is an upper
+bound, because Δφ need not reach the count-in-prompt image specifically — any image with n objects
+serves, and some are nearer. The margin to collapse is 15 %, so δ_x ≈ 1.1.
+
+Two further readings of the same matrix:
+
+- **Spacing shrinks with n**: 0.67 for 1→2 against 0.41 for 7→8. That is the shape `g_log` in
+  `L_ord` assumes, so the spec's metric has the right form — but log predicts a ratio of 5.3 where
+  the measurement gives 1.6, so it is far too aggressive in degree and should be flattened rather
+  than inherited.
+- **The count-free prompt lands near the high counts**: 0.60 to n = 10 but 0.97 to n = 1. A bare
+  plural renders as *many*. So nearly all of Δφ's work is at the low end, and that is where this
+  design should be expected to fail first.

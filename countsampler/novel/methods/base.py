@@ -53,7 +53,12 @@ def parse_stages(raw) -> list[Stage]:
 class CountMethod:
     name: str = "base"
     TERMS: tuple[str, ...] = ()                  # method-specific term names
-    SHARED_TERMS: tuple[str, ...] = ("anc", "pri", "ord")
+    # "x0a" is the output anchor: a hinge on how far x̂0 moved, available to every method.
+    # geometry.delta constrains ||z - eps||, which was measured not to control whether the decode
+    # is a scene - a random displacement at the full 0.3 budget leaves the image essentially
+    # unchanged while a learned one destroys it at 0.08. Methods C, D and B have each collapsed
+    # the generator while geom/d_anchor_* sat comfortably inside budget.
+    SHARED_TERMS: tuple[str, ...] = ("anc", "pri", "ord", "x0a")
 
     def __init__(self, cfg, generator: FrozenTurboGenerator):
         self.cfg = cfg
