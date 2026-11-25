@@ -2256,3 +2256,52 @@ roughly double what it earns.
 `eval.grid_scale: 1.0` now makes the two agree by construction for new runs, and
 `scripts/count_grids.py` carries the warning. Runs counted at different resolutions must not be
 compared, which is exactly the mistake this entry corrects.
+
+### 2026-11-25 — looking at the images: the over-drawing is real, and the counter fails on dense scenes
+
+`runs/figures/countable_gain_images.png`, countable-scene prompts, seed 1. Two things are visible
+that no table showed.
+
+**The over-drawing is the generator's, not the detector's.** Red cross at n = 3 genuinely contains
+about eight crosses; at n = 4, about nine. The counter is not inventing objects. And n = 1 is
+exact for all three shapes — one object, counted 1 — which is the cleanest confirmation that the
+count reaches the model at all.
+
+**The counter collapses on crowded images.** Blue pentagon at n = 10 is a dense field of roughly
+twenty shapes and OWLv2 counted **1**. This is not rare:
+
+| n | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| mean | 1.01 | 3.57 | 5.37 | 6.99 | 8.79 | 10.62 | 11.83 | 12.84 | 15.82 | 16.03 |
+| sd | 0.34 | 3.26 | 2.72 | 3.49 | 3.81 | 3.59 | 4.22 | 5.46 | 6.26 | 8.00 |
+| **median** | **1** | **3** | **5** | **6** | **8** | **10** | 11 | 12 | 15 | 15 |
+| counted < n/2 | 2.9 % | 1.5 % | 5.9 % | 8.8 % | 8.1 % | 3.7 % | 5.9 % | 8.8 % | 4.4 % | 13.2 % |
+
+**8.3 % of n ≥ 8 rows return 2 objects or fewer.** Dropping the 30 rows with n ≥ 6 and counted ≤ 2
+(of 680) changes the fit from `1.514 n + 0.069` to `1.754 n − 0.658` and raises held-out skill
+from +0.341 to **+0.421**. A handful of catastrophic under-counts was holding the estimated gain
+down, which means **1.5× was itself an underestimate** of how much the generator over-draws.
+
+**The median is the cleaner description.** It is exactly `2n − 1` for n ≤ 3 and `2n − 2` for
+n = 4–6, then falls progressively behind as both the generator and the counter saturate. Inverting
+the median curve, fitted on even seeds and scored on odd, gives **MAE 1.479, skill +0.408** — a
+little better than the linear affine ceiling and far more interpretable. The frozen generator's
+step is about **two objects per unit of requested n**.
+
+**Which sharpens what the sampler is for.** Choosing, for each target, the prompt whose median
+output is closest:
+
+| target | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| best prompt | 1 | 1 | 2 | 2 | 3 | 4 | 4 | 5 | 5 | 6 |
+| its median | 1 | 1 | 3 | 3 | 5 | 6 | 6 | 8 | 8 | 10 |
+| | exact | −1 | exact | −1 | exact | exact | −1 | exact | −1 | exact |
+
+Six of ten targets are reachable exactly; the other four sit one object away, because the
+generator's own step is two and the integer prompt grid can only land on every other count.
+
+The earlier claim that the residual is "mostly bias, not spread" needs splitting by range. At low
+targets it is bias — the generator draws one object for "one" with sd 0.34, so using that prompt
+for a target of 2 is wrong by one almost every time. At high targets it is spread — prompt 6 has
+the right median for target 10 but a sd of 3.7. A continuous perturbation addresses the first
+directly; the second is the harder half.
