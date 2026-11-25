@@ -2156,3 +2156,56 @@ Every seed follows the count, and none has a fixed preferred value — the §8 w
 their own count, which would have to be overcome before anything else, does not apply here. The
 seeds differ in *level* (7.76 to 11.66) far more than in whether they respond, which is the same
 gain-and-offset picture the pooled fit gave.
+
+### 2026-11-25 — the leverage probe's small-radius numbers were an artifact; caught before use
+
+The first run of `--mode leverage` printed:
+
+```
+  d(z,start)   mean |count - start|   img sd
+  <=    0.05                   1.89     51.1  scene
+  <=    0.10                   1.89     51.1  scene
+  <=    0.15                   1.89     51.1  scene
+  <=    0.20                   4.00     52.7  scene
+```
+
+Read naively that says a displacement of only 0.05 — well inside the 0.08 safe radius — already
+moves the count by 1.89 objects, which would have settled the feasibility question in favour of
+the premise. **It is an artifact, and the three identical values are the tell.**
+
+The slerp path has 9 points at t = 0, 0.125, …, 1. Two independent Gaussians are nearly orthogonal
+in 16384 dimensions, so the first step already lands at **d = 0.196**:
+
+```
+t      : 0.000 0.125 0.250 0.375 0.500 0.625 0.750 0.875 1.000
+d(z,a) : 0.000 0.196 0.390 0.581 0.766 0.944 1.113 1.271 1.418
+```
+
+Nothing was sampled below 0.196 at all. The bins at 0.05, 0.10 and 0.15 contain exactly one point
+— **index 0, the start itself** — which survives the `d > 0` filter only because slerp at t = 0
+returns the start up to float error rather than exactly. So those rows compare the start point
+with itself, and should read 0.
+
+They read 1.89 because of a second problem: the start's count is measured twice, once in the
+12-candidate scan (`c_lo`) and once as `path[0]`, and the two disagree. Blue pentagon n = 8 gives
+`c_lo` = 1 and `path[0]` = 17; red cross n = 8 gives 1 and 2. Over the nine paths that is
+(0+0+16+1+0+0+0+0+0)/9 = **1.89**, reproducing the number exactly.
+
+**Two things to fix, and one new question.**
+
+1. The path needs points at the radii that matter. The safe learned radius is 0.08, below the
+   probe's *smallest* measurement, so the probe as run says nothing about the regime in question.
+   Spacing t as {0, 0.01, 0.02, 0.035, 0.05, 0.07, 0.1, 0.15, 0.25, 0.5, 1} puts d at roughly
+   {0, 0.016, 0.031, 0.055, 0.078, 0.11, 0.157, 0.235, 0.39, 0.77, 1.42}.
+2. Count change must be measured against `path[0]` from the *same* pass, not against `c_lo` from a
+   different one.
+3. **Why do the two passes disagree at all?** z is identical and the frozen generator runs under
+   `no_grad`. The one difference is batch composition — the scan decodes 12 images in chunks of
+   8 + 4, the path decodes 9 in chunks of 8 + 1 — so the same latent sits at a different position
+   in a different-sized batch. If that can move a count from 1 to 17, it is a measurement hazard
+   for every number in this log, and it is worth a direct test rather than an assumption.
+
+What the probe does still support, at the radii it actually sampled: at d = 0.196 the count has
+moved about 4 objects with image sd 52.7 (healthy), and the endpoints differ by 10.9 objects at
+d = 1.42. Count-changing directions that keep the image valid certainly exist. Whether any of that
+is reachable inside 0.08 remains **unmeasured**.
