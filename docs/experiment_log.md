@@ -2778,3 +2778,32 @@ It is worth being explicit that δ and δ_x are not redundant. δ bounds the cau
 effect, and the amplification between them varies by direction — 16× at small radius, 10× at
 large, and presumably different again for a direction this project has not yet produced. δ_x is
 the constraint that means what it says; δ is a backstop now set so the two agree.
+
+### 2026-11-26 — the count-free control passes: the prompt leaks nothing
+
+With `data.include_count: false` every count receives the identical prompt, so for one seed the
+ten columns of a grid must be pixel-identical. If they were not, n would be reaching the
+conditioning by some path and the whole design would be void before a sampler was trained.
+
+| grid | seeds | max \|column − column 0\| | identical |
+|---|---|---|---|
+| blue_cross | 8 | **0.0** | True |
+| blue_diamond | 8 | **0.0** | True |
+| blue_pentagon | 8 | **0.0** | True |
+| green_cross | 8 | **0.0** | True |
+| green_diamond | 8 | **0.0** | True |
+| green_pentagon | 8 | **0.0** | True |
+
+Six of six, exactly zero. The design is sound: the text encoder carries no count information, the
+frozen generator's count response is flat by construction with slope exactly 0, and any skill
+above the constant predictor in this setting is attributable to Δφ and to nothing else.
+
+Worth noting for the earlier batch-composition finding: these ten are decoded in the *same* batch
+and come out bit-identical, which is consistent with that result rather than against it — the
+jitter measured before appeared between **different batch sizes**, where a latent sits in a chunk
+of 1, 4, 8 or 12 and the bf16 reductions differ. Within one batch the generator is exactly
+deterministic.
+
+This is the control every count-in-prompt run in this log lacked. In those runs the text encoder
+was doing an unknown share of the counting, which is why none of them can be read as evidence
+about the sampler — a limitation that applies to the successes as much as to the failures.
