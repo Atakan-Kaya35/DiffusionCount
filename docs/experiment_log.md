@@ -2858,3 +2858,42 @@ synthetic-to-x̂0 gap is too large. Training on a 0.154-correlated signal would 
 uninterpretable, because "the sampler cannot carry the count" and "the loss could not see it"
 would be indistinguishable. Fixing the measurement first is the only way the count-free experiment
 answers its own question.
+
+### 2026-11-26 — the count-free baseline, and why its skill is the wrong bar
+
+`eval_countfree`, flat-lay template with `data.include_count: false`, 1440 images:
+
+| n | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| counted mean | 15.74 | 15.74 | 15.74 | 15.74 | 15.74 | 15.74 | 15.74 | 15.74 | 15.74 | 15.74 |
+
+**Slope −0.000000. All ten counts identical in 144 of 144 (colour, shape, seed) cells.** The
+control is exact: the prompt cannot carry n, the generator draws 15.74 objects whatever is asked,
+and in this setting every bit of count-dependence must come from Δφ.
+
+MAE 11.489, skill **−3.596**.
+
+**That −3.596 is not the bar, and treating it as one would be the same mistake as every other
+aggregate in this log.** The count-free prompt renders a dense field, so a sampler that merely
+*thins* the image toward the mean request of 5.5 — ignoring n entirely — would reach MAE ≈ 2.5 and
+skill ≈ 0.000 while carrying no count information at all. Beating −3.596 is trivial and means
+nothing.
+
+**The bar is skill 0.000**, which is what the skill score was defined for: the best constant
+predictor, "no better than ignoring the prompt". In the count-free setting that threshold has a
+sharper meaning than it has had anywhere else in this project — there is no prompt to ignore, so
+a sampler that scores 0.000 has learned to reduce the count, and only a sampler above 0.000 has
+learned to *vary* it with n.
+
+Two consequences worth recording:
+
+- **`results_table.py` flags this baseline `⚠ degenerate`, and that is a false positive.** The
+  guard fires on slope < 0.2, which is true here by construction, while its other two tests (zero
+  rate, counted mean) correctly do not fire — the run emits 15.74 objects per image. The guard was
+  built to catch samplers that emit nothing and it still does; it simply cannot distinguish
+  "flat because it is broken" from "flat because the prompt was stripped on purpose".
+- **The sampler's work is almost entirely reduction, and hardest at low n.** Starting from 15.74,
+  reaching n = 1 means removing about 15 objects and reaching n = 10 about 6. That matches the
+  span probe exactly, where the count-free prompt sat 0.60 from x̂0(n = 10) but 0.97 from
+  x̂0(n = 1) — the low counts are the far end, and that is where this design should be expected to
+  fail first.
