@@ -109,6 +109,28 @@ variation at fixed n is a deterministic function `f(ε, colour, shape, n)` — a
 observes all of those arguments. Nothing about the spread is irreducible; the limits are the
 budget and the optimiser, not stochasticity.
 
+**And the budget is sufficient.** Walking a slerp path between two noises the model turns into
+different counts — spherical interpolation holds ‖z‖ constant, so the path cannot collapse, and a
+flat image-sd column confirms it:
+
+| d(z, start) | median \|Δcount\| | ≥ 1 obj | ≥ 2 obj | img sd |
+|---|---|---|---|---|
+| 0.016 | 0 | 11 % | 11 % | 51.0 |
+| 0.055 | 1 | 67 % | 33 % | 51.2 |
+| **0.079** | **1** | **67 %** | **44 %** | **51.4** |
+| 0.110 | 2 | 89 % | 56 % | 51.6 |
+| 1.418 | 10 | 100 % | 100 % | 60.2 |
+
+At d = 0.079, inside the 0.08 radius where a learned direction still draws a scene, the median
+count change is **one object** — and one object is exactly what the stranded targets need. The
+leverage available and the leverage required are the same size. (Caveats: slerp paths are a lower
+bound per unit distance but stay on the Gaussian manifold, which learned directions do not; the
+response is very path-dependent; and nine paths is thin. The *mean* column of that probe is
+unusable — a single detector flip of 17 → 1 contributes 16/9 = 1.78 on its own.)
+
+So the obstacle for Methods A, C and D was never an insufficient budget. It is that the direction
+their losses choose destroys the image before spending it.
+
 ---
 
 ## 4. Why the attention-based methods failed
@@ -192,13 +214,18 @@ significant on a paired test, while producing 0.19 objects per image.
 
 ## 6. Open
 
-- **Is usable count change reachable inside the safe radius?** At d = 0.196 the count moves about
-  4 objects with the image intact, and the endpoints of a slerp path differ by 10.9 objects at
-  d = 1.42 — so count-changing directions that keep the image valid certainly exist. Whether any
-  is reachable inside 0.08 is unmeasured; the first probe sampled nothing below 0.196.
-- **Does batch composition change a count?** The same latent was counted as 1 in one pass and 17 in
-  another, differing only in how many images shared the batch. If real, every number here carries
-  an error bar.
+- **Can a *learned* direction use the budget without destroying the image?** The leverage exists at
+  d = 0.08 (§3) and a slerp path reaches it without collapsing, but every learned direction
+  measured so far dies at that radius. Whether a loss grounded in the image rather than in
+  attention finds a better-behaved direction is what Method B tests.
+- **Batch composition changes a count by ±1**, in 2 of 9 prompts — `generate_latents` chunks at 8,
+  so a latent sits in a chunk of 1, 4, 8 or 12 depending only on how many images were requested,
+  and bf16 reductions over different shapes differ in the last bits. That is the error bar on a
+  single count and it threatens nothing here. It does **not** explain the 1-versus-17 that first
+  exposed it: that is the detector's dense-scene **bistability**, which resolves a crowded field
+  either into many boxes or onto one and flips between them under a perturbation far too small to
+  change what is drawn. Those failures are therefore noise rather than identifiable bad images —
+  they average out with more seeds, but a per-image count at high n is partly a coin flip.
 - **Method B** — the only method whose loss reads the decoded image — has never run, because its
   counter has never been trained. A flat colour block contains zero objects for a density counter,
   so it should be structurally resistant to the collapse that destroyed Method D.
