@@ -54,7 +54,8 @@ def main() -> None:
 
     shapes = sorted({s for _, _, _, sh in runs for s in sh}) if args.by_shape else []
     panels = ["all"] + shapes
-    fig, axes = plt.subplots(1, len(panels), figsize=(5.4 * len(panels), 5.0), squeeze=False)
+    fig, axes = plt.subplots(1, len(panels), figsize=(max(8.6, 5.4 * len(panels)), 5.4),
+                             squeeze=False)
     colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
 
     for ax, panel in zip(axes[0], panels):
