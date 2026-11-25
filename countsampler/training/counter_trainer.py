@@ -35,6 +35,31 @@ def _cache_key(payload: dict) -> str:
     return hashlib.md5(json.dumps(payload, sort_keys=True).encode()).hexdigest()[:10]
 
 
+def counter_losses(pred, dens, counts, mse_scale: float, present_weight):
+    """Density MSE and count L1, with channels whose true count is > 0 up-weighted.
+
+    There are len(categories) channels - 48 with the default colours and shapes - and at most
+    `counter.dataset.max_categories_per_image` are present, so about 96 % of every target is zero.
+    Unweighted, both terms are dominated by the empty channels and predicting nothing is a strong
+    local optimum: two runs reached it immediately and held `val/exact_present` at exactly 0.0000
+    for all 30 epochs, with the training L1 sitting at 0.201 against the 0.208 that outputting zero
+    scores by arithmetic.
+
+    Raising `counter.arch.head_bias_init` out of softplus's dead zone (its gradient is
+    sigmoid(bias), 4.5e-5 at -10) does not fix this and makes the pull *stronger*: every channel
+    then starts high and 46 of 48 are dragged straight back down. The imbalance is the cause, so
+    the weight is the fix. At `present_weight` 20.0 the present channels carry 40/86 of the loss
+    instead of 2/48.
+
+    pred, dens: [B, K, H, W].  counts: [B, K].  Returns (mse, l1), both scalars.
+    """
+    w = torch.where(counts > 0, torch.as_tensor(present_weight, dtype=torch.float, device=counts.device),
+                    torch.ones_like(counts, dtype=torch.float))
+    mse = (((mse_scale * pred - mse_scale * dens) ** 2).mean(dim=(-2, -1)) * w).sum() / w.sum()
+    l1 = ((pred.sum(dim=(-2, -1)) - counts).abs() * w).sum() / w.sum()
+    return mse, l1
+
+
 @torch.no_grad()
 def evaluate_counter(model, loader, device, categories, heldout: set) -> dict:
     model.eval()
@@ -137,6 +162,7 @@ def train_counter(cfg, out_dir: str | Path | None = None) -> dict:
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=max(1, epochs * len(train_loader)))
     s = float(tc.mse_scale)
     l1_w = float(tc.l1_weight)
+    present_w = torch.tensor(float(tc.get("present_weight", 20.0)), device=device)
     aug = to_dict(ccfg.get("online_aug") or {})
     meta = {"in_channels": in_channels, "categories": categories, "input_space": input_space,
             "image_size": image_size, "arch": arch, "density_sigma": sigma,
@@ -150,8 +176,7 @@ def train_counter(cfg, out_dir: str | Path | None = None) -> dict:
             if aug:
                 x = augment_batch(x, aug)
             pred = model(x)
-            mse = ((s * pred - s * dens) ** 2).mean()
-            l1 = (pred.sum(dim=(-2, -1)) - counts).abs().mean()
+            mse, l1 = counter_losses(pred, dens, counts, s, present_w)
             loss = mse + l1_w * l1
             opt.zero_grad(set_to_none=True)
             loss.backward()

@@ -2554,3 +2554,38 @@ on the same cells and seeds as `eval_baseline_white_s8` and scored through `rema
 the paired bootstrap, is what produces a comparable number, and it is generating now.
 
 This is the third time prompt phrasing has moved the result more than any trained method has.
+
+### 2026-11-25 — the counter's collapse is class imbalance, not initialisation
+
+Retraining with `head_bias_init: -10 → -6` and `l1_weight: 0.1 → 1.0` **did not fix it**. By epoch
+8 `val/exact_present` was still exactly 0.0000 and `val/mae_present` still 5.3168 — the same dead
+run, with the configuration confirmed applied in the saved `runs/counter/config.yaml`.
+
+The arithmetic says why. The counter has **48 channels** — 6 colours × 8 shapes, not the 18 the
+previous entry assumed — and `max_categories_per_image` is 3, so **46 of 48 channels are zero in
+any image**. Predicting zero everywhere scores a training L1 of 2 × 5 / 48 = **0.208**, and the
+observed L1 was **0.201**. That is not "near the all-zeros solution"; it *is* the all-zeros
+solution, to three figures.
+
+**Raising the head bias made the pull stronger, not weaker.** At bias −6 every channel starts at
+10.1 objects, so the initial L1 is about (2 × 5.1 + 46 × 10.1) / 48 ≈ 9.9 — an overwhelming
+gradient pointing at zero for 96 % of the output. The optimiser takes it, drives the bias back
+below −10, and re-enters softplus's dead zone. The previous entry diagnosed the dead zone
+correctly and then prescribed the wrong remedy: the dead zone is where the model *ends up*, not
+why it goes there.
+
+**Fixed where the cause is.** `counter_losses()` now up-weights channels whose true count is above
+zero, in both the density MSE and the count L1, by `counter.train.present_weight` (20.0). The
+present channels carry **46.5 %** of the loss instead of 4.2 %. The loss moved out of the training
+loop into a function so it can be tested, and four tests pin it: that predicting zero now costs
+200/86 instead of 10/48, that a perfect prediction scores zero, that `present_weight = 1`
+reproduces the original unweighted loss exactly, and that a stray prediction in an empty channel
+is still penalised. 142 tests pass.
+
+**The honest tally on this bug.** Two full training runs, roughly 50 minutes of GPU, spent
+producing a counter that predicts nothing — and the first one ran to completion with
+`val/exact_all = 0.9618` on screen the whole time. That is the fourth diagnostic in this project
+to report success during total failure, and the second time the *same* number misled me, because
+after the first collapse I fixed the symptom I could see rather than checking whether the
+arithmetic of the all-zeros solution matched the loss I was reading. It did, exactly, and one
+division would have shown it.

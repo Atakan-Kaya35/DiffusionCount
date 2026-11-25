@@ -275,6 +275,7 @@ Euler characteristic is not, and drops by exactly one when two objects fuse.
 | `counter.train.lr` | 3e-4 | AdamW learning rate (cosine schedule) |
 | `counter.train.weight_decay` | 1e-4 | AdamW weight decay |
 | `counter.train.mse_scale` | 100.0 | s in MSE(s·D, s·target) |
+| `counter.train.present_weight` | 20.0 | weight on channels whose true count is > 0, in both the density MSE and the count L1. With 48 categories and at most 3 per image, ~96% of every target is zero; unweighted, both terms are dominated by the empty channels and **the counter collapses to predicting nothing** — two runs held `val/exact_present` at exactly 0.0000 for 30 epochs. Raising `head_bias_init` does not fix it and makes the pull stronger, since every channel then starts high and 46 of 48 are dragged down |
 | `counter.train.l1_weight` | **1.0** | weight of the count L1 term. Raised from 0.1: the density MSE is dominated by the empty channels, so the term that actually measures count error needs to carry weight |
 | `counter.train.num_workers` | 4 | data-loader workers |
 | `counter.train.log_every` | 50 | log interval (steps) |

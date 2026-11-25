@@ -48,6 +48,14 @@ counter:
     lr: 3.0e-4
     weight_decay: 1.0e-4
     mse_scale: 100.0           # s: MSE(s·D, s·target), targets are tiny
+    present_weight: 20.0       # weight on channels whose true count is > 0, in BOTH the density
+                               # MSE and the count L1. There are 48 categories and at most 3 per
+                               # image, so ~96% of every target is zero and, unweighted, both
+                               # terms are dominated by empty channels: two runs collapsed to
+                               # predicting nothing and held val/exact_present at 0.0000 for 30
+                               # epochs, with the training l1 at 0.201 against the 0.208 that
+                               # predicting zero scores by arithmetic. At 20.0 the present
+                               # channels carry 40/86 of the weight instead of 2/48.
     l1_weight: 1.0             # L1 between predicted and true per-channel counts. Raised from
                                # 0.1: the density MSE is dominated by the empty channels, so the
                                # term that actually measures COUNT error needs to carry weight.
