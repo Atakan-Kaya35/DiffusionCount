@@ -154,6 +154,50 @@ Each prints a markdown table (one table per benchmark, if you mix them). Paste t
 Always compare against the frozen baseline evaluated with the **same counter**. Without it there is
 no way to tell a sampler that learned to count from a generator that was already roughly right.
 
+## 1a. Perturbation probes (before trusting any geometry setting)
+
+`geometry.delta` is marked OPEN in the spec and was never measured. Three probes on the frozen
+model say what a bounded perturbation can and cannot do, and all three produced results that
+changed the project:
+
+```bash
+python scripts/probe_perturbation.py --mode radius
+```
+```bash
+python scripts/probe_perturbation.py --mode direction --ckpt runs/d_ord/sampler_step001000.pt
+```
+```bash
+python scripts/probe_perturbation.py --mode leverage
+```
+
+- **radius**: a *random* displacement at the full delta = 0.3 budget leaves the image essentially
+  unchanged (mean luminance 171.8 -> 167.2, corr(counted, n) +0.698 -> +0.749). Distance alone
+  does not break the generator.
+- **direction**: a *learned* displacement stops drawing scenes past **0.08**, while random
+  survives 0.30+. `L_anc` constrains the wrong quantity, and no delta fixes it: any budget large
+  enough to let the sampler act is large enough to let it destroy the image. Watch
+  `geom/d_x0_*` (set `geometry.log_x0: true`), not `geom/d_anchor_*` - both Method D runs sat
+  comfortably inside the anchor budget while drawing a flat colour block.
+- **leverage**: how much count change exists inside the safe radius, along a slerp path between
+  two real noises that cannot collapse by construction.
+
+## 4a. Splitting generation from counting
+
+`evaluate.py` runs OWLv2 on the same card as the generator, so the GPU idles behind the detector.
+Generate on the GPU and count on the CPU instead:
+
+```bash
+python scripts/evaluate.py --ckpt runs/b_ord/sampler_last.pt --counter color --set eval.counter_kwargs={} --out-dir runs/b_ord/eval_gen
+```
+```bash
+python scripts/count_grids.py runs/b_ord/eval_gen runs/b_ord/eval
+```
+
+The colour-counter numbers from the first command are discarded. **Resolution matters**:
+`evaluate.py` counts the full 512 px decode but saves grids at `eval.grid_scale` (0.5 by default),
+so a re-count of the grids is not the same measurement as that run's `records.csv`. Compare only
+runs counted the same way - re-count both, or set `eval.grid_scale=1.0`.
+
 ## 5a. The results table
 
 ```bash
