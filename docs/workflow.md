@@ -198,6 +198,21 @@ The colour-counter numbers from the first command are discarded. **Resolution ma
 so a re-count of the grids is not the same measurement as that run's `records.csv`. Compare only
 runs counted the same way - re-count both, or set `eval.grid_scale=1.0`.
 
+## 4b. Prompt remapping (the calibration baseline)
+
+The frozen generator hears the count and draws about twice too many, so to get m objects, ask for
+the n whose output is closest to m. Fitted on half the seeds and scored on the others:
+
+```bash
+python scripts/remap_prompts.py runs/eval_baseline_white_s8 --out runs/remap_white_shape --by shape
+```
+
+It emits an ordinary evaluation directory, so `compare_paired.py` and `results_table.py` read it
+unchanged. `--by shape` (30 free choices) is the measured best; `--by color_shape` (170 choices
+against ~680 fit rows) overfits and scores worse than `--by global`. Any sampler should be
+compared against this, not only against the raw baseline - it costs nothing to run and scores
+skill +0.082 where the raw baseline scores -0.853.
+
 ## 5a. The results table
 
 ```bash

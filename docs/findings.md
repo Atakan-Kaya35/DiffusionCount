@@ -36,6 +36,26 @@ this project to beat the constant predictor by changing what is generated rather
 scored. It needs no training. Per-(colour, shape) has 170 free choices against 680 training rows
 and does worse, which is how the granularity was chosen rather than assumed.
 
+It is reproducible from the repository and verified by the project's own tools, not by an ad-hoc
+script:
+
+```bash
+python scripts/remap_prompts.py runs/eval_baseline_white_s8 --out runs/remap_white_shape --by shape
+python scripts/compare_paired.py runs/eval_baseline_white_s8 runs/remap_white_shape
+python scripts/results_table.py runs/eval_baseline_white_s8 runs/remap_white_shape --shapes
+```
+
+| | MAE | skill | spread | slope n ≥ 4 | counted mean | zero % | exact |
+|---|---|---|---|---|---|---|---|
+| baseline | 4.632 | −0.853 | 4.11 | +1.550 | 9.29 | 0.7 | 0.151 |
+| **remapped, per shape** | **2.296** | **+0.082** | **2.74** | **+1.017** | 6.51 | 0.3 | **0.213** |
+
+Paired over the scored seeds: mean change in absolute count error **−3.043**, 95 % bootstrap CI
+**[−4.135, −2.134]**, improved on 64.9 % of images and worse on 10.1 %. The degeneracy guard does
+not fire: the zero rate is unchanged at 0.3 %, the counted mean is 6.51 against a requested mean of
+5.5, and the slope over n ≥ 4 moves from +1.550 to **+1.017**. The spread falls 4.11 → 2.74, which
+is the halving the ceiling analysis said positive skill would require.
+
 The last two rows are **not methods**. They correct the counted value after the fact and are
 recorded as the ceiling a generative method could aim at.
 
