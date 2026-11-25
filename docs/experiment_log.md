@@ -2342,3 +2342,46 @@ What the bound does establish is that the architectural choice — conditioning 
 on n alone — is where the available headroom is. A count-independent perturbation, which is what
 every Method D run actually learned (`d_pair` 0.00027 against an anchor displacement of 0.128),
 forfeits all of it.
+
+### 2026-11-25 — the detector threshold, settled by looking
+
+Re-counting the same 1360 images with OWLv2's score threshold raised from 0.10 to 0.25:
+
+| threshold | fitted gain | raw skill | remapped, per shape | affine ceiling | median ceiling | zero % |
+|---|---|---|---|---|---|---|
+| 0.10 | `1.514 n + 0.069` | −0.853 | **+0.082** | +0.341 | +0.408 | 0.7 |
+| 0.25 | `1.033 n + 0.546` | **−0.412** | **+0.062** | +0.062 | +0.236 | 9.9 |
+
+Taken at face value this says the higher threshold is better: the baseline's skill nearly doubles
+and the fitted gain becomes 1.03, i.e. the generator would be drawing almost exactly the requested
+number. **It is the degeneracy trap in a new place.** A higher threshold finds fewer objects, and
+since the generator over-draws, missing some brings the count closer to n — two errors cancelling,
+not better counting. The zero rate rising 0.7 % → 9.9 % is the tell, and a threshold tuned on
+baseline skill would be tuned to under-detect.
+
+**Settled by counting the images by hand.** Eight cells, chosen for the largest disagreement
+between the two thresholds (`runs/figures/ground_truth_check.png`):
+
+| asked n | counted by eye | OWLv2 @0.10 | OWLv2 @0.25 |
+|---|---|---|---|
+| 1 | **1** | 1 ✓ | **0** |
+| 2 | ~14 | 17 | 8 |
+| 3 | ~12 | 11 ✓ | **1** |
+| 4 | ~4–5 | 6 | **0** |
+| 5 | ~8–9 | 9 ✓ | 2 |
+| 6 | ~11–13 | 14 | **1** |
+| 8 | ~11–13 | 13 ✓ | 4 |
+| 10 | ~16–18 | 17 ✓ | **0** |
+
+At 0.25 the detector returns 0, 1 or 2 on images that visibly hold ten or more objects. **0.10 is
+the right operating point** and `counted = 1.514 n + 0.069` stands as the better estimate of the
+generator's gain. Two honest qualifications: at 0.10 the counts still run slightly above a manual
+count (17 against ~14, 6 against ~4–5), so a little over-counting probably remains; and these
+eight were *selected* for maximum threshold disagreement, so they skew dense and are not a random
+sample of the evaluation.
+
+**What survives either way.** Per-shape prompt remapping scores **+0.082 at threshold 0.10 and
++0.062 at 0.25**, and global remapping +0.016 and +0.080. The generation-side result does not
+depend on the operating point; it is the *ceilings* that do (affine +0.341 → +0.062), because at
+0.25 the apparent gain is already 1 and a calibration has nothing left to correct — what remains
+there is spread, which no affine map can touch.
