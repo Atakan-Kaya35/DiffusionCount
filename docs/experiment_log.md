@@ -1807,3 +1807,41 @@ sampler is moving further from ε but moving *every count the same way*. A pertu
 across counts cannot change the count, whatever it does to the image — the same observation made
 of Method C at step 450, where `d_pair/d_anchor` was 0.15. Here it is 0.009. Raising the clip has
 let the sampler move; it has not yet made the movement depend on n.
+
+### 2026-11-25 — clip 200 through step 1900: a damped oscillation, and a correction
+
+**Correction first.** The previous entry said that at clip 200 `d_anchor` was "still rising" and
+predicted it would keep climbing. It did not. Block means:
+
+| block | `chi_hard − n` | `d_anchor` | `d_pair` |
+|---|---|---|---|
+| 0–200 | +2.81 | 0.035 | 0.0014 |
+| 200–400 | +2.65 | 0.056 | 0.0017 |
+| 400–600 | +1.42 | 0.071 | 0.0007 |
+| 600–900 | −0.50 | 0.143 | 0.0015 |
+| 900–1200 | **−1.74** | **0.171** (peak) | 0.0040 |
+| 1200–1500 | −0.75 | 0.138 | 0.0010 |
+| 1500–1900 | **+0.47** | 0.116 | 0.0005 |
+
+`d_anchor` peaked at 0.171 and fell back to 0.116 — the same rise-and-return shape as clip 1.0,
+at roughly twice the displacement (clip 1.0 peaked at 0.089, settled at 0.045). The clip raised
+the ceiling; it did not remove it. **Three times tonight a trend has been called from the final
+block of a series and three times the next block changed it.** The rule that keeps being
+re-learned: with a noisy diagnostic, the last block is the least trustworthy point in the series.
+
+**What is genuinely new, and is not a drift.** The count error crosses zero twice and its
+amplitude halves: mean |error| over the first three blocks is 2.29, over the last three 0.99.
+That is a **damped oscillation about the target**, which is what a converging controller looks
+like, as against Method C's monotone collapse to −n. On its own diagnostic, Method D is settling
+on the requested count rather than running away from it.
+
+**The caveat the evaluation will settle.** `D/chi_hard_minus_n` is a *batch mean over mixed n*,
+and `d_pair_mean` is 0.0005–0.004, meaning the perturbation is nearly identical across counts. A
+count-independent perturbation can drive that mean to zero by under-counting small n and
+over-counting large n — the mean would read 0 while every individual prompt is wrong. **Mean zero
+does not imply per-n zero**, and only the per-count evaluation distinguishes them. This is the
+same shape of error as reading a good MAE off Method C while it emitted 0.19 objects per image.
+
+So the honest position at step 1900: the optimiser constraint was real and raising the clip
+removed it, the count term is converging on its own diagnostic, and whether any of that reaches
+the *images* is unresolved until the OWLv2 evaluation runs.
