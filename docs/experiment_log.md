@@ -2050,3 +2050,71 @@ one a bounded perturbation can plausibly meet.
 
 It also says what to optimise. A term that reads the *image* and asks for n objects attacks the
 gain directly; an attention statistic does not. That is Method B, and its counter is training now.
+
+### 2026-11-25 — the learned direction is destructive at a 4× smaller radius than a random one
+
+`direction_probe.py`, same ε and prompts, d_ord's step-1000 perturbation rescaled to each radius
+against a random direction rescaled to the same radius:
+
+| d(z, ε) | learned: count | zero % | img sd | random: count | zero % | img sd |
+|---|---|---|---|---|---|---|
+| 0.00 | 4.50 | 0.0 | 51.9 | 4.50 | 0.0 | 51.9 |
+| 0.04 | 4.33 | 0.0 | 50.0 | 4.39 | 0.0 | 51.9 |
+| 0.06 | 4.25 | 2.8 | 40.5 | 4.31 | 0.0 | 51.9 |
+| 0.08 | 2.86 | 16.7 | 33.1 | 4.36 | 0.0 | 51.9 |
+| 0.10 | 2.11 | 30.6 | 24.7 | 4.53 | 0.0 | 51.9 |
+| 0.13 | 1.25 | **52.8** | 17.4 | 4.56 | 0.0 | 51.9 |
+| 0.20 | 0.14 | **86.1** | 12.2 | 4.61 | 2.8 | 52.3 |
+| 0.30 | 0.14 | **86.1** | 10.1 | 4.92 | 2.8 | 54.5 |
+
+**Largest radius still drawing a scene: 0.08 learned, 0.30+ random.** Image sd decays monotonically
+along the learned direction (51.9 → 10.1) and is flat along the random one (51.9 → 54.5). This is
+the ordinary adversarial asymmetry — the one-step generator denoises isotropic perturbation back
+toward the data manifold, and gradient descent finds the thin subspace that does not get denoised
+away — and it settles the question the previous entry left open. **‖z − ε‖ is the wrong quantity
+to constrain**, and no δ fixes `L_anc`: any δ large enough to let the sampler act is large enough
+to let it destroy the image, because the two live at different radii in different directions.
+
+It also explains both Method D runs exactly. `d_white_clip200` held `d_anchor` at 0.13–0.22 —
+between 52.8 % and 86.1 % empty on this table — and drew black squares. `d_white_clip1` held
+0.045–0.089, straddling the 0.06–0.08 edge, which is why its images were recognisable but poor.
+`grad_clip: 1.0` was not a tuning accident; it was the only thing keeping that run inside the safe
+radius, and raising it to 200 removed the last constraint that was doing any work.
+
+**The harder half of the result.** At the largest radius where the learned direction still draws a
+scene (0.06), the count has moved 4.50 → 4.25. The direction does not meaningfully change the
+count *before* it destroys the image. For this direction — trained against χ on an attention map —
+there is no usable operating point at all. That is a property of the direction, not of the
+sampler form, and it is the strongest evidence yet that an attention statistic is the wrong signal.
+
+### 2026-11-25 — prompt remapping, and where its error actually comes from
+
+Scored on held-out seeds, bar 2.500:
+
+| | MAE | skill | map (target 1…10 → prompt) |
+|---|---|---|---|
+| raw countable baseline | 4.632 | −0.853 | |
+| global remapping | 2.460 | **+0.016** | 1123344556 |
+| per shape: diamond | 1.613 | **+0.355** | 1123344455 |
+| per shape: cross | 2.475 | +0.010 | 1233356677 |
+| per shape: pentagon | 2.829 | −0.132 | 1112333556 |
+| per-shape combined | 2.296 | **+0.082** | |
+| affine ceiling (measurement-side) | 1.649 | +0.341 | |
+
+Diamond alone reaches +0.355 — the full ceiling — so on a well-behaved shape the frozen model plus
+a relabelling is already a working counter. Pentagon drags the average to +0.082.
+
+**Decomposing the residual error of global remapping:**
+
+| target | prompt used | mean counted | bias | sd | bias share of MAE |
+|---|---|---|---|---|---|
+| 1 | 1 | 1.07 | +0.07 | 0.40 | 100 % |
+| 2 | 1 | 1.07 | **−0.93** | 0.40 | 94 % |
+| 5 | 3 | 5.94 | +0.94 | 2.90 | 41 % |
+| 10 | 6 | 11.57 | **+1.57** | 3.71 | 50 % |
+
+The remaining error is mostly **bias, not spread** — the consequence of being unable to ask for
+2.6 objects. At target 2 the bias is 94 % of the error: the prompt "one" is the closest integer
+and it is wrong by almost exactly one object every time. A continuous perturbation of the noise is
+precisely the instrument that removes a bias of 0.93 without touching the spread, and that is the
+clearest statement of what the sampler is for that this project has produced.
