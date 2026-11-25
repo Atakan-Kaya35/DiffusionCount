@@ -2807,3 +2807,54 @@ deterministic.
 This is the control every count-in-prompt run in this log lacked. In those runs the text encoder
 was doing an unknown share of the counting, which is why none of them can be read as evidence
 about the sampler — a limitation that applies to the successes as much as to the failures.
+
+### 2026-11-26 — Method D's proxy is invalid, and the number that justified it was a correlation of means
+
+`chi_vs_counted.py`, 600 images, the layer and τ `method_d.yaml` actually uses:
+
+```
+corr(chi, requested n)      +0.270
+corr(counted, requested n)  +0.392
+corr(chi, counted)          +0.212      pooled, inflated by both tracking n
+MEAN WITHIN-n corr(chi, counted) = +0.154
+```
+
+Per count: +0.300, −0.014, +0.228, +0.131, +0.153, +0.249, +0.241, +0.161, +0.098, −0.007.
+
+**χ explains about 2 % of the variance in what is actually drawn.** Method D optimises χ per
+image, so it was pushing on a quantity very nearly invisible to the score — the same shape as
+Method C meeting every internal objective while emitting 0.19 objects per image.
+
+**The design justification was an aggregation artifact.** `configs/method_d.yaml` chose its 32×32
+layer on the claim that "with countable scenes, chi tracks the requested count at corr +0.989".
+Measured both ways on the same data:
+
+| | correlation | points |
+|---|---|---|
+| per-count **means**, χ vs n | **+0.928** | 10 |
+| individual **images**, χ vs n | **+0.270** | 600 |
+
+The original figure was the correlation of six per-count means. Averaging inside each count
+discards exactly the variance the loss has to fight. The arithmetic makes it plain:
+
+| n | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| mean χ | 5.0 | 5.3 | 5.4 | 6.7 | 7.0 | 6.8 | 6.7 | 7.6 | 9.2 | 8.4 |
+| sd χ | 3.8 | 3.6 | 3.4 | 3.4 | 3.8 | 3.8 | 4.1 | 4.8 | 5.2 | 5.2 |
+
+χ's spread **at fixed n is 4.13**, and the entire mean range from n = 1 to n = 10 is also **4.13**.
+The noise is the size of the whole signal.
+
+This is the third aggregate in this project to conceal what it summarised, after `exact_all` 0.96
+over a majority of empty counter channels and a 1.89 "count change" produced by one bistable
+detector flip. The pattern is consistent enough to state as a rule: **any statistic computed over
+a grouping must be checked at the level the optimiser actually operates on.**
+
+**Consequence.** Method D is out, and so is the layer choice that rested on that number. Method B's
+counter is also weak — corr(counter, OWLv2) +0.281, reading 1.89 objects where the detector sees
+8.43 — but it is better than χ and, unlike χ, it has a documented remedy: `§4.1` and
+`docs/workflow.md` both prescribe harvesting generator samples and retraining on them when the
+synthetic-to-x̂0 gap is too large. Training on a 0.154-correlated signal would make a null result
+uninterpretable, because "the sampler cannot carry the count" and "the loss could not see it"
+would be indistinguishable. Fixing the measurement first is the only way the count-free experiment
+answers its own question.
