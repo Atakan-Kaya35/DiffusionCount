@@ -2436,3 +2436,42 @@ block, and Method C's MAE improving by 2.855 while it emitted 0.19 objects per i
 shape: an aggregate that averages over a majority class — absent categories here, empty images
 there — and so reports the majority's success while the minority that matters fails completely.
 `val/exact_present` was the number that told the truth, and it was in the log from epoch 0.
+
+### 2026-11-25 — batch composition does perturb generation, but only by ±1 object
+
+The same latent decoded in batches of 1, 2, 4, 8, 9 and 12, with the frozen generator under
+`no_grad`. Every column should be identical and they are not:
+
+| prompt | 1 | 2 | 4 | 8 | 9 | 12 | latent sum | spread |
+|---|---|---|---|---|---|---|---|---|
+| blue pentagon n=2 | 3 | 3 | 3 | 3 | 3 | 3 | 436.3 | 55.3 |
+| red cross n=5 | 7 | 7 | 7 | 7 | 7 | 7 | −312.2 | 111 |
+| **red cross n=8** | 10 | 10 | **9** | 10 | 10 | 10 | −1014.9 | 51 |
+| **yellow diamond n=2** | **2** | **3** | **3** | **2** | **2** | **2** | 3680.6 | 126 |
+| yellow diamond n=8 | 17 | 17 | 17 | 17 | 17 | 17 | 3119.5 | 33.8 |
+
+The latent sums differ in every row, so generation is genuinely not bit-identical across batch
+sizes — `generate_latents` chunks at 8, so a latent sits in a chunk of 1, 4, 8 or 12 depending
+only on how many images were asked for, and bf16 reductions over different batch shapes do not
+agree to the last bit. **But the counts move by exactly ±1, in 2 of 9 prompts.**
+
+**So batch jitter does not explain the leverage probe's 1 against 17.** A ±1 effect cannot produce
+a 16-object discrepancy. The explanation is in that probe's own output: blue pentagon n = 8 walked
+`[17, 1, 18, 18, 18, 1, 1, 22, 26]` — ones scattered between seventeens and twenty-sixes. Those
+are not intermediate counts, they are the **detector's dense-scene failure**, the same mode that
+returns 2 objects or fewer on 8.3 % of n ≥ 8 rows. On a crowded image OWLv2 is **bistable**: it
+either resolves the field into many boxes or collapses onto one, and a perturbation far too small
+to change what is drawn is enough to flip it between the two.
+
+Two consequences worth carrying forward:
+
+- **±1 is the error bar on any single count** from batch-composition jitter alone. It is small
+  against a spread of 3–8 and does not threaten any conclusion in this log.
+- **The dense-scene failures are noise, not a fixed property of an image.** The same latent can
+  read 17 or 1. That makes them averageable — more seeds genuinely helps — but it also means a
+  per-image count at high n should never be trusted on its own, and the 8.3 % figure is a rate,
+  not a set of identifiable bad images.
+
+The second point is the one that matters for method comparison: a run evaluated at high n is being
+scored partly on a coin flip, which is another reason `results_table.py` leads with spread and the
+zero rate rather than with MAE.
