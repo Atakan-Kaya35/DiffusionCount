@@ -2305,3 +2305,40 @@ targets it is bias — the generator draws one object for "one" with sd 0.34, so
 for a target of 2 is wrong by one almost every time. At high targets it is spread — prompt 6 has
 the right median for target 10 but a sd of 3.7. A continuous perturbation addresses the first
 directly; the second is the harder half.
+
+### 2026-11-25 — what ε-conditioning is worth: an oracle upper bound
+
+Δφ(ε, n, c̄) receives the noise, the count and the pooled text embedding, and the frozen generator
+is deterministic, so `counted = f(ε, colour, shape, n)` is a function of exactly those arguments.
+How much is it worth to know ε? On the 136 (colour, shape, seed) cells of
+`eval_baseline_white_s8`, each of which has a counted value for every n = 1…10:
+
+| | MAE | skill |
+|---|---|---|
+| fixed global prompt map, **in sample** | 2.077 | +0.169 |
+| **oracle: per-ε choice among the 10 available outputs** | **0.951** | **+0.619** |
+
+*(The same fixed map scored on held-out seeds gives +0.016; both numbers above are in-sample, so
+the gap between them is the like-for-like comparison.)*
+
+Knowing ε is worth about **+0.45 skill** — far more than the choice of prompt map. Some prompt
+lands exactly on the target for **41.2 %** of (cell, target) pairs:
+
+| target | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| exact hit available | **95.6 %** | 33.1 % | 25.7 % | 39.0 % | 34.6 % | 41.2 % | 37.5 % | 30.9 % | 33.1 % | 41.9 % |
+
+Target 1 is nearly always reachable, which is the same fact as `1.01 ± 0.34` seen from another
+angle. For every other target, roughly a third of noises already have *some* prompt that produces
+exactly the right count — the information is in the noise, and a fixed map cannot use it.
+
+**Two reasons this is an upper bound and not a target.** The oracle reads the counted value it is
+trying to predict, so it is optimistic by construction. And the sampler cannot choose among ten
+prompts: it must *move the noise*, within a radius where the image survives, which
+`direction_probe.py` put at 0.08 for a learned direction. Whether the needed motion fits inside
+that radius is the question `--mode leverage` is running now.
+
+What the bound does establish is that the architectural choice — conditioning Δφ on ε rather than
+on n alone — is where the available headroom is. A count-independent perturbation, which is what
+every Method D run actually learned (`d_pair` 0.00027 against an anchor displacement of 0.128),
+forfeits all of it.
