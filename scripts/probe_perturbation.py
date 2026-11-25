@@ -50,6 +50,9 @@ from countsampler.training import load_sampler_checkpoint
 from countsampler.utils.misc import resolve_device, seed_everything, to_uint8_images
 
 RADII = [0.0, 0.02, 0.04, 0.06, 0.08, 0.10, 0.13, 0.16, 0.20, 0.30]
+# Bunched near 0: on a slerp between two near-orthogonal Gaussians a uniform grid's first step is
+# already at d = 0.196, above the whole regime a bounded perturbation can reach.
+LEVERAGE_TS = [0.0, 0.01, 0.02, 0.035, 0.05, 0.07, 0.10, 0.15, 0.25, 0.50, 1.0]
 COMBOS = [("blue", "pentagon"), ("red", "cross"), ("yellow", "diamond")]
 WHITE = 'data.templates=["{count} {color} {shape} on a white background"]'
 
@@ -71,7 +74,8 @@ def slerp(a: torch.Tensor, b: torch.Tensor, t: float) -> torch.Tensor:
 
 def main() -> None:
     ap = base_parser(__doc__, config_required=False)
-    ap.add_argument("--mode", required=True, choices=["radius", "direction", "leverage"])
+    ap.add_argument("--mode", required=True,
+                    choices=["radius", "direction", "leverage", "determinism"])
     ap.add_argument("--ckpt", default=None, help="sampler checkpoint (direction mode)")
     ap.add_argument("--seeds", type=int, default=3)
     ap.add_argument("--counts", default="1,2,4,8", help="counts per prompt (radius/direction)")
@@ -156,6 +160,47 @@ def main() -> None:
                     ok.append(s)
             print("  largest radius still drawing a scene: {:.2f}".format(max(ok) if ok else 0.0))
 
+    elif args.mode == "determinism":
+        # The same latent, decoded in batches of different sizes. The generator is frozen and runs
+        # under no_grad, so every column below should be identical. The leverage probe observed
+        # the same latent counted as 1 objects in one pass and 17 in another, the only difference
+        # being that one batch held 12 images and the other 9 - and generate_latents chunks at 8,
+        # so the latent sat in a chunk of 4 versus a chunk of 1. If that changes the image, every
+        # number in this project carries a batch-composition error bar.
+        for color, shape in COMBOS:
+            for n in (2, 5, 8):
+                prompt = ps.prompt(n, color, shape)[0]
+                g = torch.Generator(device="cpu").manual_seed(7000 + n)
+                pool = torch.randn(12, c, h, w, generator=g).to(gen.device)
+                target = pool[0:1]
+                for bs in (1, 2, 4, 8, 9, 12):
+                    z = torch.cat([target, pool[1:bs]]) if bs > 1 else target
+                    enc_b = gen.encode_prompts([prompt] * bs)
+                    with torch.no_grad():
+                        lat = gen.generate_latents(z, enc_b)
+                    u8 = to_uint8_images(gen.decode(lat))
+                    cnt = count_images(owl, list(u8), color, shape)[0].count
+                    rows.append(dict(color=color, shape=shape, n=n, batch=bs, counted=cnt,
+                                     lat_sum=float(lat[0].double().sum()),
+                                     lum=float(u8[0].mean(axis=2).mean())))
+                print(f"  done {color} {shape} n={n}", flush=True)
+        print("\n================ SAME LATENT, DIFFERENT BATCH SIZE ================")
+        print("  {:>22} {:>26} {:>24}".format("", "counted at batch size", "latent sum"))
+        print("  {:>22} {}".format("", "".join(f"{b:>5}" for b in (1, 2, 4, 8, 9, 12))))
+        n_diff = 0
+        for key in sorted({(r["color"], r["shape"], r["n"]) for r in rows}):
+            v = {r["batch"]: r for r in rows
+                 if (r["color"], r["shape"], r["n"]) == key}
+            cs = [v[b]["counted"] for b in (1, 2, 4, 8, 9, 12)]
+            ls = [v[b]["lat_sum"] for b in (1, 2, 4, 8, 9, 12)]
+            same = len(set(cs)) == 1
+            n_diff += 0 if same else 1
+            print("  {:>22} {} {:>14.3f} spread {:.3g}{}".format(
+                f"{key[0]} {key[1]} n={key[2]}", "".join(f"{x:>5}" for x in cs),
+                ls[0], max(ls) - min(ls), "" if same else "   <-- DIFFERS"))
+        print(f"\n  {n_diff} of {len(rows) // 6} prompts changed count with batch size alone.")
+        print("  If this is 0, the leverage probe's 1 vs 17 came from somewhere else.")
+
     else:
         for color, shape in COMBOS:
             for n in (2, 5, 8):
@@ -169,30 +214,52 @@ def main() -> None:
                     print(f"  {color} {shape} n={n}: no spread among candidates; skipping", flush=True)
                     continue
                 a, b = cand[lo:lo + 1], cand[hi:hi + 1]
-                ts = torch.linspace(0, 1, 9)
+                # Two independent Gaussians are nearly orthogonal in C*H*W dimensions, so a
+                # uniform t grid puts its FIRST step at d = 0.196 and samples nothing below it -
+                # above the 0.08 radius where a learned direction still draws a scene, which is
+                # the only regime this probe exists to measure. Bunch t near 0 instead.
+                ts = torch.tensor(LEVERAGE_TS)
                 path = torch.cat([slerp(a, b, float(t)) for t in ts])
                 d = normalized_distance(path, a).cpu().numpy()
-                enc9 = gen.encode_prompts([prompt] * len(ts))
-                pc, _, psd = decode_count(path, enc9, color, shape)
+                enc_p = gen.encode_prompts([prompt] * len(ts))
+                pc, _, psd = decode_count(path, enc_p, color, shape)
+                # Compare against path[0] from THIS pass, not against c_lo from the candidate
+                # scan: the two decode the same latent in differently sized batches and have been
+                # observed to disagree (1 vs 17 objects), which fabricated a 1.89 count change at
+                # radii where nothing had moved. See --mode determinism.
+                c_start = pc[0]
                 for i in range(len(ts)):
                     rows.append(dict(color=color, shape=shape, n=n, t=float(ts[i]), d=float(d[i]),
-                                     counted=pc[i], sd=psd[i], c_lo=cc[lo], c_hi=cc[hi]))
-                print(f"  {color} {shape} n={n}: {cc[lo]} -> {cc[hi]} over d=0..{d[-1]:.2f}  "
-                      f"path {pc}", flush=True)
+                                     counted=pc[i], sd=psd[i], c_start=c_start, c_scan=cc[lo]))
+                flag = "" if c_start == cc[lo] else f"  [!] scan said {cc[lo]}, path start {c_start}"
+                print(f"  {color} {shape} n={n}: {c_start} -> {cc[hi]} over d=0..{d[-1]:.2f}  "
+                      f"path {pc}{flag}", flush=True)
         print("\n============ COUNT CHANGE AVAILABLE PER UNIT DISTANCE ============")
-        print("  {:>11} {:>21} {:>8}  verdict".format("d(z,start)", "mean |count - start|", "img sd"))
-        for lim in (0.05, 0.10, 0.15, 0.20, 0.30, 0.50, 0.80, 1.20, 2.00):
-            v = [r for r in rows if 0 < r["d"] <= lim]
+        print("  Each row is the path point nearest that radius, per (colour, shape, n), compared")
+        print("  with its OWN start. 'paths' says how many of the 9 contributed - a row backed by")
+        print("  fewer paths is noisier, and a row backed by none is not printed.\n")
+        print("  {:>11} {:>7} {:>21} {:>8}  verdict"
+              .format("d(z,start)", "paths", "mean |count - start|", "img sd"))
+        EPS_D = 1e-4          # slerp at t=0 returns the start up to float error, not exactly
+        for lim in (0.02, 0.04, 0.06, 0.08, 0.12, 0.16, 0.25, 0.40, 0.80, 1.50):
+            v = [r for r in rows if EPS_D < r["d"] <= lim]
             if not v:
+                print("  <= {:7.2f} {:>7} {:>21} {:>8}  (nothing sampled this close)"
+                      .format(lim, 0, "-", "-"))
                 continue
             near: dict = {}
             for r in v:
                 near.setdefault((r["color"], r["shape"], r["n"]), []).append(r)
             best = [max(gp, key=lambda r: r["d"]) for gp in near.values()]
-            dc = float(np.mean([abs(r["counted"] - r["c_lo"]) for r in best]))
+            dc = float(np.mean([abs(r["counted"] - r["c_start"]) for r in best]))
             sd = float(np.mean([r["sd"] for r in best]))
-            print("  <= {:7.2f} {:21.2f} {:8.1f}  {}"
-                  .format(lim, dc, sd, "scene" if sd >= 25 else "*** COLLAPSED ***"))
+            print("  <= {:7.2f} {:7d} {:21.2f} {:8.1f}  {}"
+                  .format(lim, len(best), dc, sd, "scene" if sd >= 25 else "*** COLLAPSED ***"))
+        bad = {(r["color"], r["shape"], r["n"]) for r in rows if r["c_start"] != r["c_scan"]}
+        if bad:
+            print(f"\n  [!] {len(bad)} of {len(set((r['color'], r['shape'], r['n']) for r in rows))} "
+                  f"paths: the candidate scan and the path disagreed on the START's count.")
+            print("      Same latent, different batch composition. Run --mode determinism.")
 
     out = Path(args.out or ROOT / "runs" / f"probe_{args.mode}.json")
     out.parent.mkdir(parents=True, exist_ok=True)
