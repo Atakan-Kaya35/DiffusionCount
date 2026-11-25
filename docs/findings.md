@@ -39,9 +39,12 @@ and does worse, which is how the granularity was chosen rather than assumed.
 The last two rows are **not methods**. They correct the counted value after the fact and are
 recorded as the ceiling a generative method could aim at.
 
-**No trained sampler has beaten the baseline.** Method C scored worse than doing nothing (MAE
-5.311 against the corrected baseline's 5.210) while emitting 0.19 objects per image. Both Method D
-variants destroyed the generator (§4).
+**No trained sampler has beaten the baseline.** Method C emitted **0.19 objects per image** with
+82 % of images empty — its MAE of 5.311 is essentially the score for predicting zero every time,
+which is why `results_table.py` marks such runs degenerate rather than crediting the MAE. (That
+5.311 was counted at 512 px against a 256 px baseline, so the two numbers are not strictly
+comparable — see §5 — but a run producing 0.19 objects per image is degenerate at any resolution,
+and that is what the conclusion rests on.) Both Method D variants destroyed the generator (§4).
 
 ---
 
