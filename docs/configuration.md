@@ -255,7 +255,7 @@ Euler characteristic is not, and drops by exactly one when two objects fuse.
 | `counter.arch.base_channels` | 64 | width |
 | `counter.arch.channel_mult` | `[1, 2, 4]` | levels |
 | `counter.arch.out_activation` | `softplus` | `softplus` or `relu` |
-| `counter.arch.head_bias_init` | -10.0 | initial head bias (strongly negative, §4.1) |
+| `counter.arch.head_bias_init` | **-6.0** | initial head bias. Negative because softplus(0) summed over the 64x64 density map is 2839 spurious objects per channel — but **-10.0 does not train at all**. The gradient through softplus is sigmoid(bias), so at -10 it is 4.5e-5 and the head starts in a dead zone; with 15–17 of 18 categories absent in any image, predicting zero everywhere is a strong local optimum. A 30-epoch run held `val/exact_present` at 0.0000 from epoch 0 to 29. -6.0 starts at 10.1 objects per channel against a true ~5, with 54× the gradient |
 | `counter.dataset.train_size` | 20000 | training scenes |
 | `counter.dataset.val_size` | 2000 | validation scenes |
 | `counter.dataset.max_categories_per_image` | 3 | categories per scene |
@@ -275,6 +275,6 @@ Euler characteristic is not, and drops by exactly one when two objects fuse.
 | `counter.train.lr` | 3e-4 | AdamW learning rate (cosine schedule) |
 | `counter.train.weight_decay` | 1e-4 | AdamW weight decay |
 | `counter.train.mse_scale` | 100.0 | s in MSE(s·D, s·target) |
-| `counter.train.l1_weight` | 0.1 | weight of the count L1 term |
+| `counter.train.l1_weight` | **1.0** | weight of the count L1 term. Raised from 0.1: the density MSE is dominated by the empty channels, so the term that actually measures count error needs to carry weight |
 | `counter.train.num_workers` | 4 | data-loader workers |
 | `counter.train.log_every` | 50 | log interval (steps) |

@@ -16,7 +16,17 @@ counter:
     base_channels: 64
     channel_mult: [1, 2, 4]
     out_activation: softplus
-    head_bias_init: -10.0      # strongly negative: softplus(0) summed over H·W would be a large spurious count
+    head_bias_init: -6.0       # OPEN. Strongly negative because softplus(0) summed over the
+                               # 64x64 density map is 2839 spurious objects per channel - but
+                               # -10.0 does not train AT ALL. The gradient through softplus is
+                               # sigmoid(bias), so at -10 it is 4.5e-5: the head starts in a dead
+                               # zone, and because 15-17 of the 18 categories are absent in any
+                               # image, predicting zero everywhere is a strong local optimum. A
+                               # 30-epoch run sat at val/exact_present = 0.0000 and
+                               # val/mae_present = 5.317 (the mean count of present categories,
+                               # i.e. predicting nothing) from epoch 0 to epoch 29 without moving.
+                               # -6.0 starts at 10.1 objects per channel against a true ~5, with
+                               # 54x the gradient. See docs/experiment_log.md 2026-11-25.
   dataset:
     train_size: 20000
     val_size: 2000
@@ -38,6 +48,8 @@ counter:
     lr: 3.0e-4
     weight_decay: 1.0e-4
     mse_scale: 100.0           # s: MSE(s·D, s·target), targets are tiny
-    l1_weight: 0.1             # L1 between predicted and true per-channel counts
+    l1_weight: 1.0             # L1 between predicted and true per-channel counts. Raised from
+                               # 0.1: the density MSE is dominated by the empty channels, so the
+                               # term that actually measures COUNT error needs to carry weight.
     num_workers: 4
     log_every: 50

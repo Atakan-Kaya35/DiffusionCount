@@ -2385,3 +2385,54 @@ sample of the evaluation.
 depend on the operating point; it is the *ceilings* that do (affine +0.341 → +0.062), because at
 0.25 the apparent gain is already 1 and a calibration has nothing left to correct — what remains
 there is spread, which no affine map can touch.
+
+### 2026-11-25 — the density counter never trained: softplus at bias −10 is a dead zone
+
+Method B's counter completed 30 epochs and learned **nothing**. The validation history is flat
+from the first epoch to the last:
+
+| epoch | `mae_all` | `exact_all` | `mae_present` | `exact_present` | `stray_mass` |
+|---|---|---|---|---|---|
+| 0 | 0.2084 | 0.9618 | 5.3115 | **0.0000** | 0.0059 |
+| 9 | 0.2030 | 0.9618 | 5.3174 | **0.0000** | 0.0000 |
+| 29 | 0.2029 | 0.9618 | 5.3174 | **0.0000** | 0.0000 |
+
+Across all 30 validations `val/mae_present` takes 7 distinct values spanning 5.3115 to 5.3174.
+
+**The counter predicts zero everywhere.** `exact_all` of 0.96 looks healthy and is the trap: 15 to
+17 of the 18 categories are absent in any image, so predicting nothing is correct for almost every
+channel. `mae_present` of 5.317 is simply the mean count of the categories that *are* present —
+the error you get by outputting nothing — and `exact_present` of exactly 0.0000 at every epoch
+says it never once got a present category right.
+
+**The cause is the head initialisation.** The output is `softplus`, whose gradient is
+`sigmoid(bias)`:
+
+| bias | softplus | × 4096 px | gradient | vs −10 |
+|---|---|---|---|---|
+| **−10** | 0.000045 | **0.19** | **0.000045** | 1× |
+| −8 | 0.000335 | 1.37 | 0.000335 | 7× |
+| −7 | 0.000911 | 3.73 | 0.000911 | 20× |
+| **−6** | 0.002476 | **10.14** | 0.002473 | **54×** |
+| −4 | 0.018150 | 74.34 | 0.017986 | 396× |
+
+At −10 the head begins predicting 0.19 objects per channel with its gradient attenuated 22 000×.
+It cannot escape, and because the loss is dominated by empty channels there is nothing pulling it
+out: all-zeros is a strong local optimum reached immediately. The comment in `configs/counter.yaml`
+justified the value correctly — `softplus(0)` summed over the 64×64 map is 2839 spurious objects
+per channel — but overshot into a region where the layer does not learn.
+
+**Fixed**: `head_bias_init: -10.0 → -6.0`, which starts at 10.1 objects per channel against a true
+mean of about 5 for present categories, with 54× the gradient; and `l1_weight: 0.1 → 1.0`, because
+the density MSE is dominated by the empty channels and the term that actually measures *count*
+error needs weight. The latent cache is keyed on the dataset config only — model, resolution,
+categories, seed, radius range, dataset and augmentation — so neither change invalidates it and
+the retrain costs the training loop alone, about 18 minutes, rather than another 35 of rendering
+and VAE encoding.
+
+**This is the third diagnostic in this project that looked healthy during total failure**, after
+`geom/d_anchor_*` reading 0.13–0.22 inside a δ = 0.3 budget while the decode was a flat colour
+block, and Method C's MAE improving by 2.855 while it emitted 0.19 objects per image. The common
+shape: an aggregate that averages over a majority class — absent categories here, empty images
+there — and so reports the majority's success while the minority that matters fails completely.
+`val/exact_present` was the number that told the truth, and it was in the log from epoch 0.
