@@ -1845,3 +1845,59 @@ same shape of error as reading a good MAE off Method C while it emitted 0.19 obj
 So the honest position at step 1900: the optimiser constraint was real and raising the clip
 removed it, the count term is converging on its own diagnostic, and whether any of that reaches
 the *images* is unresolved until the OWLv2 evaluation runs.
+
+### 2026-11-25 — L_ord has never been active in any Method D run
+
+**The run ended at step 2500, not 3000.** The session that launched it exited and this time the
+orphaned chain did not survive: `log.jsonl` stopped at 10:05 and the GPU sat idle for 5.5 hours.
+`sampler_step002000.pt` is the newest checkpoint; there is no `sampler_last.pt`, so the chain's
+evaluation never started. Previous orphan scares were false alarms — processes outlived the
+session — so this one was checked by file mtime against the clock rather than by a process
+listing, which is the only check that distinguishes "still running" from "stopped an hour ago".
+
+**The full block table, through 2500:**
+
+| block | `chi_hard − n` | `d_anchor` | `d_pair` | `grad_norm` | `loss/ord` |
+|---|---|---|---|---|---|
+| 0–300 | +2.91 | 0.043 | 0.00158 | 157.9 | 0.451 |
+| 300–600 | +1.67 | 0.065 | 0.00094 | 105.2 | 0.422 |
+| 600–1000 | −0.74 | 0.152 | 0.00226 | 122.6 | 0.408 |
+| 1000–1500 | −1.21 | 0.150 | 0.00208 | 77.7 | 0.432 |
+| 1500–2000 | +0.46 | 0.116 | 0.00042 | 95.9 | 0.422 |
+| 2000–2300 | −1.04 | 0.158 | 0.00050 | 49.3 | 0.440 |
+| 2300–2500 | −0.30 | 0.128 | 0.00027 | 96.0 | 0.454 |
+
+The damped oscillation held up over 600 further steps, which is worth recording because the last
+three calls made from a final block did not: the error crosses zero three times and mean |error|
+falls from 1.77 over the first three blocks to 0.60 over the last three. That is a real property
+of the run, not a trend read off its last point.
+
+**`d_pair` went the wrong way the whole time: 0.00158 → 0.00027.** The sampler displaces the noise
+by `d_anchor` ≈ 0.13 and displaces it *more and more identically* across counts. By step 2500 the
+perturbations for n = 1 and n = 10 differ by 0.00027 in normalised distance while each sits 0.128
+away from ε — a ratio of 1 : 474. Whatever that perturbation does to the image, it does the same
+thing whichever count was asked for.
+
+**Why: the one term that forbids this has never run.** `L_ord = Σ_{n<m} (d(z_n, z_m) − α g(n,m))²`
+with α = 2δ/log n_max = 0.2606 targets `d_pair` = 0.0475 for adjacent counts and 0.600 for (1, 10).
+Against the measured 0.00027, it is the only term in the entire objective that requires the
+perturbation to *differ* per count — `L_cc`, `L_bin` and `L_area` are each computed per sample and
+are all satisfied by one count-independent displacement that lowers the average χ error, which is
+exactly the solution found. `L_anc` and `L_pri` only constrain magnitude.
+
+`configs/method_d.yaml` stages `ord` to start at step 3000, and every Method D run has been 3000
+steps. **It has never once been active.** `loss/ord` is logged every step — 0.41–0.45, flat
+across the whole run — because the method computes it and then drops it from the weighted sum.
+Reading that column as if it were part of the loss is what hid this for three runs: the number was
+on screen the entire time, at a value 1000× its target, and it was being reported, not minimised.
+Method B carries the identical staging (`ord` at 3000) and so has the same latent defect.
+
+Spec Remark 1 says L_ord alone is satisfied by a collinear embedding and "only adds smoothness".
+That is true and is the point: it cannot supply the count signal, but it is what stops the count
+signal from being answered with a constant. `L_cc` picks *which* displacement lowers the χ error;
+`L_ord` forces that displacement to depend on n.
+
+**`configs/method_d_ord.yaml`** is `method_d.yaml` with a single change — one stage, from step 0,
+including `ord`. Verified on a 30-step smoke run: `loss/total` 0.849 against the ~0.45 the same
+step would have shown before, and `d_pair` rising 7.8e-9 → 4.6e-4 over 30 steps where clip 200 was
+falling by then. That is the config now training as `d_ord`.

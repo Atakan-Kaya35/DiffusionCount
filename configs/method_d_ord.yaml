@@ -1,0 +1,23 @@
+# Method D with the ordering term active from step 0.
+#
+# Measured on d_white_clip200 (2500 steps): geom/d_pair_mean fell from 0.0016 to 0.00027 while
+# geom/d_anchor_mean held at 0.13. The sampler moves the noise by 0.13 and moves it THE SAME WAY
+# for every requested count - a count-independent perturbation. D/chi_hard_minus_n oscillates
+# about zero, but a batch mean over mixed n reaches zero just as well by under-counting small n
+# and over-counting large n, so that diagnostic cannot tell the two apart.
+#
+# L_ord = sum_{n<m} (d(z_n, z_m) - alpha*g(n,m))^2 with alpha = 2*delta/log(n_max) = 0.2606 is the
+# only term in the whole objective that requires d_pair to be LARGE and count-ordered: its target
+# is 0.0475 for adjacent counts and 0.600 for (1, 10), against the 0.00027 actually observed.
+# method_d.yaml stages it at step 3000, and every Method D run so far has been 3000 steps, so it
+# has never once been active. Spec Remark 1 says L_ord alone is satisfied by a collinear embedding
+# and only adds smoothness - which is the point: L_cc chooses WHICH perturbation lowers the chi
+# error, L_ord forces that perturbation to differ per count instead of collapsing to one vector.
+defaults: method_d.yaml
+
+experiment:
+  name: d_ord
+
+method:
+  stages:
+    - {start: 0, terms: [cc, bin, area, anc, pri, ord]}
