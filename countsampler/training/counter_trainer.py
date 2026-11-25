@@ -120,7 +120,10 @@ def train_counter(cfg, out_dir: str | Path | None = None) -> dict:
         # `harvested` names extra latent files that are loaded ALONGSIDE this cache, never baked
         # into it, so it must not enter the key - otherwise adding harvested data invalidates a
         # 30-minute render-and-VAE-encode of the identical synthetic set.
-        ds_key = {k: v for k, v in to_dict(ds).items() if k != "harvested"}
+        # Normalised to the default [] rather than dropped, so the key matches a cache built
+        # before any harvest existed - removing the field entirely changes the dict and the
+        # hash with it.
+        ds_key = {**to_dict(ds), "harvested": []}
         key_base = {"model": cfg.generator.model_id, "res": res, "cats": categories, "seed": seed,
                     "rr": list(rr), "ds": ds_key, "aug": to_dict(ccfg.get("image_aug") or {})}
         cache_dir = ensure_dir(ds.cache_dir)
