@@ -58,6 +58,7 @@ class SamplerTrainer:
         save_config(cfg, self.out_dir / "config.yaml")
         self.logger = RunLogger(self.out_dir, use_wandb=bool(exp.get("wandb", False)),
                                 project=exp.get("wandb_project"), run_name=exp.name, config=to_dict(cfg))
+        self._needs_x0_ref = any("x0a" in st.terms for st in self.method.stages)
         self.step = 0
         if t.get("resume"):
             self.load(t.resume)
@@ -111,8 +112,16 @@ class SamplerTrainer:
                 z, enc = self._apply_sampler(eps, batch)
                 outs = self.generator.unroll(z, enc, self.timesteps, capture=self.method.needs_attention)
                 z_geom, counts_geom = self._geometry_inputs(eps, sets, z, batch)
+                # The frozen generator's own x̂0 for the same prompts from the UNPERTURBED ε. Only
+                # needed when a stage uses the output anchor, and never needs a gradient, so it
+                # costs one forward and no activations.
+                x0_ref = None
+                if self._needs_x0_ref:
+                    with torch.no_grad():
+                        x0_ref = self.generator.unroll(eps[batch.eps_index], enc, self.timesteps,
+                                                       capture=False)[-1].x0_hat
                 loss, step_logs = self.method.compute(self.step, eps=eps, z_geom=z_geom, counts_geom=counts_geom,
-                                                      batch=batch, outs=outs)
+                                                      batch=batch, outs=outs, x0_ref=x0_ref)
             except torch.linalg.LinAlgError as exc:
                 print(f"[step {self.step}] eigendecomposition failed ({exc}); skipping micro-batch")
                 skipped += 1

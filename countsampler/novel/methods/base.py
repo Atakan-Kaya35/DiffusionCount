@@ -72,7 +72,8 @@ class CountMethod:
         g = cfg.geometry
         self.geometry = GeometryLosses(delta=g.delta, g=g.g, n_max=cfg.data.n_max,
                                        ord_form=g.get("ord_form", "regression"),
-                                       rank_margin=g.get("rank_margin", 0.05))
+                                       rank_margin=g.get("rank_margin", 0.05),
+                                       delta_x=float(g.get("delta_x", 0.15)))
         self.loss_steps = mcfg.get("loss_steps", "all")
 
     # ------------------------------------------------------------------ to override
@@ -104,7 +105,8 @@ class CountMethod:
         return [outs[i] for i in self.loss_steps]
 
     def compute(self, step: int, *, eps: torch.Tensor, z_geom: torch.Tensor, counts_geom: torch.Tensor,
-                batch: FlatBatch, outs: list[StepOutput]) -> tuple[torch.Tensor, dict[str, float]]:
+                batch: FlatBatch, outs: list[StepOutput],
+                x0_ref: torch.Tensor | None = None) -> tuple[torch.Tensor, dict[str, float]]:
         """Total loss and logs.
 
         eps: [Be, C, H, W]. z_geom: [Be, J', C, H, W] with counts_geom [Be, J'] (J' = J, or N_max
@@ -129,6 +131,10 @@ class CountMethod:
         terms["pri"] = self.geometry.prior_loss(z_geom)
         terms["ord"] = self.geometry.order_loss(z_geom, counts_geom)
         logs.update(self.geometry.diagnostics(z_geom, eps))
+        if x0_ref is not None:
+            x0 = outs[-1].x0_hat
+            terms["x0a"] = self.geometry.x0_anchor_loss(x0, x0_ref, eps.shape[0])
+            logs.update(self.geometry.x0_diagnostics(x0, x0_ref))
 
         total = sum(self.weights[k] * terms[k] for k in active)
         for k, v in terms.items():

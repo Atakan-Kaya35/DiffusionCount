@@ -226,12 +226,13 @@ def alpha_scale(delta: float, kind: str, n_max: int) -> float:
 
 class GeometryLosses:
     def __init__(self, delta: float = 0.3, g: str = "log", n_max: int = 10, ord_form: str = "regression",
-                 rank_margin: float = 0.05):
+                 rank_margin: float = 0.05, delta_x: float = 0.15):
         if g not in ("log", "lin"):
             raise ValueError("geometry.g must be 'log' or 'lin'")
         if ord_form not in ("regression", "rank"):
             raise ValueError("geometry.ord_form must be 'regression' or 'rank'")
         self.delta = float(delta)
+        self.delta_x = float(delta_x)
         self.kind = g
         self.n_max = int(n_max)
         self.ord_form = ord_form
@@ -273,6 +274,25 @@ class GeometryLosses:
         d = normalized_distance(z, eps[:, None])
         return (F.relu(d - self.delta) ** 2).sum(dim=1).mean()
 
+    # -------------------------------------------------------------------- output anchor
+    def x0_anchor_loss(self, x0: torch.Tensor, x0_ref: torch.Tensor, be: int) -> torch.Tensor:
+        """L_x0anc = E_eps sum_n max(0, d(x0(z_n), x0(eps)) - delta_x)^2.  x0: [Be*J, C, H, W].
+
+        L_anc constrains ||z_n - eps||, and that quantity was measured NOT to control whether the
+        decode is a scene. delta_probe.py: a RANDOM displacement at the full delta = 0.3 budget
+        leaves the image essentially unchanged (mean luminance 171.8 -> 167.2, corr(counted, n)
+        +0.698 -> +0.749), while a LEARNED displacement of 0.13 replaces it with a flat colour
+        block. The one-step generator denoises isotropic perturbation back toward the data
+        manifold; gradient descent finds the thin subspace that survives. No radius in z-space
+        separates the two, so no choice of delta fixes L_anc - the failure is not in the ball it
+        defines. This constrains the quantity that actually collapsed: the output.
+
+        x0 is already produced by the forward pass, so the only extra cost is one no-grad
+        evaluation of the frozen generator on the unperturbed eps.
+        """
+        d = normalized_distance(x0, x0_ref).view(be, -1)
+        return (F.relu(d - self.delta_x) ** 2).sum(dim=1).mean()
+
     # -------------------------------------------------------------------- Eq. (9)
     @staticmethod
     def prior_loss(z: torch.Tensor) -> torch.Tensor:
@@ -290,3 +310,9 @@ class GeometryLosses:
             i, j = torch.triu_indices(z.shape[1], z.shape[1], offset=1, device=z.device)
             out["geom/d_pair_mean"] = normalized_distance(z[:, i], z[:, j]).mean().item()
         return out
+
+    @torch.no_grad()
+    def x0_diagnostics(self, x0: torch.Tensor, x0_ref: torch.Tensor) -> dict[str, float]:
+        """How far the OUTPUT moved. Watch this, not geom/d_anchor_*, for collapse."""
+        d = normalized_distance(x0, x0_ref)
+        return {"geom/d_x0_mean": d.mean().item(), "geom/d_x0_max": d.max().item()}

@@ -1948,3 +1948,105 @@ random direction, decode, and ask whether OWLv2 still finds objects. d(a,b) = �
 z = ε + s·√D·u/‖u‖ lands exactly at s. Random directions give the generic radius; a *learned*
 direction is chosen to change the image and can only be worse, so this is an upper bound on a
 safe δ. Running now over s ∈ {0, 0.02, …, 0.30}.
+
+### 2026-11-25 — correction: distance is not what breaks the generator
+
+The entry above inferred a "collapse radius bracketed between 0.045 and 0.13" from the fact that
+`d_white_clip1` held `d_anchor` at 0.045–0.089 and drew objects while `d_white_clip200` reached
+0.13–0.22 and drew a black square. **That inference is wrong.** It assumed the difference between
+the two runs was distance. `delta_probe.py` measured distance directly — push ε a fixed normalised
+distance in a *random* direction and decode:
+
+| d(z, ε) | mean count | zero % | corr(counted, n) | mean lum | img sd | verdict |
+|---|---|---|---|---|---|---|
+| 0.00 | 4.50 | 0.0 % | +0.698 | 171.8 | 51.9 | scene |
+| 0.06 | 4.31 | 0.0 % | +0.691 | 171.7 | 51.9 | scene |
+| 0.13 | 4.50 | 0.0 % | +0.708 | 171.3 | 51.9 | scene |
+| 0.20 | 4.67 | 2.8 % | +0.728 | 170.2 | 52.3 | scene |
+| **0.30** | 4.92 | 2.8 % | **+0.749** | 167.2 | 54.5 | **scene** |
+
+At the full δ = 0.3 budget — a perturbation whose norm is 30 % of ‖ε‖ — the image is essentially
+unchanged: luminance moves 171.8 → 167.2 and the count correlation does not degrade at all. A
+random displacement of exactly the size that destroyed the generator when *learned* does nothing
+when random.
+
+**So the collapse is about direction, not distance,** and this is the ordinary adversarial-example
+asymmetry: the one-step generator denoises isotropic perturbation back toward the data manifold,
+while gradient descent finds the thin subspace that does not get denoised away. `d_white_clip200`
+did not collapse because it travelled 0.13; it collapsed because it travelled 0.13 *in the
+direction the loss pointed*.
+
+**The consequence for the spec.** `L_anc` constrains ‖z_n − ε‖/√D, and that quantity has now been
+measured not to control whether the output is a scene. Tightening δ would not have saved these
+runs — it would only have made the sampler weaker while leaving the destructive direction
+available at every radius. The anchor is nearly useless as written, and no choice of δ fixes it,
+because the failure is not in the ball it defines.
+
+The constraint has to be on the thing that actually degrades: the **output**. The natural
+correction is an anchor in x̂0 space, `Σ_n max(0, d(x̂0(z_n), x̂0(ε)) − δ_x)²`, which says "change
+the image, but not past the point where it stops being a scene" and is measured on the quantity
+that collapsed. x̂0 is already produced by the forward pass, so this costs one extra U-Net
+evaluation per ε (the unperturbed reference), not a VAE decode.
+
+`direction_probe.py` is running the same radii with d_ord's *learned* direction to confirm the
+asymmetry directly and to put a number on δ_x.
+
+### 2026-11-25 — the count information is already there; the generator's gain is 1.5×
+
+`eval_baseline_white_s8`: the frozen generator, countable-scene prompts, 1360 images over 17 of
+the 18 (colour, shape) cells, counted with containment NMS at threshold 0.1 and no colour in the
+query. Against the bare-noun baseline on the same counter:
+
+| baseline | MAE | skill | spread | slope n ≥ 4 | counted mean | zero % |
+|---|---|---|---|---|---|---|
+| bare noun (`eval_baseline_nms`) | 5.210 | −1.084 | 6.01 | +0.595 | 7.46 | 1.6 |
+| **countable scenes** | **4.632** | **−0.853** | **4.11** | **+1.550** | 9.29 | 0.7 |
+
+Per shape, the template does something the aggregate hides — it **repairs the inverted response**:
+
+| shape | slope, bare noun | slope, countable | spread, bare noun | spread, countable |
+|---|---|---|---|---|
+| cross | +1.906 | +2.351 | 4.29 | 3.26 |
+| diamond | +0.523 | +1.405 | 5.77 | 2.92 |
+| pentagon | **−0.645** | **+1.029** | 6.17 | 4.96 |
+
+Pentagon counted *down* as the prompt asked for more. With countable prompts every shape counts up.
+
+**The finding.** Fit `counted = a·n + b` on half the seeds and score on the other half:
+
+```
+counted = 1.514 n + 0.069
+```
+
+The offset is zero and the gain is 1.5. The generator is not failing to hear the number — it is
+hearing it and drawing about half again too many. The per-count means make this plain:
+
+| n | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| counted | **1.07** | 3.91 | 5.94 | 8.01 | 9.72 | 11.57 | 12.34 | 14.24 | 17.21 | 17.75 |
+| ± sd | 0.40 | 3.75 | 2.90 | 3.72 | 4.13 | 3.71 | 4.60 | 5.63 | 6.83 | 8.05 |
+
+Asked for one object it draws **1.07 ± 0.40**. The count is in there.
+
+**Three reference points, all scored on held-out seeds, bar = 2.500 on the same rows:**
+
+| | MAE | skill |
+|---|---|---|
+| countable baseline, raw | 4.632 | −0.853 |
+| **integer prompt remapping** (ask for the n whose output is closest to the target) | **2.460** | **+0.016** |
+| measurement-side affine correction (the ceiling) | 1.649 | **+0.341** |
+
+Swapping the two folds gives +0.424 for the affine correction, so it is not an artefact of which
+half was fitted. **+0.016 is the first positive skill this project has produced** by changing what
+is generated rather than how it is scored, and it needs no training at all.
+
+**Why this reframes the sampler's job.** Remapping is quantised: targets 1 and 2 both map to the
+prompt "one", 4 and 5 both to "three", and the prompt cannot ask for 2.6 objects. That costs it
+almost the whole gap between +0.016 and the +0.341 the same correction achieves when applied
+continuously. **A perturbation of the initial noise is continuous**, and the gap between those two
+numbers is exactly what it is for. The task is no longer "create count-sensitivity" — the frozen
+model already has it at slope 1.5 — it is "correct a known gain", which is a far smaller ask and
+one a bounded perturbation can plausibly meet.
+
+It also says what to optimise. A term that reads the *image* and asks for n objects attacks the
+gain directly; an attention statistic does not. That is Method B, and its counter is training now.

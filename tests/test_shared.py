@@ -1,5 +1,6 @@
 import math
 
+import pytest
 import torch
 
 from countsampler.novel.shared import (
@@ -63,3 +64,58 @@ def test_ranking_loss_and_finite_grads_at_identity():
     loss.backward()
     assert torch.isfinite(z.grad).all()
     assert normalized_distance(z[:, 0], z[:, 1]).max().item() < 1e-5
+
+
+# ---------------------------------------------------------------- output anchor (L_x0anc)
+def _geo(**kw):
+    from countsampler.novel.shared import GeometryLosses
+    return GeometryLosses(**kw)
+
+
+def test_x0_anchor_is_zero_inside_the_budget():
+    """Nothing is penalised while the output stays within delta_x of the frozen generation."""
+    g = _geo(delta_x=0.15)
+    ref = torch.randn(2 * 3, 4, 8, 8)
+    x0 = ref.clone()                       # d = 0
+    assert float(g.x0_anchor_loss(x0, ref, be=2)) == pytest.approx(0.0)
+
+
+def test_x0_anchor_penalises_only_the_excess():
+    """The hinge measures how far PAST delta_x the output moved, not how far it moved."""
+    from countsampler.novel.shared import normalized_distance
+    g = _geo(delta_x=0.10)
+    ref = torch.zeros(1 * 2, 4, 8, 8)
+    x0 = torch.zeros_like(ref)
+    # put sample 0 at distance 0.30 and sample 1 at 0.05 (inside the budget)
+    for i, s in enumerate((0.30, 0.05)):
+        v = torch.randn(4, 8, 8)
+        x0[i] = v / v.flatten().norm() * s * (4 * 8 * 8) ** 0.5
+    d = normalized_distance(x0, ref)
+    assert d[0] == pytest.approx(0.30, abs=1e-4)
+    assert d[1] == pytest.approx(0.05, abs=1e-4)
+    # only sample 0 is outside: (0.30 - 0.10)^2 = 0.04
+    assert float(g.x0_anchor_loss(x0, ref, be=1)) == pytest.approx(0.04, abs=1e-5)
+
+
+def test_x0_anchor_sums_over_counts_and_means_over_eps():
+    """Same reduction as L_anc: sum over the J counts, mean over the base noises."""
+    g = _geo(delta_x=0.0)
+    be, j = 3, 2
+    ref = torch.zeros(be * j, 4, 4, 4)
+    x0 = torch.zeros_like(ref)
+    for i in range(be * j):
+        v = torch.randn(4, 4, 4)
+        x0[i] = v / v.flatten().norm() * 0.5 * (4 * 4 * 4) ** 0.5
+    # every sample is at d = 0.5 with delta_x = 0 -> each contributes 0.25, summed over j
+    assert float(g.x0_anchor_loss(x0, ref, be=be)) == pytest.approx(0.25 * j, abs=1e-5)
+
+
+def test_x0_diagnostics_report_distance_not_loss():
+    g = _geo(delta_x=0.15)
+    ref = torch.zeros(4, 4, 4, 4)
+    x0 = torch.zeros_like(ref)
+    v = torch.randn(4, 4, 4)
+    x0[0] = v / v.flatten().norm() * 0.4 * (4 * 4 * 4) ** 0.5
+    d = g.x0_diagnostics(x0, ref)
+    assert d["geom/d_x0_max"] == pytest.approx(0.4, abs=1e-4)
+    assert d["geom/d_x0_mean"] == pytest.approx(0.1, abs=1e-4)

@@ -48,6 +48,13 @@ sampler:                       # Δφ, spec §2.1 (countsampler/novel/shared.py)
 
 geometry:                      # spec §2.2 (countsampler/novel/shared.py)
   delta: 0.3                   # OPEN: δ, anchor radius in normalised distance
+  delta_x: 0.15                # OPEN: δ_x, anchor radius for L_x0anc, measured on x̂0 rather
+                               # than on z. `delta` was measured NOT to control whether the
+                               # decode is a scene: a RANDOM displacement at the full 0.3 budget
+                               # leaves the image essentially unchanged (luminance 171.8 -> 167.2,
+                               # corr(counted, n) +0.698 -> +0.749) while a LEARNED displacement
+                               # of 0.13 replaces it with a flat colour block, so no radius in
+                               # z-space separates the two (docs/experiment_log.md, 2026-11-25)
   g: log                       # log | lin (spec: run both separately for L_ord)
   ord_form: regression         # regression (Eq. 5) | rank (Eq. 6)
   rank_margin: 0.05            # μ
