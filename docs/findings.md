@@ -61,6 +61,15 @@ The offset is zero. The model is not failing to hear the number — it hears it 
 twice too many. The median is the cleaner statement: exactly `2n − 1` for n ≤ 3 and `2n − 2` for
 n = 4–6, then falling behind as generator and counter saturate.
 
+**The value of the gain depends on the detector's operating point, and was checked by hand.** At
+OWLv2 threshold 0.25 the same images fit `1.033 n + 0.546` — apparently a perfectly calibrated
+generator. Counting eight images by eye settles it: at 0.25 the detector returns 0, 1 or 2 on
+images that visibly hold ten or more objects, while at 0.10 it tracks the visible count closely
+(11 against ~12, 9 against ~8–9, 17 against ~16–18). The flattering number at 0.25 is two errors
+cancelling — a detector that misses objects, applied to a generator that draws too many.
+**0.10 is the right operating point**, with the qualification that it still reads slightly high
+against a manual count, so the true gain is a little below 1.514.
+
 | n | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
 |---|---|---|---|---|---|---|---|---|---|---|
 | median counted | 1 | 3 | 5 | 6 | 8 | 10 | 11 | 12 | 15 | 15 |
@@ -155,6 +164,19 @@ was resolution. Runs counted at different resolutions must not be compared.
 **The counter fails on dense scenes.** 8.3 % of n ≥ 8 rows return two objects or fewer, on images
 that visibly contain fifteen or more. Excluding them raises the estimated gain from 1.514 to 1.754
 and held-out skill from +0.341 to +0.421 — **so the gain is if anything understated.**
+
+**The detector threshold changes the ceilings but not the result.** Re-counting the same images at
+threshold 0.25 instead of 0.10:
+
+| threshold | fitted gain | raw skill | remapped, per shape | affine ceiling | zero % |
+|---|---|---|---|---|---|
+| 0.10 | `1.514 n + 0.069` | −0.853 | **+0.082** | +0.341 | 0.7 |
+| 0.25 | `1.033 n + 0.546` | −0.412 | **+0.062** | +0.062 | 9.9 |
+
+The generation-side result holds at both (global remapping scores +0.016 and +0.080). The
+*ceilings* move a lot, because at 0.25 the apparent gain is already 1 and a calibration has
+nothing left to correct — what remains is spread, which no affine map touches. §2 records why
+0.10 is the operating point to believe.
 
 **Four detector defects were found and fixed**, all of which inflated the baseline: proper-noun
 queries ("blue cross" returned nothing on 90 % of images), a threshold at 3× the library default,
