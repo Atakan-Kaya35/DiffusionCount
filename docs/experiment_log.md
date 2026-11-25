@@ -2519,3 +2519,38 @@ So the obstacle for Methods A, C and D was never that the budget is too small fo
 that the direction those losses choose destroys the image before it uses the budget — measured at
 4× smaller radius than a random direction — and, for Method D, that the perturbation it learned
 was the same for every count (`d_pair` 0.00027 against an anchor displacement of 0.128).
+
+### 2026-11-25 — template search: "a flat lay photo of …" wins, "exactly" and digits hurt
+
+Six phrasings on the frozen model, 9 (colour, shape) cells × 3 seeds × 10 counts each, the prompt
+for every target chosen on seeds 0 and 2 and scored on seed 1:
+
+| template | slope | spread | gain a | offset b | zero % | raw skill | remapped |
+|---|---|---|---|---|---|---|---|
+| `{count} {color} {shape} on a white background` (current) | +1.802 | 5.23 | 1.980 | +1.180 | 0.0 | −1.862 | −0.004 |
+| `{count} small {color} {shape} …` | +2.472 | 5.84 | 2.494 | −0.765 | 1.1 | −2.206 | +0.022 |
+| `exactly {count} {color} {shape} …` | +1.642 | 6.64 | 2.025 | +1.635 | 0.7 | −2.292 | **−0.209** |
+| `{count}` as **digits** (`3` not `three`) | +2.438 | 6.52 | 2.363 | +0.523 | 0.7 | −2.412 | **−0.209** |
+| `{count} {color} {shape} spread out on a plain white background` | +2.111 | 4.79 | 2.193 | −0.965 | 3.7 | −1.615 | +0.164 |
+| **`a flat lay photo of {count} {color} {shape} on a white background`** | +2.015 | **3.79** | 2.085 | −1.207 | 1.1 | **−1.179** | **+0.231** |
+
+**Flat-lay wins on every column that matters**: the best remapped skill (+0.231 against the
+current template's −0.004), the lowest spread (3.79 against 5.23) and the best raw skill. "Spread
+out on a plain white background" is second at +0.164. Both winners push the model toward a
+*photographic layout of separate objects* rather than a texture, which is the same lever the
+countable-scene template pulled in the first place.
+
+**Two that were expected to help and did the opposite.** `exactly {count}` is the worst of the six
+and raises spread to 6.64 — the word that most directly signals precision makes the count *less*
+reliable, so SD-Turbo's text encoder takes nothing useful from it. **Digits instead of words**
+(`data.count_format: digit`) are equally bad at −0.209; that config option has sat untested since
+the project began and it hurts.
+
+**The comparison is within-probe only.** 9 cells and 3 seeds, held out on one seed, is far thinner
+than the full 17-cell 8-seed evaluation, and the absolute numbers run well below it — the current
+template reads −0.004 here but scores +0.016 global and **+0.082 per shape** on the full run. So
++0.231 **cannot** be set beside +0.082; only the ranking transfers. The full flat-lay evaluation,
+on the same cells and seeds as `eval_baseline_white_s8` and scored through `remap_prompts.py` and
+the paired bootstrap, is what produces a comparable number, and it is generating now.
+
+This is the third time prompt phrasing has moved the result more than any trained method has.
