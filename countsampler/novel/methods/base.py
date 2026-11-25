@@ -78,7 +78,8 @@ class CountMethod:
         self.geometry = GeometryLosses(delta=g.delta, g=g.g, n_max=cfg.data.n_max,
                                        ord_form=g.get("ord_form", "regression"),
                                        rank_margin=g.get("rank_margin", 0.05),
-                                       delta_x=float(g.get("delta_x", 0.15)))
+                                       delta_x=float(g.get("delta_x", 0.15)),
+                                       g_power=float(g.get("g_power", 0.7)))
         self.loss_steps = mcfg.get("loss_steps", "all")
 
     # ------------------------------------------------------------------ to override

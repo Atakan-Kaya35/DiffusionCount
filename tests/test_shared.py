@@ -119,3 +119,49 @@ def test_x0_diagnostics_report_distance_not_loss():
     d = g.x0_diagnostics(x0, ref)
     assert d["geom/d_x0_max"] == pytest.approx(0.4, abs=1e-4)
     assert d["geom/d_x0_mean"] == pytest.approx(0.1, abs=1e-4)
+
+
+# ---------------------------------------------------------------- g = pow (measured spacing)
+def test_g_pow_matches_the_measured_count_spacing():
+    """The generator's own x0 geometry gives d(1,2)/d(7,8) = 1.65; p = 0.7 reproduces it."""
+    from countsampler.novel.shared import g_pow
+    n = torch.tensor([1, 7]); m = torch.tensor([2, 8])
+    v = g_pow(n, m, 0.7)
+    assert float(v[0] / v[1]) == pytest.approx(1.63, abs=0.05)
+
+
+def test_g_pow_sits_between_lin_and_log():
+    """log is too steep (5.19) and lin too flat (1.00); pow has to land between them."""
+    from countsampler.novel.shared import g_lin, g_log, g_pow
+    n = torch.tensor([1, 7]); m = torch.tensor([2, 8])
+    r_lin = float(g_lin(n, m, 10)[0] / g_lin(n, m, 10)[1])
+    r_log = float(g_log(n, m)[0] / g_log(n, m)[1])
+    r_pow = float(g_pow(n, m, 0.7)[0] / g_pow(n, m, 0.7)[1])
+    assert r_lin == pytest.approx(1.0, abs=1e-6)
+    assert r_log > 5.0
+    assert r_lin < r_pow < r_log
+
+
+def test_g_pow_is_symmetric_and_zero_on_the_diagonal():
+    from countsampler.novel.shared import g_pow
+    n = torch.tensor([3, 5]); m = torch.tensor([5, 3])
+    assert float(g_pow(n, m, 0.7)[0]) == pytest.approx(float(g_pow(n, m, 0.7)[1]))
+    same = torch.tensor([4])
+    assert float(g_pow(same, same, 0.7)[0]) == pytest.approx(0.0, abs=1e-7)
+
+
+def test_alpha_scale_keeps_pow_targets_inside_the_delta_ball():
+    """alpha * g_max must equal 2*delta for every metric, so all pairs fit the anchor budget."""
+    from countsampler.novel.shared import GeometryLosses, g_pow
+    for kind in ("log", "lin", "pow"):
+        G = GeometryLosses(delta=0.3, g=kind, n_max=10)
+        n = torch.tensor([1]); m = torch.tensor([10])
+        assert float(G.alpha * G.g(n, m)[0]) == pytest.approx(0.6, abs=1e-5)
+    G = GeometryLosses(delta=0.3, g="pow", n_max=10, g_power=0.7)
+    assert float(G.g(torch.tensor([1]), torch.tensor([10]))[0]) == pytest.approx(10 ** 0.7 - 1, abs=1e-5)
+
+
+def test_geometry_rejects_an_unknown_metric():
+    from countsampler.novel.shared import GeometryLosses
+    with pytest.raises(ValueError, match="geometry.g"):
+        GeometryLosses(g="sqrt")

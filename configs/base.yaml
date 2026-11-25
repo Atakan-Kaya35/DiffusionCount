@@ -58,7 +58,14 @@ geometry:                      # spec §2.2 (countsampler/novel/shared.py)
                                # corr(counted, n) +0.698 -> +0.749) while a LEARNED displacement
                                # of 0.13 replaces it with a flat colour block, so no radius in
                                # z-space separates the two (docs/experiment_log.md, 2026-11-25)
-  g: log                       # log | lin (spec: run both separately for L_ord)
+  g: log                       # log | lin | pow  (spec offers log and lin; run separately)
+  g_power: 0.7                 # exponent for g=pow, |n^p - m^p|. MEASURED, not assumed: on
+                               # the frozen model d(x0 for n, x0 for m) gives a ratio
+                               # d(1,2)/d(7,8) = 1.65, so adjacent low counts really are
+                               # further apart than adjacent high ones - the shape g_log
+                               # encodes - but g_log predicts 5.19 and g_lin 1.00, while
+                               # p = 0.7 gives 1.63. The spec's metric is right in form and
+                               # three times too aggressive in degree
   ord_form: regression         # regression (Eq. 5) | rank (Eq. 6)
   rank_margin: 0.05            # μ
   over: sampled                # sampled = across the J noises (§7 step 5) | all_counts = 1..N_max (Eq. 5 literally)

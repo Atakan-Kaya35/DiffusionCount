@@ -214,21 +214,37 @@ def g_lin(n: torch.Tensor, m: torch.Tensor, n_max: int) -> torch.Tensor:
     return (n.float() - m.float()).abs() / n_max
 
 
-def g_max(kind: str, n_max: int) -> float:
-    """Eq. (8): g_max^log = log N_max, g_max^lin = (N_max − 1) / N_max."""
-    return math.log(n_max) if kind == "log" else (n_max - 1) / n_max
+def g_pow(n: torch.Tensor, m: torch.Tensor, p: float) -> torch.Tensor:
+    """|n^p − m^p|: the spacing the generator actually uses, with p measured rather than assumed.
+
+    The spec offers g_log and g_lin. Measured on the frozen model, d(x̂0 for n, x̂0 for m) gives a
+    ratio d(1,2)/d(7,8) = 1.65 — adjacent low counts really are further apart than adjacent high
+    ones, which is the shape g_log encodes, but g_log predicts that ratio as 5.19 and g_lin as
+    1.00. |n^p − m^p| at p = 0.7 gives 1.63. So the spec's metric is right in form and three times
+    too aggressive in degree, and this is the corrected version.
+    """
+    return (n.float().clamp_min(1e-6) ** p - m.float().clamp_min(1e-6) ** p).abs()
 
 
-def alpha_scale(delta: float, kind: str, n_max: int) -> float:
+def g_max(kind: str, n_max: int, power: float = 0.7) -> float:
+    """Eq. (8): g_max^log = log N_max, g_max^lin = (N_max − 1) / N_max, g_max^pow = N_max^p − 1."""
+    if kind == "log":
+        return math.log(n_max)
+    if kind == "pow":
+        return n_max ** power - 1.0
+    return (n_max - 1) / n_max
+
+
+def alpha_scale(delta: float, kind: str, n_max: int, power: float = 0.7) -> float:
     """Eq. (8): α = 2δ / g_max, so that α·g_max ≤ 2δ (all pairwise distances fit in the δ-ball)."""
-    return 2.0 * delta / g_max(kind, n_max)
+    return 2.0 * delta / g_max(kind, n_max, power)
 
 
 class GeometryLosses:
     def __init__(self, delta: float = 0.3, g: str = "log", n_max: int = 10, ord_form: str = "regression",
-                 rank_margin: float = 0.05, delta_x: float = 0.15):
-        if g not in ("log", "lin"):
-            raise ValueError("geometry.g must be 'log' or 'lin'")
+                 rank_margin: float = 0.05, delta_x: float = 0.15, g_power: float = 0.7):
+        if g not in ("log", "lin", "pow"):
+            raise ValueError("geometry.g must be 'log', 'lin' or 'pow'")
         if ord_form not in ("regression", "rank"):
             raise ValueError("geometry.ord_form must be 'regression' or 'rank'")
         self.delta = float(delta)
@@ -237,11 +253,16 @@ class GeometryLosses:
         self.n_max = int(n_max)
         self.ord_form = ord_form
         self.mu = float(rank_margin)
-        self.alpha = alpha_scale(self.delta, g, self.n_max)
+        self.g_power = float(g_power)
+        self.alpha = alpha_scale(self.delta, g, self.n_max, self.g_power)
         self._triplets: dict[int, torch.Tensor] = {}
 
     def g(self, n: torch.Tensor, m: torch.Tensor) -> torch.Tensor:
-        return g_log(n, m) if self.kind == "log" else g_lin(n, m, self.n_max)
+        if self.kind == "log":
+            return g_log(n, m)
+        if self.kind == "pow":
+            return g_pow(n, m, self.g_power)
+        return g_lin(n, m, self.n_max)
 
     # -------------------------------------------------------------------- Eq. (5)
     def ordering_loss(self, z: torch.Tensor, counts: torch.Tensor) -> torch.Tensor:
