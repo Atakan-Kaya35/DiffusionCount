@@ -1770,3 +1770,40 @@ The reliable procedure is to match on the **command line** rather than the proce
 `ParentProcessId` to find what is spawning the work, and kill the parent before the child —
 otherwise the parent simply starts the next stage. Confirm with `nvidia-smi` memory rather than a
 process count: 7640 MiB with "one" job running is the signal that something else is on the card.
+
+### 2026-11-25 — grad_clip 200: the sampler moves, and keeps moving
+
+Matched at step 860, the only difference between the runs being the clip:
+
+| run | `chi_hard − n` | `d_anchor_mean` | `d_pair_mean` | `grad_norm` |
+|---|---|---|---|---|
+| `d_white_clip1` | +1.83 | 0.0700 | 0.0012 | 137.5 |
+| `d_white_clip200` | +1.40 | 0.0822 | 0.0013 | 125.1 |
+
+The aggregate difference is small. The *trajectory* is not:
+
+| block | clip 1.0 `d_anchor` | clip 200 `d_anchor` |
+|---|---|---|
+| 0–200 | 0.026 | 0.035 |
+| 200–400 | 0.086 | 0.056 |
+| 400–600 | 0.082 | 0.071 |
+| 600–900 | 0.045 | **0.146** |
+
+**At clip 1.0 the sampler peaked at 0.089 and came back to 0.045. At clip 200 it is at 0.146 and
+still rising** — over three times the old endpoint, against a δ budget of 0.30. The prediction
+written before the rerun was that if clipping was the constraint, `d_anchor` would climb and keep
+climbing; so far it does.
+
+`chi_hard − n` tracks it down: +2.81 → +2.65 → +1.42 → −0.58.
+
+**Stated as pending, not established.** The 600–900 block is the last one, and this log already
+contains one case where a monotone-looking run through the final block reversed as soon as more
+data arrived — the earlier "t = −2.86" on a series truncated at step 290. The difference this time
+is that clip 1.0's own trajectory provides the control: it had already turned back by its fourth
+block, and clip 200 has not. Confirmation needs blocks past step 1200, which is running.
+
+**What has not changed.** `d_pair_mean` is 0.0013, essentially identical to clip 1.0's 0.0012. The
+sampler is moving further from ε but moving *every count the same way*. A perturbation identical
+across counts cannot change the count, whatever it does to the image — the same observation made
+of Method C at step 450, where `d_pair/d_anchor` was 0.15. Here it is 0.009. Raising the clip has
+let the sampler move; it has not yet made the movement depend on n.
