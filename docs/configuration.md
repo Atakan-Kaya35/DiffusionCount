@@ -195,6 +195,7 @@ Euler characteristic is not, and drops by exactly one when two objects fuse.
 | `eval.counter_kwargs` | `{}` | forwarded to the counter. For `owlv2`, `{threshold: 0.1, query_color: false}` is recommended: at the 0.3 default with the colour in the query, "blue cross" returns nothing on 90 % of images and "red cross" on 70 %, against 2 % for "yellow cross" |
 | `eval.template_index` | 0 | index into `data.templates`. Training picks a template at random from all of them, so the default scores the sampler on one phrasing out of three — and `templates[0]` is the bare noun phrase, which SD-Turbo answers with edge-to-edge tiling (72 % of baseline images have objects running off the frame, so the true count is not well defined) |
 | `eval.save_images` | true | save image grids per (colour, shape) |
+| `eval.grid_scale` | 0.5 | scale of the saved grids. The counter reads the **full** decode, so at 0.5 a later re-count of the grids is not the same measurement as `records.csv`: OWLv2 rescales its input to 960 px, so a 256 px cell is upscaled 3.75x and a 512 px cell 1.875x. Set 1.0 to save exactly the images that were counted, which is what any CPU-side re-count needs in order to be comparable |
 | `eval.clip` | false | compute CLIP score (downloads `openai/clip-vit-base-patch32`) |
 
 ### eval.benchmark (CoCoCount, D2D-style, custom prompt files; see [benchmarks.md](benchmarks.md))

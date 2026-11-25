@@ -82,7 +82,8 @@ def main() -> None:
         n_seeds = int(args.seeds or ev.get("seeds", 16))
         metrics = run_evaluation(cfg, gen, sampler, counter, out_dir, split=args.split or ev.get("split", "heldout"),
                                  seeds=list(range(n_seeds)), counts=ev.get("counts"), save_images=save_images,
-                                 clip=clip, template_index=int(ev.get("template_index", 0)))
+                                 clip=clip, template_index=int(ev.get("template_index", 0)),
+                                 grid_scale=float(ev.get("grid_scale", 0.5)))
     print(f"\nresults written to {out_dir}")
     for k, v in metrics.items():
         print(f"  {k}: {v}")

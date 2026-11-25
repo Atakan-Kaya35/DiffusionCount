@@ -85,6 +85,9 @@ eval:                          # spec §8 (scripts/evaluate.py)
                                # detector miss whole prompts: "blue cross" returns nothing on 90% of
                                # images, "red cross" on 70%, against 2% for "yellow cross"
   save_images: true
+  grid_scale: 0.5             # scale of the saved grids. The counter reads the FULL decode, so
+                              # 0.5 means a re-count of the grids is NOT the same measurement as
+                              # records.csv. Use 1.0 to save exactly what was counted.
   clip: false
   benchmark:                   # §8 "each on CoCoCount and the D2D benchmarks" (scripts/evaluate.py --benchmark)
     name: null                 # null = synthetic prompts | cococount | d2d_small | d2d_multi | d2d_large | jsonl

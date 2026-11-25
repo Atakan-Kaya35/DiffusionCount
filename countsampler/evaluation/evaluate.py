@@ -33,7 +33,8 @@ def run_evaluation(cfg, generator, sampler, counter, out_dir: str | Path, *, spl
                    seeds: list[int] | None = None, counts: list[int] | None = None,
                    colors: list[str] | None = None, shapes: list[str] | None = None,
                    save_images: bool = False, clip: bool = False, timesteps=None,
-                   counter_batch: int = 8, template_index: int = 0) -> dict:
+                   counter_batch: int = 8, template_index: int = 0,
+                   grid_scale: float = 0.5) -> dict:
     out_dir = ensure_dir(out_dir)
     gen = generator
     device = gen.device
@@ -94,9 +95,15 @@ def run_evaluation(cfg, generator, sampler, counter, out_dir: str | Path, *, spl
                 idx = [i for i in range(len(ns)) if ns[i] == n]
                 diversities.append(pairwise_diversity(imgs[idx]))
             if save_images:
-                save_image_grid(torch.nn.functional.interpolate(imgs, scale_factor=0.5, mode="bilinear",
-                                                                antialias=True),
-                                out_dir / "grids" / f"{color}_{shape}.png", nrow=len(counts))
+                # The counter above reads the FULL decode; the grid is what any later re-count
+                # reads. At grid_scale 0.5 those are different images - OWLv2 rescales its input
+                # to 960 px, so a 256 px cell is upscaled 3.75x and a 512 px cell 1.875x, and the
+                # detector has no reason to count them alike. Re-counting a 0.5 grid and comparing
+                # with a records.csv therefore mixes resolution into whatever else changed.
+                # grid_scale 1.0 saves the images that were actually counted.
+                out_imgs = imgs if grid_scale == 1.0 else torch.nn.functional.interpolate(
+                    imgs, scale_factor=grid_scale, mode="bilinear", antialias=True)
+                save_image_grid(out_imgs, out_dir / "grids" / f"{color}_{shape}.png", nrow=len(counts))
 
     pred = [r["counted"] for r in records]
     tgt = [r["n"] for r in records]
