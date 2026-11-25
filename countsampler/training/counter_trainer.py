@@ -117,8 +117,12 @@ def train_counter(cfg, out_dir: str | Path | None = None) -> dict:
         res = int(cfg.generator.get("resolution", 512))
         renderer = ShapeRenderer(size=res, radius_range=rr, background=ds.get("background", "white"))
         vae = load_vae(cfg.generator, device)
+        # `harvested` names extra latent files that are loaded ALONGSIDE this cache, never baked
+        # into it, so it must not enter the key - otherwise adding harvested data invalidates a
+        # 30-minute render-and-VAE-encode of the identical synthetic set.
+        ds_key = {k: v for k, v in to_dict(ds).items() if k != "harvested"}
         key_base = {"model": cfg.generator.model_id, "res": res, "cats": categories, "seed": seed,
-                    "rr": list(rr), "ds": to_dict(ds), "aug": to_dict(ccfg.get("image_aug") or {})}
+                    "rr": list(rr), "ds": ds_key, "aug": to_dict(ccfg.get("image_aug") or {})}
         cache_dir = ensure_dir(ds.cache_dir)
         paths = {}
         for split, smp, num, sd in (("train", train_sampler, int(ds.train_size), seed),
