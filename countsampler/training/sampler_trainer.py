@@ -58,7 +58,11 @@ class SamplerTrainer:
         save_config(cfg, self.out_dir / "config.yaml")
         self.logger = RunLogger(self.out_dir, use_wandb=bool(exp.get("wandb", False)),
                                 project=exp.get("wandb_project"), run_name=exp.name, config=to_dict(cfg))
-        self._needs_x0_ref = any("x0a" in st.terms for st in self.method.stages)
+        # The output anchor's term, or just its diagnostic: geom/d_x0_* is what shows a run
+        # collapsing, and geom/d_anchor_* demonstrably does not (both Method D runs sat at
+        # 0.13-0.22 against delta 0.3 while drawing a flat colour block).
+        self._needs_x0_ref = (any("x0a" in st.terms for st in self.method.stages)
+                              or bool(cfg.geometry.get("log_x0", False)))
         self.step = 0
         if t.get("resume"):
             self.load(t.resume)

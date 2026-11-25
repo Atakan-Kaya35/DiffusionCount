@@ -82,6 +82,7 @@ Keeping this page complete is enforced by `tests/test_docs.py`.
 |---|---|---|
 | `geometry.delta` | 0.3 | **OPEN.** δ, anchor radius in normalised distance |
 | `geometry.delta_x` | 0.15 | δ_x for `L_x0anc`, the anchor measured on **x̂0** instead of on z. `geometry.delta` was measured not to control whether the decode is a scene: a *random* displacement at the full 0.3 budget leaves the image essentially unchanged (mean luminance 171.8 → 167.2, corr(counted, n) +0.698 → +0.749), while a *learned* displacement of 0.13 replaces it with a flat colour block. The generator denoises isotropic perturbation back toward the data manifold and gradient descent finds the subspace that survives, so no radius in z-space separates the two |
+| `geometry.log_x0` | false | log `geom/d_x0_mean` / `geom/d_x0_max` even when `L_x0anc` is not an active term. Costs one extra no-grad generator forward per step. This is the only diagnostic that shows a run collapsing: both Method D runs held `geom/d_anchor_*` at 0.13–0.22 against δ = 0.3, well inside budget, while the decode was a flat colour block |
 | `geometry.g` | `log` | `log` or `lin` target metric |
 | `geometry.ord_form` | `regression` | `regression` (Eq. 5) or `rank` (Eq. 6) |
 | `geometry.rank_margin` | 0.05 | μ in Eq. 6 |

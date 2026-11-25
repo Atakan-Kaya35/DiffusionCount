@@ -48,6 +48,9 @@ sampler:                       # Δφ, spec §2.1 (countsampler/novel/shared.py)
 
 geometry:                      # spec §2.2 (countsampler/novel/shared.py)
   delta: 0.3                   # OPEN: δ, anchor radius in normalised distance
+  log_x0: false                # log geom/d_x0_mean|max even when L_x0anc is not an active
+                               # term. Costs one extra no-grad generator forward per step
+                               # and is the only diagnostic that shows a run collapsing
   delta_x: 0.15                # OPEN: δ_x, anchor radius for L_x0anc, measured on x̂0 rather
                                # than on z. `delta` was measured NOT to control whether the
                                # decode is a scene: a RANDOM displacement at the full 0.3 budget
