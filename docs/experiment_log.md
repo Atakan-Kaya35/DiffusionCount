@@ -2118,3 +2118,41 @@ The remaining error is mostly **bias, not spread** — the consequence of being 
 and it is wrong by almost exactly one object every time. A continuous perturbation of the noise is
 precisely the instrument that removes a bias of 0.93 without touching the spread, and that is the
 clearest statement of what the sampler is for that this project has produced.
+
+### 2026-11-25 — the spread is not noise; it is a deterministic function of the sampler's own inputs
+
+Variance of the counted value at fixed n, `eval_baseline_white_s8`, decomposed:
+
+| | share of variance |
+|---|---|
+| seed (which ε was drawn) | 14.7 % |
+| (colour, shape) | 21.0 % |
+| remainder | 64.4 % |
+
+The remainder is not replication noise, because **there is no replication**: every
+(seed, colour, shape, n) cell holds exactly one image, and the frozen generator is deterministic
+given z and the prompt. The counted value is a function `f(ε, colour, shape, n)` evaluated once.
+The 64.4 % is the seed × cell interaction, and Δφ(ε, n, c̄) observes **all three** of those inputs.
+
+So "spread" is the wrong mental model for what the sampler is up against. It is not irreducible
+noise setting a floor on achievable MAE; it is a deterministic function of exactly the arguments
+Δφ is given, and an expressive enough Δφ with enough budget could in principle invert it to zero
+error. The real limits are the two this session measured: how far z may move before the image
+collapses (0.08 along a learned direction, `direction_probe.py`), and how much count change is
+available inside that radius (`leverage_probe.py`, running).
+
+This also corrects how the earlier ceiling analysis should be read. "Skill turns positive when the
+spread halves" is not a claim about beating noise — it is a claim about how much of `f` the
+sampler has to invert, and the obstacle is the perturbation budget, not stochasticity.
+
+**Spec §8's per-seed question, answered.** Spearman(requested n, counted) per seed:
+
+| seed | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | mean |
+|---|---|---|---|---|---|---|---|---|---|
+| ρ | +0.866 | +0.830 | +0.643 | +0.718 | +0.778 | +0.737 | +0.644 | +0.771 | **+0.748** |
+| mean counted | 9.68 | 10.03 | 8.13 | 8.35 | 7.76 | 10.66 | 8.01 | 11.66 | |
+
+Every seed follows the count, and none has a fixed preferred value — the §8 worry that seeds carry
+their own count, which would have to be overcome before anything else, does not apply here. The
+seeds differ in *level* (7.76 to 11.66) far more than in whether they respond, which is the same
+gain-and-offset picture the pooled fit gave.
