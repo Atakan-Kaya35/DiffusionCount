@@ -2209,3 +2209,50 @@ What the probe does still support, at the radii it actually sampled: at d = 0.19
 moved about 4 objects with image sd 52.7 (healthy), and the endpoints differ by 10.9 objects at
 d = 1.42. Count-changing directions that keep the image valid certainly exist. Whether any of that
 is reachable inside 0.08 remains **unmeasured**.
+
+### 2026-11-25 — counting resolution is a first-order effect, and the NMS fix was over-credited
+
+`resolution_probe.py`, 960 paired images from `eval_baseline_fix` (bare-noun template), counting
+the *same* saved grids three ways:
+
+| counting | mean | MAE | slope n ≥ 4 | spread | zero % |
+|---|---|---|---|---|---|
+| 512 px, IoU-only — what `records.csv` holds | 10.88 | 6.956 | +0.624 | 7.33 | 1.8 |
+| 256 px, IoU-only — **resolution changed, rule unchanged** | 8.55 | 5.229 | +0.362 | 5.66 | 2.6 |
+| 256 px, containment — **both changes** | 5.78 | 4.287 | +0.293 | 5.04 | 2.6 |
+
+| isolated effect | mean | slope |
+|---|---|---|
+| resolution alone (512 → 256, same NMS) | **−2.33** | **−0.262** |
+| NMS rule alone (both at 256 px) | −2.77 | −0.069 |
+
+**Only 29.9 % of images receive the same count at 512 px and 256 px under the identical rule.**
+Resolution is not a detail; it is comparable in size to the suppression rule and larger than it on
+the slope, where it accounts for about four fifths of the change.
+
+**The correction.** The containment-NMS entry reported the baseline slope moving +1.031 → +0.595
+and credited the suppression rule. That comparison was 256 px grid counts against a 512 px
+`records.csv`, so it contained both changes, and on this decomposition the resolution is the bigger
+part of the slope move. The nested-box argument itself is unaffected — it rests on the geometry of
+IoU for a small box inside a large one, and on the visibly 2×2 cross image — and the rule still
+removes 2.77 objects per image on its own. But the *magnitude* previously attributed to it was
+roughly double what it earns.
+
+**What this does and does not touch.**
+
+- Every comparison in this session is internally consistent: `eval_baseline_white_s8` and each
+  candidate run are counted by `count_grids.py` on 256 px grids with containment NMS. The skill
+  numbers (raw −0.853, remapping +0.016, affine ceiling +0.341) are like-for-like and stand.
+- The **value** 1.514 in `counted = 1.514 n + 0.069` is a property of (generator, counter,
+  resolution), not of the generator alone. At 512 px the detector finds more objects and the
+  bare-noun slope is about 1.7× steeper, so the same fit at 512 px would report a larger gain.
+  The *structure* — a near-zero offset and a constant multiplier — is what the argument rests on,
+  and that is what a sampler has to correct, whichever counter defines the target.
+- Which resolution is "right" is not settled here, and nothing in this log should be read as
+  settling it. OWLv2 rescales its input to 960 px, so a 256 px cell is interpolated 3.75× and a
+  512 px cell 1.875×; the sharper input plausibly detects better, which would make 256 px an
+  under-count. Deciding it needs ground-truth counts, which these images do not have.
+
+`eval.grid_scale: 1.0` now makes the two agree by construction for new runs, and
+`scripts/count_grids.py` carries the warning. Runs counted at different resolutions must not be
+compared, which is exactly the mistake this entry corrects.
