@@ -2475,3 +2475,47 @@ Two consequences worth carrying forward:
 The second point is the one that matters for method comparison: a run evaluated at high n is being
 scored partly on a coin flip, which is another reason `results_table.py` leads with spread and the
 zero rate rather than with MAE.
+
+### 2026-11-25 — the premise is feasible: the leverage needed is available inside the safe radius
+
+`--mode leverage`, refitted with the sample points bunched near zero and the count compared
+against each path's own start. Nine slerp paths between pairs of noises the frozen model turns
+into very different counts for the same prompt; spherical interpolation holds ‖z‖ constant, so
+every point satisfies `L_pri` and is as Gaussian as its endpoints — the path cannot collapse, and
+the flat image sd column confirms it.
+
+| d(z, start) | median \|Δcount\| | ≥ 1 obj | ≥ 2 obj | img sd |
+|---|---|---|---|---|
+| 0.016 | 0 | 11 % | 11 % | 51.0 |
+| 0.032 | 0 | 44 % | 11 % | 51.1 |
+| 0.055 | 1 | 67 % | 33 % | 51.2 |
+| **0.079** | **1** | **67 %** | **44 %** | **51.4** |
+| 0.110 | 2 | 89 % | 56 % | 51.6 |
+| 0.236 | 3 | 89 % | 56 % | 53.4 |
+| 0.768 | 5 | 78 % | 78 % | 59.4 |
+| 1.418 | 10 | 100 % | 100 % | 60.2 |
+
+**At d = 0.079, just inside the 0.08 radius where a learned direction still draws a scene, the
+median count change is 1 object, two thirds of paths have moved by at least one and 44 % by at
+least two — with image sd 51.4 against 51.0 at the start.**
+
+**One object is exactly the correction that is needed.** The targets prompt remapping cannot reach
+— 2, 4, 7 and 9 — are each off by precisely one object. The leverage available inside the safe
+radius and the leverage the task requires are the same size. The premise is not chasing something
+that does not exist.
+
+Three honest qualifications. These are **slerp paths, not learned directions**: the walk is toward
+another noise that happens to give a different count, which is a lower bound on what an optimised
+direction could achieve per unit distance, but also a direction that stays on the Gaussian
+manifold, which the learned ones demonstrably do not. The response is **extremely path-dependent**
+— blue pentagon n = 2 goes 1 → 22 by d = 0.055 while blue pentagon n = 5 sits at 8 → 7 until
+d = 0.768 — so a median of 1 hides paths that move not at all and paths that move twenty. And the
+mean column is unusable: blue pentagon n = 8 walks `17, 1, 18, 18, 1, 1, 1, 1, 18, 17, 26`, the
+detector's dense-scene bistability, and a single 16-object flip adds 16/9 = 1.78 to the mean by
+itself — which is exactly the d = 0.016 row, and exactly the artifact that made the first run of
+this probe report a false 1.89.
+
+So the obstacle for Methods A, C and D was never that the budget is too small for the task. It is
+that the direction those losses choose destroys the image before it uses the budget — measured at
+4× smaller radius than a random direction — and, for Method D, that the perturbation it learned
+was the same for every count (`d_pair` 0.00027 against an anchor displacement of 0.128).
