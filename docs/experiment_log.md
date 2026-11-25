@@ -2728,3 +2728,53 @@ Two further readings of the same matrix:
 - **The count-free prompt lands near the high counts**: 0.60 to n = 10 but 0.97 to n = 1. A bare
   plural renders as *many*. So nearly all of Δφ's work is at the low end, and that is where this
   design should be expected to fail first.
+
+### 2026-11-26 — δ = 0.3 is three times too permissive, and that explains every collapse
+
+A learned direction amplifies movement in z into movement in x̂0 by about **10 to 16×**:
+
+| d(z, ε) | 0.05 | 0.10 | 0.13 | 0.20 |
+|---|---|---|---|---|
+| d(x̂0, x̂0 of ε) | 0.81 | 1.22 | 1.40 | 1.91 |
+| ratio | 16× | 12× | 11× | 10× |
+
+Put that beside the two x̂0 numbers that matter — the count-free task needs to reach 1.002, and the
+decode stops being a scene at about 1.17 — and the usable **z**-budget is:
+
+```
+  needed    d_x0 1.002  ->  d_z about 0.074
+  collapse  d_x0 1.170  ->  d_z about 0.097
+```
+
+**`geometry.delta` is 0.3. The safe ceiling is about 0.10.** The spec's budget is three times
+larger than the generator can survive, and it is marked OPEN, so it was never anything but a
+guess. Every collapse in this log falls out of that single fact:
+
+| run | `d_anchor` reached | implied d_x0 | what happened |
+|---|---|---|---|
+| `d_white_clip1` | 0.045–0.089 | 0.7–1.1 | marginal; images recognisable but poor |
+| `d_white_clip200` | 0.13–0.22 | 1.5–2.5 | solid black squares |
+| `b_ord` (Method B) | 0.267 | **2.69 measured** | 100 % empty images |
+
+All three sat *inside* δ = 0.3 with `L_anc` reading 0.0, and all three were far outside the region
+where the decode survives. `grad_clip: 1.0` kept the first one alive by limiting step size, which
+is why it was the only one that drew anything — an accident, not a setting.
+
+**The configuration this implies**, all three numbers measured rather than chosen:
+
+```
+geometry.delta    0.09    the z-ball that maps inside the safe x0 region
+geometry.delta_x  1.1     the real constraint, hinged on the output
+geometry.g        pow     with g_power 0.7, matching the generator's own count spacing
+```
+
+With δ = 0.09 and g = pow, α = 2δ/g_max = 0.0449 and `L_ord`'s target for the extreme pair is
+d(z₁, z₁₀) = 0.18 — each z_n within 0.09 of ε, so two counts can sit 0.18 apart, which is
+consistent with the anchor rather than fighting it. That 0.18 of z separation maps to roughly 1.8
+of x̂0 separation against the 0.96 needed to span counts 1 to 10, so the budget is sufficient as
+well as safe.
+
+It is worth being explicit that δ and δ_x are not redundant. δ bounds the cause and δ_x the
+effect, and the amplification between them varies by direction — 16× at small radius, 10× at
+large, and presumably different again for a direction this project has not yet produced. δ_x is
+the constraint that means what it says; δ is a backstop now set so the two agree.
