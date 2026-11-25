@@ -1901,3 +1901,50 @@ signal from being answered with a constant. `L_cc` picks *which* displacement lo
 including `ord`. Verified on a 30-step smoke run: `loss/total` 0.849 against the ~0.45 the same
 step would have shown before, and `d_pair` rising 7.8e-9 → 4.6e-4 over 30 steps where clip 200 was
 falling by then. That is the config now training as `d_ord`.
+
+### 2026-11-25 — the anchor budget δ = 0.3 contains total collapse
+
+**Look at the images.** `runs/figures/ord_vs_clip200.png`, blue pentagons, the same ε in every row:
+
+| row | what it draws | mean luminance | within-image sd | col-to-col Δ |
+|---|---|---|---|---|
+| frozen baseline | pentagons on white, count roughly tracking | 157.1 | 46.6 | **29.8** |
+| clip 200 @1000 | a solid dark-blue square | 52.9 | 59.4 | 6.0 |
+| clip 200 @2000 | a solid **black** square | 34.5 | 78.8 | 3.4 |
+| d_ord @500 | black, a few pentagons at the edges | 14.4 | 43.4 | 5.5 |
+| d_ord @1000 | solid **red** for n ≤ 6; ten real pentagons at n = 10 | 90.5 | 17.7 | 10.6 |
+
+Both Method D variants have destroyed the generator. Not degraded — replaced the scene with a
+single flat colour. And they did it *inside* the anchor budget: `d_anchor` was 0.13–0.22 against
+δ = 0.3, so `L_anc` read exactly 0.0 for the whole run. The term meant to keep z_n in a safe
+neighbourhood of ε never objected, because the neighbourhood it defines is not safe.
+
+**The correction this forces.** The previous entry concluded: *"the optimiser constraint was real
+and raising the clip removed it."* The mechanism was right and the implication was backwards.
+`grad_clip: 1.0` was limiting how far the sampler could travel per step, and that limit was the
+only thing holding earlier runs on the image manifold. Removing it did not free the method; it
+let the method walk off the manifold. `d_white_clip1` held `d_anchor` at 0.045–0.089 and drew
+objects. `d_white_clip200` reached 0.13–0.22 and draws a black square. **The collapse radius is
+bracketed between 0.045 and 0.13, and δ = 0.3 is two to six times larger than the whole safe
+region.** It is marked OPEN in base.yaml:50 and has never once been measured.
+
+So the right reading of the grad-clip experiment is not "the clip was too tight" but "the clip was
+doing the anchor's job, badly and by accident". The anchor should do it, with a δ that reflects
+where the generator still draws scenes.
+
+**What is nonetheless real in d_ord.** Turning `L_ord` on worked, on its own terms: `d_pair` went
+0.0025 → 0.0101 → 0.105 over 900 steps, against 0.00027 at the end of clip 200 — a factor of 389 —
+while `loss/ord` fell 0.629 → 0.254 → 0.217. And the count-dependence reaches the image: at
+n = 10 the sampler draws ten pentagons where n ≤ 6 gives flat red. The ordering term does what it
+was added to do. It was applied on top of a collapsed generator, so what it modulates is how much
+of the frame is destroyed rather than how many objects appear.
+
+Note also that the frozen baseline's col-to-col Δ of 29.8 is **three times** any sampler's. The
+prompt alone already makes the image depend on n more than any trained sampler has. A method that
+lowers that number is removing information the frozen model had.
+
+**`delta_probe.py`** measures the radius directly: push ε a fixed normalised distance s in a
+random direction, decode, and ask whether OWLv2 still finds objects. d(a,b) = ‖a−b‖/√D, so
+z = ε + s·√D·u/‖u‖ lands exactly at s. Random directions give the generic radius; a *learned*
+direction is chosen to change the image and can only be worse, so this is an upper bound on a
+safe δ. Running now over s ∈ {0, 0.02, …, 0.30}.
