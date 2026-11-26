@@ -55,9 +55,27 @@ from countsampler.utils.misc import (
 )
 
 
+def project(delta: torch.Tensor, radius: float) -> torch.Tensor:
+    """Scale each perturbation so d(eps + out, eps) <= radius. Enforced, not merely penalised.
+
+    A penalty does not work here. The count-free baseline draws about 15.7 objects when the mean
+    request is 5.5, so emitting NOTHING scores an error of 5.5 against 10.2 for drawing normally:
+    collapse is the higher-reward policy and a soft penalty just sets the price of it. Measured
+    directly - with a collapse penalty of 5.0 the run reached d_anchor 0.16, image sd 7.4 and
+    100 % collapsed images within 25 steps. The radius comes from the amplification measurement:
+    a learned direction turns d_z into 10-16x as much d_x0, the decode dies at d_x0 1.17, so
+    d_z 0.07 maps to about 1.0 and is the usable ceiling.
+    """
+    d = delta.flatten(1).norm(dim=1) / (delta[0].numel() ** 0.5)
+    scale = (radius / d.clamp_min(1e-9)).clamp(max=1.0)
+    return delta * scale[:, None, None, None]
+
+
 def main() -> None:
     ap = base_parser(__doc__, config_required=False)
     ap.add_argument("--steps", type=int, default=2000)
+    ap.add_argument("--radius", type=float, default=0.07,
+                    help="hard cap on d(z, eps); the measured safe z-budget is 0.07-0.097")
     ap.add_argument("--sigma", type=float, default=0.02,
                     help="exploration sd in normalised distance; d(z, eps+wD) equals this")
     ap.add_argument("--eps-per-batch", type=int, default=2)
@@ -118,7 +136,7 @@ def main() -> None:
         # 3 s to 8.5 s. The graph is rebuilt for the update once the reward is known, at the cost
         # of one extra sampler forward (0.05 s).
         with torch.no_grad():
-            delta_s = sampler.delta(eps, n_t, enc.pooled.float())
+            delta_s = project(sampler.delta(eps, n_t, enc.pooled.float()), args.radius)
             xi = torch.randn(eps.shape, generator=noise_gen).to(device)
             z = eps + wmix * delta_s + sigma * xi
             u8 = to_uint8_images(gen.decode(gen.generate_latents(z, enc)))
@@ -139,7 +157,11 @@ def main() -> None:
         counted = np.array([r.count for r in res], float)
         img_sd = np.array([u8[i].mean(axis=2).std() for i in range(len(u8))], float)
         tgt = np.array(counts, float)
-        reward = -np.abs(counted - tgt) - args.collapse_penalty * np.maximum(0.0, args.sd_floor - img_sd) / args.sd_floor
+        # Relative error, so emitting nothing is maximally wrong at every n instead of being
+        # cheap at high n, which is what an absolute error rewards against a baseline that
+        # over-draws.
+        reward = (-np.abs(counted - tgt) / np.maximum(tgt, 1.0)
+                  - args.collapse_penalty * np.maximum(0.0, args.sd_floor - img_sd) / args.sd_floor)
 
         # ---- advantage against a per-count baseline, then normalised
         adv = np.zeros_like(reward)
@@ -152,7 +174,7 @@ def main() -> None:
         a_t = torch.tensor(adv, device=device, dtype=torch.float32)
 
         # ---- REINFORCE surrogate: -(A * d(log pi)/d(phi)), gradient only through `delta`
-        delta = sampler.delta(eps, n_t, enc.pooled.float())
+        delta = project(sampler.delta(eps, n_t, enc.pooled.float()), args.radius)
         score = (xi * delta).flatten(1).sum(1) * (wmix / sigma)
         loss = -(a_t * score).mean()
         opt.zero_grad(set_to_none=True)
