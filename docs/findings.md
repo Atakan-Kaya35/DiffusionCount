@@ -295,13 +295,31 @@ error of 5.5 against 10.2 for drawing normally. Hence the projection and the rel
 dense field toward the mean request would reach ≈ 0.000 while carrying no count information, so
 only a result above 0.000 demonstrates that Δφ varies the count with n.
 
+### What the policy-gradient route established
+
+Six runs, each ended by a different real defect — the reward making collapse optimal, a penalty
+that merely priced degradation, a barrier with no exit, a fixed radius in a 15 % corridor, an
+advantage normalised across counts whose reward scales differ 16-fold, and finally a quality term
+that **rewarded adding objects** (a correct 1-object image scores img_sd 45.4 against 63.2 for 14
+objects, so a floor of 45 rejected 49 % of low-count images). Each fix was justified; none
+produced learning.
+
+**The pattern is the result.** Reward, advantage sign and the score-function estimator were each
+verified independently — the estimator against a known optimum — so this is not a bug. At every
+radius and under every reward shape, **the policy found directions that add objects and never
+found directions that remove them.** Adding texture to a latent is easy; removing objects while
+keeping a valid scene is not. With the safe corridor between "reaches n = 1" (0.97) and "destroys
+the decode" (1.17) only 15 % wide, the mechanism is **reachable but not trainable by this route at
+this budget**.
+
 ### Still unanswered
 
-- **Can a learned direction use the budget without destroying the image?** The projection makes
-  collapse structurally impossible, so this run answers it by construction rather than by luck.
-- **Is 2500 steps × 8 samples enough for REINFORCE?** 20 000 reward evaluations is a small budget
-  for policy gradient on a 3.2 M-parameter network. A null result here would not separate "cannot"
-  from "not yet".
+- **Trainability, not feasibility.** 1600 reward evaluations per run is small for policy gradient.
+  A null result cannot separate "the mechanism cannot" from "the search was too small", and
+  settling that needs an order of magnitude more compute than one 8 GB card gives.
 - **`L_x0anc` has never been run.** It is implemented, tested and configured, and every collapse
-  in this project would have been caught by it; the differentiable methods were abandoned before
-  it was tried.
+  in this project would have been caught by it; the differentiable methods were abandoned for
+  proxy failure before it was tried.
+- **Why removal is hard.** That adding objects is easy and removing them is not is an observation
+  across six runs, not a measurement. It would be worth testing directly — e.g. whether a slerp
+  path toward a *lower*-count noise degrades the image more than one toward a higher-count noise.
