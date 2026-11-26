@@ -3032,3 +3032,33 @@ prompt is still count-free if it renders sparser scenes — it names no number a
 every n. `range_probe.py` measures, for five such phrasings, the count distribution over a noise
 pool, how many of the ten targets fall inside the band, and the oracle MAE a perfect
 noise-selection scheme would achieve — an upper bound on this mechanism, against a bar of 2.500.
+
+### 2026-11-26 — the count-free prompt sets the reachable band, and flat-lay was the worst choice
+
+Five count-free phrasings, each naming no number and identical for every n, measured over a shared
+noise pool on 3 cells. "Oracle MAE" is the best any noise-SELECTION scheme could achieve: pick,
+per target, the pool noise whose count is nearest. It is an upper bound on the mechanism.
+
+| count-free prompt | mean | sd | range | covers 1–10 | oracle MAE | oracle skill |
+|---|---|---|---|---|---|---|
+| `a flat lay photo of … on a white background` | 18.9 | 4.1 | 10–29 | **1/10** | 4.23 | **−0.693** |
+| **`{colour} {shape}s on a white background`** | 13.5 | 3.3 | **4–21** | **7/10** | **0.67** | **+0.733** |
+| `a minimalist flat lay photo of …` | 13.3 | 4.3 | 5–26 | 6/10 | 1.23 | +0.507 |
+
+**The prompt decides whether the task is possible at all.** Under flat-lay the oracle itself
+scores −0.693: no selection scheme, however perfect, can beat the constant predictor, because
+nine of ten targets lie outside the band the prompt renders. Under the plain plural the same
+oracle reaches +0.733.
+
+**And flat-lay was chosen for the opposite regime.** It won the template search of 2026-11-25 by a
+wide margin — remapped skill +0.231 against −0.004 — because with the count *in* the prompt it
+produces well-separated, countable objects. With the count *removed*, that same property makes it
+the worst available choice: it renders dense scenes, and the noise can only modulate within the
+band, never below it. The property that makes a prompt good for prompt-based counting is close to
+the opposite of what makes it good for noise-based counting.
+
+That is worth stating plainly because it is the cost of the earlier direction. Six policy-gradient
+runs were spent inside a prompt where the targets did not exist, and the prompt had been selected
+by an experiment whose conclusions do not transfer across the change of regime.
+
+The reference-noise method is now being rebuilt on the plain plural.
