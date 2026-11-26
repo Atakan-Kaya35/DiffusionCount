@@ -3530,3 +3530,47 @@ noise, so the bar is 5.00 and these numbers are not comparable to the 2.500-bar 
 about 0.6, so it tracks at roughly two thirds strength; per cell, because the noise-to-count map
 has no smooth structure across cells to interpolate; and only on cells where a counter can
 actually measure, which excludes circles, squares, hexagons and pentagons outright.
+
+## Per-cell calibration extended to ten cells
+
+The four-cell result left two things unsettled: whether +0.360 on red/cross was a lucky cell, and
+whether the negatives were the method or the counter. The 96-noise pool in `runs/general` already
+holds counted references for ten cells, so the remaining six cost training and evaluation only -
+no new counting pass. `scripts/percell_calibrate_more.py` ran them under the identical protocol
+(count absent from the prompt, eight seeds never used in training, every image counted by OWLv2
+and by the independent colour counter); `scripts/percell_calibrate_summary.py` merges both eval
+files and reproduces the original four numbers exactly before adding the rest.
+
+Ten cells, 2.7 min of training each:
+
+```
+      red/cross +0.360    green/cross +0.312      red/star +0.292
+      blue/star +0.290     blue/cross +0.280  yellow/cross +0.237
+    red/diamond +0.118   red/triangle -0.053    green/star -0.068
+   blue/diamond -0.075
+   POOLED +0.170, improvement +2.74 [+2.31,+3.17], p 0.0000
+```
+
+Seven of ten beat the best constant predictor; nine of ten beat untouched noise at p < 0.05. The
+pooled number barely moved (+0.172 -> +0.170) while the sample went from 320 pairs to 800, and the
+pooled confidence interval tightened from [+1.79,+2.90] to [+2.31,+3.17]. So the four-cell result
+was not a lucky draw, and red/cross's +0.360 is the top of a distribution, not an outlier.
+
+Two corrections to what the four-cell entry claimed.
+
+**The counter-agreement explanation is weaker than it looked.** At n = 4 skill correlated +0.83
+with how well the two counters agreed. At n = 10 it is +0.55 (-0.64 against raw disagreement).
+Same sign, no longer enough to dismiss a negative cell as an instrument artifact: yellow/cross
+scores +0.237 at a worse agreement (4.9) than blue/diamond's (5.6) at -0.075. The honest position
+is that counter noise contributes and does not account for the negatives.
+
+**Negative skill is mostly an offset, not a loss of control.** red/triangle correlates +0.91 with
+the request at slope 0.85 and blue/diamond +0.89 at 0.62, both while scoring below the constant
+predictor - they move the right way and land too high. Only green/star (+0.48, slope 0.20) fails
+to steer. That reframes what is left to fix: a per-cell intercept, not a better conditioning
+signal.
+
+`runs/percal/comparison2.png` shows green/cross, red/star and blue/star on one held-out seed, with
+the flat baseline row above each. The baseline is flat by construction - same prompt, same noise,
+ten columns, one number - which is exactly why any variation in the Dphi row is attributable to
+the sampler alone.

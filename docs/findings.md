@@ -260,21 +260,42 @@ the best constant predictor. Calibrated per cell, on eight held-out seeds each:
 
 ```
              cell   base   Dphi   skill   corr  slope  improve          95% CI       p
-        red/cross   6.22   3.20  +0.360  +0.95   0.69    +3.02 [+2.02,+4.06]  0.0000
-       blue/cross   6.17   3.60  +0.280  +0.90   0.58    +2.58 [+1.46,+3.61]  0.0000
-      red/diamond   7.00   4.41  +0.118  +0.74   0.54    +2.59 [+1.21,+4.00]  0.0002
-       green/star   6.50   5.34  -0.068  +0.48   0.20    +1.16 [+0.28,+2.04]  0.0047
+        red/cross   6.22   3.20  +0.360  +0.95   0.69    +3.02 [+1.99,+4.05]  0.0000
+      green/cross   6.03   3.44  +0.312  +0.94   0.72    +2.59 [+1.56,+3.62]  0.0000
+         red/star   6.03   3.54  +0.292  +0.86   0.61    +2.49 [+1.41,+3.62]  0.0000
+        blue/star   7.05   3.55  +0.290  +0.85   0.66    +3.50 [+2.16,+4.84]  0.0000
+       blue/cross   6.17   3.60  +0.280  +0.90   0.58    +2.58 [+1.49,+3.62]  0.0000
+     yellow/cross   8.88   3.81  +0.237  +0.92   0.82    +5.06 [+3.30,+6.96]  0.0000
+      red/diamond   7.00   4.41  +0.118  +0.74   0.54    +2.59 [+1.23,+3.96]  0.0002
+     red/triangle   8.47   5.26  -0.053  +0.91   0.85    +3.21 [+1.64,+4.84]  0.0000
+       green/star   6.50   5.34  -0.068  +0.48   0.20    +1.16 [+0.31,+2.04]  0.0049
+     blue/diamond   6.58   5.38  -0.075  +0.89   0.62    +1.20 [-0.43,+2.88]  0.0756
 
-           POOLED   6.47   4.14  +0.172  +0.97   0.50    +2.34 [+1.79,+2.90]  0.0000
+           POOLED   6.89   4.15  +0.170  +0.98   0.63    +2.74 [+2.31,+3.17]  0.0000
 ```
 
-The baseline row is flat by construction — identical prompt, untouched noise — so the entire
-difference is carried by Δφ. Best cell: **skill +0.360 at correlation +0.95**, for 2.7 minutes of
-training plus one 96-noise counting pass.
+The baseline row is flat by construction - identical prompt, untouched noise - so the entire
+difference is carried by Delta-phi. Best cell: **skill +0.360 at correlation +0.95**, for 2.7
+minutes of training plus one 96-noise counting pass. Across ten cells, **seven beat the best
+constant predictor** and **nine of ten beat untouched noise at p < 0.05**; the one that does not,
+blue/diamond, still improves by +1.20 with a CI that only just crosses zero.
 
-Measured skill correlates +0.83 with how well the two independent counters agree on that cell
-(n = 4, indicative). green/star's negative number may be the instrument rather than the method,
-which is why the claim stays on cells where both counters agree.
+Two things the ten-cell table says that the four-cell one could not.
+
+**Correlation with the target is near-universal; absolute accuracy is not.** Nine of the ten cells
+track the request at r >= +0.74 - red/triangle at +0.91 with slope 0.85, blue/diamond at +0.89 -
+so the sampler knows which way to move almost everywhere. Both of those still score negative
+skill: their counts rise with n but sit too high, an offset rather than a loss of control. Only
+green/star (r +0.48, slope 0.20) is a genuine control failure. And a large baseline error is no
+obstacle by itself - yellow/cross starts worst of all at 8.88 and still reaches +0.237, the single
+biggest improvement in the table at +5.06.
+
+**The instrument explanation weakened under more data.** On four cells, skill correlated +0.83 with
+how well the two independent counters agree. On ten it is **+0.55** (and -0.64 against raw
+disagreement) - still the right sign, no longer strong enough to explain the negatives away.
+yellow/cross reaches +0.237 at a counter agreement of 4.9, worse than blue/diamond's 5.6. So
+counter noise is part of the story and not the whole of it, and the claim stays stated per cell
+rather than leaned on a single pooled number.
 
 ### The architectural finding that made it possible
 
