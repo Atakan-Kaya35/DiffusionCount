@@ -84,8 +84,8 @@ def main() -> None:
     ap.add_argument("--counts-per-eps", type=int, default=4)
     ap.add_argument("--lr", type=float, default=3e-5)
     ap.add_argument("--counter", default="owlv2")
-    ap.add_argument("--sd-floor", type=float, default=45.0,
-                    help="image sd below which the reward is a flat barrier; the frozen baseline sits near 62 and 25 is fully dead, so 45 rejects damage rather than death")
+    ap.add_argument("--sd-floor", type=float, default=0.25,
+                    help="backdrop fraction below which the decode is treated as collapsed; valid images span 0.48-0.74 at every count and a collapsed one scores 0.000")
     ap.add_argument("--collapse-penalty", type=float, default=150.0,
                     help="K in the quadratic image-quality penalty K*((floor-sd)/floor)^2")
     ap.add_argument("--baseline-ema", type=float, default=0.9)
@@ -114,7 +114,7 @@ def main() -> None:
     sigma = float(args.sigma)
     noise_gen = torch.Generator().manual_seed(int(cfg.experiment.seed) + 1)
     colors, shapes = list(cfg.data.colors), list(cfg.data.heldout_shapes) + list(cfg.data.train_shapes)
-    baseline = {k: None for k in range(1, n_max + 1)}   # per-count EMA, the variance reducer
+    baseline = {k: (None, None) for k in range(1, n_max + 1)}   # per-count (mean, scale) EMAs
     radius = float(args.radius)
     t0 = time.time()
 
@@ -159,7 +159,17 @@ def main() -> None:
             for j, i in enumerate(idx):
                 res[i] = out[j]
         counted = np.array([r.count for r in res], float)
-        img_sd = np.array([u8[i].mean(axis=2).std() for i in range(len(u8))], float)
+        # Validity is measured by how much of the BACKDROP survives, not by image variance.
+        # img_sd confounds validity with count: a correct single-object image scores 45.4 and a
+        # fourteen-object one 63.2, so any floor that rejects a collapsed decode (21-35) also
+        # rejects half the low-count images - measured, 49 % of images with <= 3 objects fell
+        # below the floor of 45. The policy obeyed that incentive and kept adding objects.
+        # The backdrop fraction does separate them: 0.000 for a collapsed decode against 0.48-0.74
+        # across every valid count, so a floor at 0.25 sits well clear of the valid range and
+        # catches only collapse.
+        mn = u8.min(axis=3).astype(np.int16)
+        mx = u8.max(axis=3).astype(np.int16)
+        img_sd = ((mn > 170) & ((mx - mn) < 40)).mean(axis=(1, 2)).astype(float)
         tgt = np.array(counts, float)
         # A BARRIER, not a penalty. The count-free baseline draws 15.74 objects for requests
         # averaging 5.5, so any route to fewer objects is rewarded - including wrecking the image.
@@ -179,13 +189,19 @@ def main() -> None:
         reward = -rel - float(args.collapse_penalty) * short ** 2
 
         # ---- advantage against a per-count baseline, then normalised
+        # Per-count mean AND scale. The reward scale differs enormously across counts - a
+        # relative error of 23 is routine at n = 1 and 1.4 is typical at n = 10 - so dividing by
+        # the batch standard deviation across mixed counts lets the low counts dominate every
+        # update whatever the policy did. Both moments are tracked per count instead.
         adv = np.zeros_like(reward)
         for i, n in enumerate(counts):
-            b = baseline[n]
-            adv[i] = reward[i] - (b if b is not None else reward[i])
-            baseline[n] = reward[i] if b is None else args.baseline_ema * b + (1 - args.baseline_ema) * reward[i]
-        s = adv.std()
-        adv = adv / (s + 1e-6) if s > 1e-6 else adv
+            b, sc = baseline[n]
+            centred = reward[i] - (b if b is not None else reward[i])
+            adv[i] = centred / ((sc if sc else 1.0) + 1e-6)
+            nb = reward[i] if b is None else args.baseline_ema * b + (1 - args.baseline_ema) * reward[i]
+            nsc = abs(centred) if not sc else args.baseline_ema * sc + (1 - args.baseline_ema) * abs(centred)
+            baseline[n] = (nb, nsc)
+        adv = np.clip(adv, -5.0, 5.0)
         a_t = torch.tensor(adv, device=device, dtype=torch.float32)
 
         # ---- REINFORCE surrogate: -(A * d(log pi)/d(phi)), gradient only through `delta`
@@ -218,7 +234,7 @@ def main() -> None:
             print(f"[{step:6d}] reward {rec['reward']:+7.3f}  |counted-n| {rec['abs_err']:6.3f}  "
                   f"counted {rec['counted_mean']:5.2f} vs {rec['target_mean']:5.2f}  "
                   f"d_anchor {rec['geom/d_anchor_mean']:.4f}  img_sd {rec['img_sd']:5.1f}  "
-                  f"collapsed {100*rec['collapsed_frac']:3.0f}%  r {radius:.4f}  {rec['sec_per_step']:.2f}s/step", flush=True)
+                  f"bg {rec['img_sd']:.2f}  dead {100*rec['collapsed_frac']:3.0f}%  r {radius:.4f}  {rec['sec_per_step']:.2f}s/step", flush=True)
 
         if args.preview_every and step % args.preview_every == 0:
             with torch.no_grad():
