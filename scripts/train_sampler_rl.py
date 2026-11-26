@@ -74,6 +74,8 @@ def project(delta: torch.Tensor, radius: float) -> torch.Tensor:
 def main() -> None:
     ap = base_parser(__doc__, config_required=False)
     ap.add_argument("--steps", type=int, default=2000)
+    ap.add_argument("--radius-max", type=float, default=0.07,
+                    help="ceiling for the adaptive radius; 0.07 is the smallest that can reach n=1")
     ap.add_argument("--radius", type=float, default=0.05,
                     help="hard cap on d(z, eps); the measured safe z-budget is 0.07-0.097")
     ap.add_argument("--sigma", type=float, default=0.02,
@@ -84,8 +86,8 @@ def main() -> None:
     ap.add_argument("--counter", default="owlv2")
     ap.add_argument("--sd-floor", type=float, default=45.0,
                     help="image sd below which the reward is a flat barrier; the frozen baseline sits near 62 and 25 is fully dead, so 45 rejects damage rather than death")
-    ap.add_argument("--collapse-penalty", type=float, default=50.0,
-                    help="flat reward below sd_floor; must exceed the worst count error (~15)")
+    ap.add_argument("--collapse-penalty", type=float, default=150.0,
+                    help="K in the quadratic image-quality penalty K*((floor-sd)/floor)^2")
     ap.add_argument("--baseline-ema", type=float, default=0.9)
     ap.add_argument("--log-every", type=int, default=10)
     ap.add_argument("--preview-every", type=int, default=250)
@@ -113,6 +115,7 @@ def main() -> None:
     noise_gen = torch.Generator().manual_seed(int(cfg.experiment.seed) + 1)
     colors, shapes = list(cfg.data.colors), list(cfg.data.heldout_shapes) + list(cfg.data.train_shapes)
     baseline = {k: None for k in range(1, n_max + 1)}   # per-count EMA, the variance reducer
+    radius = float(args.radius)
     t0 = time.time()
 
     for step in range(1, args.steps + 1):
@@ -137,7 +140,7 @@ def main() -> None:
         # 3 s to 8.5 s. The graph is rebuilt for the update once the reward is known, at the cost
         # of one extra sampler forward (0.05 s).
         with torch.no_grad():
-            delta_s = project(sampler.delta(eps, n_t, enc.pooled.float()), args.radius)
+            delta_s = project(sampler.delta(eps, n_t, enc.pooled.float()), radius)
             xi = torch.randn(eps.shape, generator=noise_gen).to(device)
             z = eps + wmix * delta_s + sigma * xi
             u8 = to_uint8_images(gen.decode(gen.generate_latents(z, enc)))
@@ -165,8 +168,15 @@ def main() -> None:
         # count and the policy took it (38-50 % collapsed by step 400). At low n the count error
         # is so large that no proportional penalty can outweigh it, so the floor has to be a wall.
         # sd_floor is 45 against a baseline of about 62: this rejects DAMAGE, not just death.
+        # Steep but CONTINUOUS, not a flat barrier. A flat -50 below the floor has no gradient
+        # once every sample is inside it: the advantage is identically zero and the policy cannot
+        # climb out. Measured - at step 150 every sample read reward -50.000 with image sd 35 and
+        # the run was stuck. Quadratic with K = 150 costs 16.7 at sd 30 against a best-case count
+        # gain of 10.7 (cutting 15.7 objects to 5 at n = 1), so degradation never pays, while the
+        # gradient always points back toward a healthy image.
         rel = np.abs(counted - tgt) / np.maximum(tgt, 1.0)
-        reward = np.where(img_sd < args.sd_floor, -float(args.collapse_penalty), -rel)
+        short = np.maximum(0.0, args.sd_floor - img_sd) / args.sd_floor
+        reward = -rel - float(args.collapse_penalty) * short ** 2
 
         # ---- advantage against a per-count baseline, then normalised
         adv = np.zeros_like(reward)
@@ -179,7 +189,7 @@ def main() -> None:
         a_t = torch.tensor(adv, device=device, dtype=torch.float32)
 
         # ---- REINFORCE surrogate: -(A * d(log pi)/d(phi)), gradient only through `delta`
-        delta = project(sampler.delta(eps, n_t, enc.pooled.float()), args.radius)
+        delta = project(sampler.delta(eps, n_t, enc.pooled.float()), radius)
         score = (xi * delta).flatten(1).sum(1) * (wmix / sigma)
         loss = -(a_t * score).mean()
         opt.zero_grad(set_to_none=True)
@@ -187,17 +197,28 @@ def main() -> None:
         gnorm = torch.nn.utils.clip_grad_norm_(sampler.parameters(), float(cfg.train.get("grad_clip", 10.0)))
         opt.step()
 
+        # ---- adaptive radius: ENFORCE image quality instead of pricing it.
+        # A reward penalty cannot do this job. The advantage subtracts a per-count baseline that
+        # follows the policy down, so when every sample is equally degraded the quality term is
+        # absorbed into the baseline and only the count differences reach the gradient - measured
+        # three times, each ending at 100% of images below the floor. Shrinking the radius when
+        # the batch is unhealthy removes the option rather than taxing it, and the corridor here
+        # is narrow enough (reaching n=1 needs d_x0 0.97, collapse starts at 1.17) that the radius
+        # has to sit on the boundary rather than be chosen once.
+        healthy = float(img_sd.mean()) >= args.sd_floor
+        radius = min(args.radius_max, radius * 1.01) if healthy else max(0.01, radius * 0.97)
+
         if step % args.log_every == 0:
             rec = {"step": step, "reward": float(reward.mean()), "abs_err": float(np.abs(counted - tgt).mean()),
                    "counted_mean": float(counted.mean()), "target_mean": float(tgt.mean()),
                    "img_sd": float(img_sd.mean()), "collapsed_frac": float((img_sd < args.sd_floor).mean()),
                    "geom/d_anchor_mean": float(d_anchor.mean()), "geom/d_anchor_max": float(d_anchor.max()),
-                   "grad_norm": float(gnorm), "loss": float(loss.detach()), "sec_per_step": (time.time() - t0) / step}
+                   "grad_norm": float(gnorm), "loss": float(loss.detach()), "radius": radius, "sec_per_step": (time.time() - t0) / step}
             log.write(json.dumps(rec) + "\n"); log.flush()
             print(f"[{step:6d}] reward {rec['reward']:+7.3f}  |counted-n| {rec['abs_err']:6.3f}  "
                   f"counted {rec['counted_mean']:5.2f} vs {rec['target_mean']:5.2f}  "
                   f"d_anchor {rec['geom/d_anchor_mean']:.4f}  img_sd {rec['img_sd']:5.1f}  "
-                  f"collapsed {100*rec['collapsed_frac']:3.0f}%  {rec['sec_per_step']:.2f}s/step", flush=True)
+                  f"collapsed {100*rec['collapsed_frac']:3.0f}%  r {radius:.4f}  {rec['sec_per_step']:.2f}s/step", flush=True)
 
         if args.preview_every and step % args.preview_every == 0:
             with torch.no_grad():
