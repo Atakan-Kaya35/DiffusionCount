@@ -2897,3 +2897,62 @@ Two consequences worth recording:
   span probe exactly, where the count-free prompt sat 0.60 from x̂0(n = 10) but 0.97 from
   x̂0(n = 1) — the low counts are the far end, and that is where this design should be expected to
   fail first.
+
+### 2026-11-26 — all three differentiable count signals are measured inadequate
+
+The harvest did not work. Retraining the counter on 634 OWLv2-labelled generator latents,
+oversampled to 24 % of the training set, moved the number that matters **backwards**:
+
+| | corr(counter, OWLv2) | counter mean | OWLv2 mean |
+|---|---|---|---|
+| synthetic only | +0.281 | 1.89 | 8.43 |
+| **+ harvest ×10** | **+0.186** | **1.54** | 8.43 |
+
+The stray-mass column suggested a diagnosis: 1.54 in the correct category and **7.48 in the
+others**, totalling 9.02 against OWLv2's 8.43. The counter appeared to be finding the right
+*number* of objects and filing them under the wrong (colour, shape) channel — a classification
+failure, not a counting failure. In the count-free setting every image holds exactly one category,
+so the sum over all 48 channels would sidestep it.
+
+**It does not.** Measured:
+
+```
+corr(total, OWLv2)                +0.016      against +0.186 for the single channel
+corr(total, requested n)          -0.052
+mean WITHIN-n corr(total, OWLv2)  -0.007
+total mean 9.02                   OWLv2 mean 8.43
+```
+
+**This is the fourth time in this project that agreeing means have concealed an absent per-image
+signal, and this one is mine.** I wrote the rule — *any statistic computed over a grouping must be
+checked at the level the optimiser actually operates on* — in the entry immediately before this
+one, and then read 9.02 ≈ 8.43 and inferred a usable gradient. The counter emits about nine
+objects' worth of mass whatever the image contains.
+
+**Where that leaves the three differentiable signals**, all now measured on the quantity a
+per-image loss actually sees:
+
+| method | signal | correlation with the score, per image |
+|---|---|---|
+| C | peak separation on cross-attention | degenerate in practice: 0.19 objects per image, 82 % empty |
+| D | χ on the object token's cross-attention | **+0.154** within-n against the detector |
+| B | density counter on x̂0 | **+0.186** pooled single-channel, **−0.007** within-n on the total |
+
+None of them is good enough to train against. This is not a statement about the sampler: the
+leverage probe showed the premise is sound — a displacement of 0.079, inside the safe radius,
+changes the count by a median of one object, which is exactly the correction required. **The
+obstacle is the measurement, not the mechanism.** Every method in the spec optimises a proxy, and
+all three proxies have now been measured against the thing they stand in for and found to carry
+almost none of it.
+
+What would actually be needed, in rough order of cost:
+
+- **far more harvested data.** 634 samples is 3 % of the counter's training set even before
+  oversampling, and the 960 generated yielded only 634 usable. Several thousand, with labels from
+  a detector that is itself unreliable on dense scenes, is a large undertaking of uncertain value.
+- **a differentiable detector** — distilling OWLv2 rather than training a small CNN from scratch,
+  so the surrogate starts from a model that can already read natural images.
+- **drop differentiability.** The sampler is 3.2 M parameters; a score-function estimator with
+  OWLv2 as a black-box reward needs no proxy at all, and the proxy is precisely what has failed
+  three times. This is outside the spec, which assumes a differentiable count, but it is the
+  option whose failure mode is not "the loss could not see it".
