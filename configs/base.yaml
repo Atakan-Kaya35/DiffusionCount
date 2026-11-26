@@ -20,10 +20,11 @@ generator:                     # frozen G (spec §1)
   input_scaling: pipeline      # pipeline: x_T = √(1−ᾱ_T)·z_n, same as diffusers' Turbo pipelines (z = ε gives the official baseline)
                                # identity: x_T = z_n, the literal reading of §1 Eq. (1). The two differ by a 0.23% input scale
   gradient_checkpointing: true
-  decode_chunk: 4              # latents per VAE decode call. At 512 px on an 8 GB card, chunk 8
-                               # reserves 12.3 GB, spills to shared memory and takes 11.98 s for
-                               # eight images against 1.16 s at chunk 4 - a 10x penalty that every
-                               # evaluation was paying silently
+  batch_chunk: 4               # images per U-Net unroll and per VAE decode. At 512 px on an 8 GB
+                               # card, 8 at once spills to shared memory: measured end to end with
+                               # the U-Net, VAE and OWLv2 all resident, eight images cost 12.23 s
+                               # at chunk 8 against 3.05 s at chunk 4 - a 4x penalty that every
+                               # evaluation in this project was paying silently
   min_alpha_bar: 1.0e-4        # ᾱ_t clamp in Eq. (1). ᾱ_999 ≈ 4.7e-3 for SD's schedule
 
 data:                          # prompts p_n (spec §1, §7)

@@ -112,11 +112,15 @@ def main() -> None:
         n_t = torch.tensor(counts, device=device)
         enc = gen.encode_prompts(prom)
 
-        # ---- policy: deterministic mean plus exploration noise
-        delta = sampler.delta(eps, n_t, enc.pooled.float())
+        # ---- policy: deterministic mean plus exploration noise.
+        # Sampled under no_grad so the sampler's autograd graph is NOT held alive across the
+        # rollout - keeping it resident pushes an 8 GB card into shared memory and the step from
+        # 3 s to 8.5 s. The graph is rebuilt for the update once the reward is known, at the cost
+        # of one extra sampler forward (0.05 s).
         with torch.no_grad():
+            delta_s = sampler.delta(eps, n_t, enc.pooled.float())
             xi = torch.randn(eps.shape, generator=noise_gen).to(device)
-            z = eps + wmix * delta.detach() + sigma * xi
+            z = eps + wmix * delta_s + sigma * xi
             u8 = to_uint8_images(gen.decode(gen.generate_latents(z, enc)))
             d_anchor = normalized_distance(z, eps)
 
@@ -148,6 +152,7 @@ def main() -> None:
         a_t = torch.tensor(adv, device=device, dtype=torch.float32)
 
         # ---- REINFORCE surrogate: -(A * d(log pi)/d(phi)), gradient only through `delta`
+        delta = sampler.delta(eps, n_t, enc.pooled.float())
         score = (xi * delta).flatten(1).sum(1) * (wmix / sigma)
         loss = -(a_t * score).mean()
         opt.zero_grad(set_to_none=True)
