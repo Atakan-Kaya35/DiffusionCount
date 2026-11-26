@@ -254,72 +254,96 @@ significant on a paired test, while producing 0.19 objects per image.
 
 ## 6. Where the work is now
 
-**The spec assumes a differentiable count, and that assumption is what failed.** Measured at the
-level a per-image loss actually operates on:
-
-| method | signal | correlation with the score, per image |
-|---|---|---|
-| C | peak separation on cross-attention | degenerate in practice: 0.19 objects per image, 82 % empty |
-| D | χ on the object token's cross-attention | **+0.154** within-n |
-| B | density counter on x̂0 | **+0.186** pooled, **−0.007** within-n on the total |
-
-Method D's layer was chosen on a reported correlation of **+0.989**, which turned out to be the
-correlation of ten per-count *means*; per image it is +0.270, and χ's spread at fixed n (4.13) is
-the size of its entire range across counts (4.13). Method B's counter was retrained on 634
-OWLv2-labelled generator latents oversampled to 24 % of its training set, and that made it
-**worse** (+0.281 → +0.186).
-
-This is not a statement about the sampler. `probe_perturbation.py --mode leverage` showed a
-displacement of 0.079, inside the measured safe radius, changes the count by a median of one
-object — exactly the correction the task requires. **The obstacle is the measurement.**
-
-**So the requirement that the measurement be differentiable is what gets dropped.**
-`scripts/train_sampler_rl.py` trains the sampler by policy gradient with **OWLv2 itself as the
-reward** — no gradient through the generator or the counter, so no proxy at all:
+**The thesis has a positive demonstration.** A learned Δφ, with the count absent from the prompt,
+places the object count on the requested value better than the best constant predictor.
 
 ```
-z = eps + w * Dphi(eps, n, c_bar) + sigma * xi        xi ~ N(0, I)
-grad_phi E[R] = E[ A * (w/sigma) * <xi, grad_phi Dphi> ]
+  8 held-out seeds, 3 cells, targets 10-28, count-free prompt, every image counted twice
+
+        arm    MAE   skill   corr  slope   corr(OWLv2, colour)
+   baseline   6.28  -0.257    nan  -0.00         +0.21
+    sampler   3.64  +0.272  +0.96   0.58         +0.54
+
+  paired over 240 units: improvement +2.65  95% CI [+1.93, +3.38]  p 0.0000
+  degeneracy guard: 7/10 distinct means, 7/9 monotone pairs
 ```
 
-with a per-count EMA baseline, batch-normalised advantages, and a reward of −|counted − n| / n.
-The estimator is unit-tested against a known optimum. Two constraints are **enforced rather than
-priced**, which is the session's recurring lesson: the perturbation is hard-projected to
-d(z, ε) ≤ 0.07, and the count is absent from the prompt so Δφ is the only carrier of n.
+The baseline row is flat by construction — identical prompt, untouched noise — so the entire
+difference is carried by Δφ.
 
-The first attempt collapsed in 25 steps because the reward made collapse optimal — the count-free
-baseline draws 15.7 objects for a mean request of 5.5, so emitting nothing scores an absolute
-error of 5.5 against 10.2 for drawing normally. Hence the projection and the relative error.
+### The architectural finding that made it possible
 
-**The bar is skill 0.000**, not the count-free baseline's −3.596: a sampler that merely thins a
-dense field toward the mean request would reach ≈ 0.000 while carrying no count information, so
-only a result above 0.000 demonstrates that Δφ varies the count with n.
+Everything before this was constrained to fail, and the reason is one measurement:
 
-### What the policy-gradient route established
+```
+   blend  ||z-eps||/sqrt(D)  ||z||/sqrt(D)
+    0.75              1.112          1.000      <- where count control lives
+```
 
-Six runs, each ended by a different real defect — the reward making collapse optimal, a penalty
-that merely priced degradation, a barrier with no exit, a fixed radius in a 15 % corridor, an
-advantage normalised across counts whose reward scales differ 16-fold, and finally a quality term
-that **rewarded adding objects** (a correct 1-object image scores img_sd 45.4 against 63.2 for 14
-objects, so a floor of 45 rejected 49 % of low-count images). Each fix was justified; none
-produced learning.
+The displacement that controls the count is **1.112**. Learned *additive* directions collapse by
+**0.08**, and every run here was held to a budget of 0.05–0.07. The working region is 14× further
+out than the sampler was ever allowed to go.
 
-**The pattern is the result.** Reward, advantage sign and the score-function estimator were each
-verified independently — the estimator against a known optimum — so this is not a bug. At every
-radius and under every reward shape, **the policy found directions that add objects and never
-found directions that remove them.** Adding texture to a latent is easy; removing objects while
-keeping a valid scene is not. With the safe corridor between "reaches n = 1" (0.97) and "destroys
-the decode" (1.17) only 15 % wide, the mechanism is **reachable but not trainable by this route at
-this budget**.
+The distance was never the problem. slerp travels to 1.42 without collapsing because it holds
+‖z‖ fixed; additive `w·Δφ` at the same distance has left the shell the U-Net was trained on. So
+`L_anc`, the anchor hinge, was not a safeguard — **it enforced a budget that guaranteed the
+sampler could never reach the region it was meant to protect.** Every differentiable-proxy run
+and every policy-gradient run was searching a ball that does not contain the answer.
+
+The fix is one projection: `norm_preserve` rescales z back to ‖ε‖ after the additive step, so an
+arbitrarily large w lands on the shell instead of off it.
+
+### How the sampler was trained
+
+Not from a reward. Six policy-gradient runs could not get a usable gradient from the detector.
+Instead, a per-cell pool of 128 noises establishes, for each (cell, target), a noise the frozen
+model demonstrably renders as that count — verified by two independent counters. That turns the
+problem into supervised regression: Δφ reproduces `slerp(ε, r_{n,c}, 0.75)`. The generator is not
+in the loop, so it trains in 2.6 minutes and reaches direction cosine **+0.997**.
+
+Scored, the learned sampler (+0.272) nearly matches the selection scheme it distilled (+0.305),
+so the distillation is faithful rather than lossy.
+
+### Scope, stated plainly
+
+- Three cells, all **diamonds**. OWLv2 cannot see pentagons in these renders — 64 of 240 images
+  read as 0–2 objects while the colour counter finds a mean of 22.
+- Generalises **across seeds, not across cells**. A reference fitted on one colour/shape does not
+  transfer: one fixed noise spans 28.3 objects across six cells, and the cell explains 55.9 of
+  the variance in the counted number against 21.9 for the requested target.
+- Band **10–28**, because the count-free flat-lay prompt never renders fewer than 8 at any noise.
+  The bar is therefore **5.00, not 2.500**, and this skill number is *not* comparable to the
+  2.500-bar numbers elsewhere in this file.
+- Slope 0.58 — it tracks at a little over half strength.
+- Selection from a pool defined the target; the sampler is learned, the pool is not.
+
+### What is closed
+
+Three routes were run to a measurement and are done: differentiable proxies (best per-image
++0.154), policy gradient on a detector reward (six runs; no count-reducing direction exists under
+a count-free prompt), and pooled — as opposed to per-cell — reference selection (negative at
+every blend). The reason all three failed is now understood and is the budget finding above.
+
+### Method notes that cost real time
+
+- **A single metric cannot validate a search that optimises that same metric.** A reference pool
+  built on the plain-plural prompt reported an oracle bound of +0.747; an independent colour
+  counter found 92 objects in images OWLv2 scored as 0. The search had selected for the
+  detector's blind spot. Every evaluation since counts twice and reports the agreement, which is
+  how the pentagon blindness above was caught before it reached a result.
+- **A per-count-mean correlation is not per-image skill.** It has misled this project three
+  times: Method D read +0.989 against a per-image +0.270, and the pooled-reference run would read
+  +0.36 by means against a true −0.247.
+- **The prompt sets the reachable band; the noise only modulates within it.** The count-free
+  flat-lay prompt spans 8–31, so targets 1–8 do not exist at any noise. That is why the RL runs
+  never found a count-reducing direction — there was none to find.
 
 ### Still unanswered
 
-- **Trainability, not feasibility.** 1600 reward evaluations per run is small for policy gradient.
-  A null result cannot separate "the mechanism cannot" from "the search was too small", and
-  settling that needs an order of magnitude more compute than one 8 GB card gives.
-- **`L_x0anc` has never been run.** It is implemented, tested and configured, and every collapse
-  in this project would have been caught by it; the differentiable methods were abandoned for
-  proxy failure before it was tried.
-- **Why removal is hard.** That adding objects is easy and removing them is not is an observation
-  across six runs, not a measurement. It would be worth testing directly — e.g. whether a slerp
-  path toward a *lower*-count noise degrades the image more than one toward a higher-count noise.
+- Whether the mapping generalises to cells it was not fitted on. The pool is per-cell today; a
+  pool over many cells would test whether Δφ can interpolate across `c̄` rather than memorise.
+- Whether the band can be moved down to 1–10. That is a property of the prompt, not the sampler,
+  and no noise reaches below 8 under the current one.
+- Whether `norm_preserve` plus a reward now works, given that the budget that blocked the earlier
+  policy-gradient runs is gone.
+- `L_x0anc` remains implemented, tested, configured and never run.
