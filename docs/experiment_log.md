@@ -2996,3 +2996,39 @@ route within this budget.
 null result here cannot separate "the mechanism cannot" from "the search was too small". That
 distinction needs an order of magnitude more compute than one 8 GB card provides, and saying so is
 more useful than presenting six failures as a conclusion about the method.
+
+### 2026-11-26 — the noise cannot reach counts the prompt does not already permit
+
+240 random noises, counted on 3 (colour, shape) cells under the count-free prompt
+`"a flat lay photo of {colour} {shape}s on a white background"`:
+
+```
+  mean count 18.38   sd 4.71   range 9 to 34
+```
+
+**The minimum over 240 noises is 9.** Every target from 1 to 9 selects the same pool noise, the
+one that draws 9. Targets 1 to 8 are not hard to reach under this prompt — they are **absent from
+noise space entirely**, so no sampler, learned or searched, can produce them.
+
+This retrospectively explains the whole project:
+
+- **Six policy-gradient runs never found a count-reducing direction** because, below 9, there is
+  none to find. The policy was not failing to optimise; it was being asked for images the frozen
+  model does not produce from this prompt at any noise.
+- The **15 % corridor** between reaching n = 1 (d_x0 0.97) and destroying the decode (1.17) was
+  measuring the same wall from the other side: x̂0(n = 1) is far away because it is outside the
+  region this prompt renders at all, and the only way to travel that far is to leave the manifold,
+  which is what collapse is.
+- It also explains why every method in this log either did nothing or destroyed the image. Those
+  are the only two options when the target is unreachable.
+
+**What this does and does not say.** It is not a statement that the noise cannot control the
+count: the same measurement shows a range of 9 to 34, a factor of nearly four, so the noise moves
+the count a great deal *within the band the prompt permits*. What is fixed by the prompt is the
+band, not the value.
+
+So the design question is which count-free phrasing places 1..10 inside the reachable band. A
+prompt is still count-free if it renders sparser scenes — it names no number and is identical for
+every n. `range_probe.py` measures, for five such phrasings, the count distribution over a noise
+pool, how many of the ten targets fall inside the band, and the oracle MAE a perfect
+noise-selection scheme would achieve — an upper bound on this mechanism, against a bar of 2.500.
