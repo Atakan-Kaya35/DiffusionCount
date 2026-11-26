@@ -74,7 +74,7 @@ def project(delta: torch.Tensor, radius: float) -> torch.Tensor:
 def main() -> None:
     ap = base_parser(__doc__, config_required=False)
     ap.add_argument("--steps", type=int, default=2000)
-    ap.add_argument("--radius", type=float, default=0.07,
+    ap.add_argument("--radius", type=float, default=0.05,
                     help="hard cap on d(z, eps); the measured safe z-budget is 0.07-0.097")
     ap.add_argument("--sigma", type=float, default=0.02,
                     help="exploration sd in normalised distance; d(z, eps+wD) equals this")
@@ -82,9 +82,10 @@ def main() -> None:
     ap.add_argument("--counts-per-eps", type=int, default=4)
     ap.add_argument("--lr", type=float, default=3e-5)
     ap.add_argument("--counter", default="owlv2")
-    ap.add_argument("--sd-floor", type=float, default=25.0,
-                    help="image sd below which the decode is treated as collapsed (measured)")
-    ap.add_argument("--collapse-penalty", type=float, default=5.0)
+    ap.add_argument("--sd-floor", type=float, default=45.0,
+                    help="image sd below which the reward is a flat barrier; the frozen baseline sits near 62 and 25 is fully dead, so 45 rejects damage rather than death")
+    ap.add_argument("--collapse-penalty", type=float, default=50.0,
+                    help="flat reward below sd_floor; must exceed the worst count error (~15)")
     ap.add_argument("--baseline-ema", type=float, default=0.9)
     ap.add_argument("--log-every", type=int, default=10)
     ap.add_argument("--preview-every", type=int, default=250)
@@ -157,11 +158,15 @@ def main() -> None:
         counted = np.array([r.count for r in res], float)
         img_sd = np.array([u8[i].mean(axis=2).std() for i in range(len(u8))], float)
         tgt = np.array(counts, float)
-        # Relative error, so emitting nothing is maximally wrong at every n instead of being
-        # cheap at high n, which is what an absolute error rewards against a baseline that
-        # over-draws.
-        reward = (-np.abs(counted - tgt) / np.maximum(tgt, 1.0)
-                  - args.collapse_penalty * np.maximum(0.0, args.sd_floor - img_sd) / args.sd_floor)
+        # A BARRIER, not a penalty. The count-free baseline draws 15.74 objects for requests
+        # averaging 5.5, so any route to fewer objects is rewarded - including wrecking the image.
+        # Measured: with a scaled penalty, a partial collapse to image sd 20 cost only 1.0 and
+        # scored 2.00 against the baseline's 3.61, so degradation was the cheapest way to cut the
+        # count and the policy took it (38-50 % collapsed by step 400). At low n the count error
+        # is so large that no proportional penalty can outweigh it, so the floor has to be a wall.
+        # sd_floor is 45 against a baseline of about 62: this rejects DAMAGE, not just death.
+        rel = np.abs(counted - tgt) / np.maximum(tgt, 1.0)
+        reward = np.where(img_sd < args.sd_floor, -float(args.collapse_penalty), -rel)
 
         # ---- advantage against a per-count baseline, then normalised
         adv = np.zeros_like(reward)
