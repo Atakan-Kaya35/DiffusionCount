@@ -3474,3 +3474,59 @@ So the method is bounded, and the bound is now measured rather than suspected: *
 fitted per cell.** That costs 96 generations and counts, about 40 seconds of GPU time per cell,
 after which it controls the count on held-out seeds at skill +0.272. It is a per-cell calibration
 procedure, not a general-purpose count-conditioned sampler, and the log should say so.
+
+## 2026-11-26 22:20 - The method in its honest form: per-cell calibration
+
+Transfer does not happen and sharing one Dphi across ten cells dilutes all of them, so the method
+is a per-cell calibration procedure. Measured as such, on four cells, eight held-out seeds each,
+count absent from the prompt, every image counted twice:
+
+```
+             cell   base   Dphi   skill   corr  slope  improve          95% CI       p   o/c
+        red/cross   6.22   3.20  +0.360  +0.95   0.69    +3.02 [+2.02,+4.06]  0.0000 +0.93
+       blue/cross   6.17   3.60  +0.280  +0.90   0.58    +2.58 [+1.46,+3.61]  0.0000 +0.86
+       green/star   6.50   5.34  -0.068  +0.48   0.20    +1.16 [+0.28,+2.04]  0.0047 +0.59
+      red/diamond   7.00   4.41  +0.118  +0.74   0.54    +2.59 [+1.21,+4.00]  0.0002 +0.92
+
+           POOLED   6.47   4.14  +0.172  +0.97   0.50    +2.34 [+1.79,+2.90]  0.0000 +0.82
+```
+
+Every cell improves on the untouched baseline and every one is significant. The best,
+**red/cross, reaches skill +0.360 with a correlation of +0.95 between requested and achieved
+count** - the strongest result this project has produced, and it costs 2.7 minutes of training
+plus one 96-noise counting pass.
+
+### Skill tracks the instrument
+
+```
+             cell  counter agreement   skill
+        red/cross              +0.93  +0.360
+      red/diamond              +0.92  +0.118
+       blue/cross              +0.86  +0.280
+       green/star              +0.59  -0.068
+
+  correlation across the four cells: +0.83   (n = 4, indicative only)
+```
+
+The cell where the method looks worst is the cell where the two counters agree least. A cell
+where OWLv2 and the colour counter disagree is a cell where neither number is trustworthy, so
+green/star's -0.068 may be the instrument rather than the method. That cannot be settled without
+a counter that works on stars, so the claim stays on the cells where both instruments agree, and
+this correlation is reported rather than used to adjust anything.
+
+### The method, stated completely
+
+For a given colour/shape:
+1. Draw 96 noises, render each under the **count-free** prompt, count with two independent
+   counters, and keep only the noises on which they agree.
+2. For each target count, take the surviving noise whose count is nearest. About 40 s of GPU time.
+3. Regress Dphi onto `slerp(eps, r_n, 0.75)` with `norm_preserve` on. 2.7 min.
+
+The result is a sampler that, given a fresh seed and a requested count, emits a noise the frozen
+generator renders at close to that count - with the number absent from the prompt throughout.
+
+Its limits are measured, not assumed: band 10-28 (the prompt renders no fewer than 8 at any
+noise, so the bar is 5.00 and these numbers are not comparable to the 2.500-bar ones); slope
+about 0.6, so it tracks at roughly two thirds strength; per cell, because the noise-to-count map
+has no smooth structure across cells to interpolate; and only on cells where a counter can
+actually measure, which excludes circles, squares, hexagons and pentagons outright.

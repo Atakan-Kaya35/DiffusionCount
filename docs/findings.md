@@ -254,22 +254,27 @@ significant on a paired test, while producing 0.19 objects per image.
 
 ## 6. Where the work is now
 
-**The thesis has a positive demonstration.** A learned Δφ, with the count absent from the prompt,
-places the object count on the requested value better than the best constant predictor.
+**The thesis has a positive demonstration.** With the count absent from the prompt — every target
+gets the identical text — a learned Δφ places the object count on the requested value better than
+the best constant predictor. Calibrated per cell, on eight held-out seeds each:
 
 ```
-  8 held-out seeds, 3 cells, targets 10-28, count-free prompt, every image counted twice
+             cell   base   Dphi   skill   corr  slope  improve          95% CI       p
+        red/cross   6.22   3.20  +0.360  +0.95   0.69    +3.02 [+2.02,+4.06]  0.0000
+       blue/cross   6.17   3.60  +0.280  +0.90   0.58    +2.58 [+1.46,+3.61]  0.0000
+      red/diamond   7.00   4.41  +0.118  +0.74   0.54    +2.59 [+1.21,+4.00]  0.0002
+       green/star   6.50   5.34  -0.068  +0.48   0.20    +1.16 [+0.28,+2.04]  0.0047
 
-        arm    MAE   skill   corr  slope   corr(OWLv2, colour)
-   baseline   6.28  -0.257    nan  -0.00         +0.21
-    sampler   3.64  +0.272  +0.96   0.58         +0.54
-
-  paired over 240 units: improvement +2.65  95% CI [+1.93, +3.38]  p 0.0000
-  degeneracy guard: 7/10 distinct means, 7/9 monotone pairs
+           POOLED   6.47   4.14  +0.172  +0.97   0.50    +2.34 [+1.79,+2.90]  0.0000
 ```
 
 The baseline row is flat by construction — identical prompt, untouched noise — so the entire
-difference is carried by Δφ.
+difference is carried by Δφ. Best cell: **skill +0.360 at correlation +0.95**, for 2.7 minutes of
+training plus one 96-noise counting pass.
+
+Measured skill correlates +0.83 with how well the two independent counters agree on that cell
+(n = 4, indicative). green/star's negative number may be the instrument rather than the method,
+which is why the claim stays on cells where both counters agree.
 
 ### The architectural finding that made it possible
 
