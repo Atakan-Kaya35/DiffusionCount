@@ -3062,3 +3062,47 @@ runs were spent inside a prompt where the targets did not exist, and the prompt 
 by an experiment whose conclusions do not transfer across the change of regime.
 
 The reference-noise method is now being rebuilt on the plain plural.
+
+### 2026-11-26 — selecting noise by a detector selects for the detector's blind spot
+
+The reference-noise method was built on the plain-plural count-free prompt, whose pool reported a
+count range of 4 to 21 with near-exact references for 5 through 10 and an oracle bound of
+skill **+0.747**. The images say otherwise.
+
+An independent counter on the same reference-noise images:
+
+| cell | target n | OWLv2 | colour counter |
+|---|---|---|---|
+| blue pentagon | 1 | **0** | **92** |
+| blue pentagon | 4 | **0** | **92** |
+| blue pentagon | 6 | **0** | **108** |
+| blue pentagon | 10 | **0** | **58** |
+| yellow diamond | 1 | 0 | 3 |
+| red cross | 6 | 11 | 18 |
+
+**OWLv2 returns 0 on images holding roughly a hundred objects.** The pool search minimised the
+OWLv2 count, so it was selecting for exactly this failure: the noises it chose as "draws 4 objects"
+are dense fields the detector cannot parse. The evaluation uses the same detector, so it would
+have scored them as a near-perfect low count and the result would have been an artifact of the
+measuring instrument.
+
+**This connects two things already in this log.** The dense-scene failure was measured on
+2026-11-25 — 8.3 % of n ≥ 8 rows return two objects or fewer, and the detector is *bistable* on
+crowded images, resolving them either into many boxes or onto one. What is new is that a search
+which optimises that detector will find those images deliberately. The earlier measurement said
+the instrument is noisy; this says the instrument is **exploitable**, and anything that searches
+against it will exploit it.
+
+It also retrospectively qualifies the prompt-range table. "plain plural: range 4 to 21" was
+measured with OWLv2, and the low end of that range is substantially detector failure rather than
+sparse scenes. The honest reading is that this prompt renders dense fields throughout and the
+apparent low counts are blind spots.
+
+**What survives.** The flat-lay prompt renders well-separated objects, which is why it won the
+template search and why the hand-count check of 2026-11-25 found OWLv2 accurate on it (11 against
+~12, 17 against ~16-18). Its measured band is 10 to 29. So the viable demonstration is count
+control *within a band where the counter is trustworthy*, not at 1 to 10 where this generator
+does not render and the detector cannot measure.
+
+**Method note.** This was caught only by cross-checking with an independent counter that has a
+different failure mode. A single metric cannot validate a search that optimises that same metric.
