@@ -252,20 +252,56 @@ significant on a paired test, while producing 0.19 objects per image.
 
 ---
 
-## 6. Open
+## 6. Where the work is now
 
-- **Can a *learned* direction use the budget without destroying the image?** The leverage exists at
-  d = 0.08 (§3) and a slerp path reaches it without collapsing, but every learned direction
-  measured so far dies at that radius. Whether a loss grounded in the image rather than in
-  attention finds a better-behaved direction is what Method B tests.
-- **Batch composition changes a count by ±1**, in 2 of 9 prompts — `generate_latents` chunks at 8,
-  so a latent sits in a chunk of 1, 4, 8 or 12 depending only on how many images were requested,
-  and bf16 reductions over different shapes differ in the last bits. That is the error bar on a
-  single count and it threatens nothing here. It does **not** explain the 1-versus-17 that first
-  exposed it: that is the detector's dense-scene **bistability**, which resolves a crowded field
-  either into many boxes or onto one and flips between them under a perturbation far too small to
-  change what is drawn. Those failures are therefore noise rather than identifiable bad images —
-  they average out with more seeds, but a per-image count at high n is partly a coin flip.
-- **Method B** — the only method whose loss reads the decoded image — has never run, because its
-  counter has never been trained. A flat colour block contains zero objects for a density counter,
-  so it should be structurally resistant to the collapse that destroyed Method D.
+**The spec assumes a differentiable count, and that assumption is what failed.** Measured at the
+level a per-image loss actually operates on:
+
+| method | signal | correlation with the score, per image |
+|---|---|---|
+| C | peak separation on cross-attention | degenerate in practice: 0.19 objects per image, 82 % empty |
+| D | χ on the object token's cross-attention | **+0.154** within-n |
+| B | density counter on x̂0 | **+0.186** pooled, **−0.007** within-n on the total |
+
+Method D's layer was chosen on a reported correlation of **+0.989**, which turned out to be the
+correlation of ten per-count *means*; per image it is +0.270, and χ's spread at fixed n (4.13) is
+the size of its entire range across counts (4.13). Method B's counter was retrained on 634
+OWLv2-labelled generator latents oversampled to 24 % of its training set, and that made it
+**worse** (+0.281 → +0.186).
+
+This is not a statement about the sampler. `probe_perturbation.py --mode leverage` showed a
+displacement of 0.079, inside the measured safe radius, changes the count by a median of one
+object — exactly the correction the task requires. **The obstacle is the measurement.**
+
+**So the requirement that the measurement be differentiable is what gets dropped.**
+`scripts/train_sampler_rl.py` trains the sampler by policy gradient with **OWLv2 itself as the
+reward** — no gradient through the generator or the counter, so no proxy at all:
+
+```
+z = eps + w * Dphi(eps, n, c_bar) + sigma * xi        xi ~ N(0, I)
+grad_phi E[R] = E[ A * (w/sigma) * <xi, grad_phi Dphi> ]
+```
+
+with a per-count EMA baseline, batch-normalised advantages, and a reward of −|counted − n| / n.
+The estimator is unit-tested against a known optimum. Two constraints are **enforced rather than
+priced**, which is the session's recurring lesson: the perturbation is hard-projected to
+d(z, ε) ≤ 0.07, and the count is absent from the prompt so Δφ is the only carrier of n.
+
+The first attempt collapsed in 25 steps because the reward made collapse optimal — the count-free
+baseline draws 15.7 objects for a mean request of 5.5, so emitting nothing scores an absolute
+error of 5.5 against 10.2 for drawing normally. Hence the projection and the relative error.
+
+**The bar is skill 0.000**, not the count-free baseline's −3.596: a sampler that merely thins a
+dense field toward the mean request would reach ≈ 0.000 while carrying no count information, so
+only a result above 0.000 demonstrates that Δφ varies the count with n.
+
+### Still unanswered
+
+- **Can a learned direction use the budget without destroying the image?** The projection makes
+  collapse structurally impossible, so this run answers it by construction rather than by luck.
+- **Is 2500 steps × 8 samples enough for REINFORCE?** 20 000 reward evaluations is a small budget
+  for policy gradient on a 3.2 M-parameter network. A null result here would not separate "cannot"
+  from "not yet".
+- **`L_x0anc` has never been run.** It is implemented, tested and configured, and every collapse
+  in this project would have been caught by it; the differentiable methods were abandoned before
+  it was tried.
