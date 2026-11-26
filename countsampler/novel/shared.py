@@ -94,9 +94,11 @@ class CountNoiseSampler(nn.Module):
     def __init__(self, latent_channels: int = 4, text_dim: int = 1024, base_channels: int = 64,
                  channel_mult=(1, 2, 2), blocks_per_level: int = 1, mid_attention: bool = True,
                  cond_dim: int = 256, count_embed_dim: int = 64, count_embed_max_freq: float = 64.0,
-                 text_embed_dim: int = 128, use_text: bool = True, w: float = 1.0, groups: int = 8):
+                 text_embed_dim: int = 128, use_text: bool = True, w: float = 1.0, groups: int = 8,
+                 norm_preserve: bool = False):
         super().__init__()
         self.w = float(w)
+        self.norm_preserve = bool(norm_preserve)
         self.use_text = use_text
         self.count_embed_dim = count_embed_dim
         self.count_embed_max_freq = count_embed_max_freq
@@ -171,8 +173,23 @@ class CountNoiseSampler(nn.Module):
         return self.conv_out(F.silu(self.norm_out(h)))
 
     def forward(self, eps: torch.Tensor, n: torch.Tensor, c_bar: torch.Tensor | None = None) -> torch.Tensor:
-        """Eq. (2): z_n = ε + w Δφ(ε, n, c̄). eps: [B, C, H, W] float32, n: [B] long."""
-        return eps + self.w * self.delta(eps, n, c_bar)
+        """Eq. (2): z_n = ε + w Δφ(ε, n, c̄). eps: [B, C, H, W] float32, n: [B] long.
+
+        With norm_preserve, z is rescaled to ‖ε‖ afterwards. The measurement that forces this:
+        slerp paths between real noises move the count across the whole band at a displacement
+        of 1.112 in normalised distance and never collapse, while learned ADDITIVE directions
+        collapse by 0.08. The difference is not the distance, it is that slerp holds ‖z‖ fixed
+        and so stays on the shell where the U-Net's training distribution lives. Without this
+        projection the admissible budget is about 0.07, which is 14x short of the displacement
+        count control actually requires - so the geometry losses that enforced that budget were
+        guaranteeing the sampler could never reach the region they were meant to protect.
+        """
+        z = eps + self.w * self.delta(eps, n, c_bar)
+        if self.norm_preserve:
+            flat = z.flatten(1)
+            scale = eps.flatten(1).norm(dim=1) / flat.norm(dim=1).clamp_min(1e-9)
+            z = z * scale.view(-1, *([1] * (z.dim() - 1)))
+        return z
 
 
 def build_sampler(scfg, latent_channels: int, text_dim: int) -> CountNoiseSampler:
@@ -189,6 +206,7 @@ def build_sampler(scfg, latent_channels: int, text_dim: int) -> CountNoiseSample
         text_embed_dim=scfg.get("text_embed_dim", 128),
         use_text=scfg.get("use_text", True),
         w=scfg.get("w", 1.0),
+        norm_preserve=scfg.get("norm_preserve", False),
     )
 
 

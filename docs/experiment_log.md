@@ -3309,3 +3309,87 @@ a supervised target - for each (cell, target) a noise that demonstrably renders 
 can be regressed onto directly. That replaces the reward signal that six policy-gradient runs
 could not get a usable gradient from, and it asks Dphi to reproduce a mapping now known to exist
 rather than to discover one.
+
+## 2026-11-26 20:10 - The learned sampler. Why every earlier attempt was constrained to fail
+
+### The architectural finding
+
+Measured the displacement the working mechanism actually requires:
+
+```
+   blend  ||z-eps||/sqrt(D)  ||z||/sqrt(D)
+    0.25              0.391          1.001
+    0.50              0.766          1.000
+    0.75              1.112          1.000
+    1.00              1.416          1.000
+```
+
+The blend that beats the constant predictor sits at a normalised displacement of **1.112**.
+Learned additive directions were measured to collapse by **0.08**, and the RL runs were held to a
+budget of 0.05 to 0.07 derived from the x0 amplification. The working mechanism is 14 times
+further out than the sampler was ever allowed to go.
+
+The distance was never the problem. slerp travels to 1.42 without collapsing because it holds
+‖z‖ fixed; additive w·Dphi at the same distance has left the shell the U-Net was trained on. So
+`L_anc`, the anchor hinge that kept ‖z−ε‖ small, was not a safeguard - it was enforcing a budget
+that guaranteed the sampler could never reach the region where count control lives. Every
+differentiable-proxy run, and every policy-gradient run, was searching inside a ball that does
+not contain the answer.
+
+The fix is one projection. `norm_preserve` rescales z back to ‖ε‖ after the additive step, so an
+arbitrarily large w lands on the shell rather than off it. Tested in
+`test_norm_preserving_sampler_keeps_z_on_the_shell`.
+
+### Distillation
+
+With the per-cell pool established, the mapping is no longer something to discover from a reward
+that six policy-gradient runs could not get a gradient from. It is a supervised target: Dphi must
+reproduce slerp(eps, r_{n,c}, 0.75). The generator is not in the loop - input and target are both
+noises - so it is an ordinary regression, 4000 steps in 2.6 minutes.
+
+```
+  step     0  mse 1.2417  displacement 0.000 (target 1.114)  direction cos +0.000
+  step  1000  mse 0.1616  displacement 1.067 (target 1.112)  direction cos +0.933
+  step  4000  mse 0.0082  displacement 1.104 (target 1.110)  direction cos +0.997
+```
+
+Dphi reaches displacement 1.104 at direction cosine +0.997. The additive form could not have
+represented this at any admissible w.
+
+### The result
+
+Eight seeds held out from training, count absent from the prompt, every image counted twice:
+
+```
+        arm    MAE   skill   corr  slope    sd  corr(owl,col)
+   baseline   6.28  -0.257    nan  -0.00  5.13      +0.21
+    sampler   3.64  +0.272  +0.96   0.58  4.42      +0.54
+
+  per-target mean counted
+   baseline  20.2  20.2  20.2  20.2  20.2  20.2  20.2  20.2  20.2  20.2
+    sampler  12.9  15.9  15.4  16.3  19.2  21.3  22.0  21.8  22.7  23.2
+
+  paired over 240 units: improvement +2.65  95% CI [+1.93, +3.38]  p 0.0000
+  degeneracy guard: 7/10 distinct, 7/9 monotone
+```
+
+**A learned Dphi, with the count absent from the prompt, places the object count on the requested
+value better than the best constant predictor: skill +0.272, p < 0.0001 on held-out seeds.** It
+very nearly matches the selection scheme it distilled (+0.305 on 4 seeds), so the distillation is
+faithful rather than lossy, and counter agreement rises from +0.21 to +0.54 under the mechanism.
+
+### Scope, stated plainly
+
+Three cells, all diamonds, because OWLv2 cannot see pentagons. Generalises across seeds, not
+across cells - the references were fitted per cell, and a reference does not transfer. Band 10 to
+28, because the count-free flat-lay prompt never renders fewer than 8 at any noise, so the bar is
+5.00 and this is NOT comparable to the 2.500-bar numbers elsewhere in this log. Slope 0.58, so it
+tracks at a little over half strength.
+
+### What this says about the project's thesis
+
+The thesis was that a frozen diffusion model's count can be controlled through the noise alone,
+with no fine-tuning and nothing about n in the text. That now has a positive, controlled,
+twice-counted demonstration. What it took was abandoning the small-perturbation framing the
+specification's geometry losses encode: count control is not a nearby direction in noise space,
+it is a different region of the shell, and the sampler has to be allowed to travel there.
