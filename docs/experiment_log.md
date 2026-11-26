@@ -3393,3 +3393,84 @@ with no fine-tuning and nothing about n in the text. That now has a positive, co
 twice-counted demonstration. What it took was abandoning the small-perturbation framing the
 specification's geometry losses encode: count control is not a nearby direction in noise space,
 it is a different region of the shell, and the sampler has to be allowed to travel there.
+
+## 2026-11-26 21:40 - The sampler does not transfer to unseen cells, and conditioning is not why
+
+### Which cells the instrument can measure
+
+Pentagons turned out invisible to OWLv2, so assuming anything about the other seven shapes would
+have repeated that mistake. All eight were screened on agreement between OWLv2 and the colour
+counter - a criterion that knows nothing about any requested count:
+
+```
+        red/circle  OWLv2 14.3  colour 21.0  disagree  6.7      blue/circle   4.3  24.0  19.6
+        red/square        16.9         31.0          14.1       blue/square   5.6  29.3  23.7
+       red/hexagon        42.6         23.3          19.2      blue/hexagon  23.0  46.0  23.0
+         red/cross        19.2         20.6           1.3  USABLE
+        blue/cross        17.5         18.1           0.6  USABLE   (per-image corr +0.93)
+```
+
+Circles, squares, hexagons and pentagons are unmeasurable in these renders. Cross survives in all
+six colours, star and diamond and triangle in some. That left 13 usable cells.
+
+### The transfer test
+
+Pool of 96 noises on ten cells, with **orange and purple absent from the pool and the training
+set entirely**. The fitted references land on their targets almost exactly - `red/cross` gives
+`[10,12,14,16,18,20,22,24,26,28]` - so the pool contains the counts and the regression has a
+well-posed target. Trained 8000 steps, direction cosine +0.970.
+
+```
+               cell          group   base   Dphi   skill   corr  slope  improve         95% CI
+          red/cross           seen   6.22   3.85  +0.230  +0.89   0.63    +2.38 [+1.34,+3.49]
+         green/star           seen   6.50   5.34  -0.068  +0.47   0.26    +1.16 [+0.20,+2.14]
+       blue/diamond           seen   6.58   5.40  -0.080  +0.90   0.71    +1.18 [-0.39,+2.73]
+       orange/cross  UNSEEN colour   6.85   5.26  -0.053  +0.52   0.47    +1.59 [+0.28,+2.98]
+       purple/cross  UNSEEN colour   6.97   8.53  -0.705  +0.42   0.69    -1.55 [-3.14,+0.05]
+    orange/triangle  UNSEEN colour   8.80  12.39  -1.477  +0.49   1.20    -3.59 [-6.05,-0.99]
+
+   seen pooled:   6.43 -> 4.86  improvement +1.57  95% CI [+0.86,+2.29]  p 0.0000
+   UNSEEN pooled: 7.54 -> 8.72  improvement -1.18  95% CI [-2.34,-0.02]  p 0.9764
+```
+
+**It does not transfer.** On unseen colours the sampler is worse than leaving the noise alone.
+Training on ten cells also diluted the seen cells badly: pooled skill +0.028 against the +0.272
+the three-cell model reached, so capacity is being spent memorising rather than shared.
+
+### A wrong diagnosis, and the correction
+
+I first measured the directions Dphi emits per cell at n = 20, found red and yellow identical at
++1.00, and concluded that the pooled embedding c_bar does not carry the colour - its off-diagonal
+cosine across the six cross cells is +0.848, against +0.518 for the token at position 6 where the
+colour word sits. On that basis I rebuilt the condition to append the discriminative tokens
+(dim 1280 -> 5120) and retrained.
+
+**It made transfer worse**, -2.31 against -1.18, with orange/cross going to corr -0.25, a
+confidently wrong extrapolation.
+
+The first measurement was an artefact of the target I picked. At n = 20 `red_cross` and
+`yellow_cross` select the *same* pool noise, index 20 for both, so an identical direction there
+is correct rather than a collapse - they share 10% of targets and that was the one. Redone across
+targets where the references genuinely differ:
+
+```
+   pooled: between DIFFERENT trained colours +0.30   fidelity to each cell's own target +0.97
+     rich: between DIFFERENT trained colours +0.30   fidelity to each cell's own target +0.98
+```
+
+Dphi produces a genuinely cell-specific direction and lands on the right one at +0.97. It was
+never confusing the cells, and the richer condition changed nothing because conditioning was
+never the bottleneck.
+
+### What this establishes
+
+The map from (cell, count) to a region of noise space is **idiosyncratic per cell**. A new
+colour's reference is not predictable from four other colours' references - not because Dphi
+cannot tell the colours apart, and not because the text embedding hides them, but because there
+is no smooth structure over colours to interpolate. This is consistent with the earlier variance
+decomposition, where one fixed noise spanned 28.3 objects across six cells.
+
+So the method is bounded, and the bound is now measured rather than suspected: **Dphi must be
+fitted per cell.** That costs 96 generations and counts, about 40 seconds of GPU time per cell,
+after which it controls the count on held-out seeds at skill +0.272. It is a per-cell calibration
+procedure, not a general-purpose count-conditioned sampler, and the log should say so.

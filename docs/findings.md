@@ -340,8 +340,16 @@ every blend). The reason all three failed is now understood and is the budget fi
 
 ### Still unanswered
 
-- Whether the mapping generalises to cells it was not fitted on. The pool is per-cell today; a
-  pool over many cells would test whether Δφ can interpolate across `c̄` rather than memorise.
+- ~~Whether the mapping generalises to cells it was not fitted on.~~ **Answered: it does not.**
+  Trained on ten cells with orange and purple held out entirely, Δφ is *worse than untouched
+  noise* on the unseen colours (−1.18, 95% CI [−2.34, −0.02]) while still gaining on the seen
+  ones (+1.57, p < 0.0001). It is not a conditioning failure: Δφ emits genuinely cell-specific
+  directions (+0.30 between cells) and lands on each cell's own target at fidelity **+0.97**.
+  Rebuilding the condition to make the colours more separable (pooled cosine +0.848 → token
+  cosine +0.518) changed the fidelity by 0.01 and made transfer *worse*. There is simply no
+  smooth structure over cells to interpolate. **Δφ must be fitted per cell** — about 96
+  generations, 40 s of GPU time — after which it works. It is a per-cell calibration procedure,
+  not a general-purpose count-conditioned sampler.
 - Whether the band can be moved down to 1–10. That is a property of the prompt, not the sampler,
   and no noise reaches below 8 under the current one.
 - Whether `norm_preserve` plus a reward now works, given that the budget that blocked the earlier
