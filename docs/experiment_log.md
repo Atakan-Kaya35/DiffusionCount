@@ -2956,3 +2956,43 @@ What would actually be needed, in rough order of cost:
   OWLv2 as a black-box reward needs no proxy at all, and the proxy is precisely what has failed
   three times. This is outside the spec, which assumes a differentiable count, but it is the
   option whose failure mode is not "the loss could not see it".
+
+### 2026-11-26 — policy gradient: six attempts, and what each one measured
+
+Dropping differentiability removed the proxy problem but not the result. Six runs, each ended by a
+different defect, each defect real and each fix justified:
+
+| # | what failed | the measurement that showed it |
+|---|---|---|
+| 1 | reward made collapse optimal | baseline draws 15.74 for a mean request of 5.5, so emitting nothing scored 5.5 against 10.2 — collapsed by step 25 |
+| 2 | scaled penalty merely priced degradation | at image sd 20 a partial collapse cost 1.0 and scored 2.00 against the baseline's 3.61 — 38–50 % collapsed by step 400 |
+| 3 | flat barrier had no exit | below the floor every reward equalled −50, so the advantage was identically zero and no gradient pointed out — stuck at step 150 |
+| 4 | fixed radius cannot track a 15 % corridor | reaching n = 1 needs d_x0 0.97 and collapse starts at 1.17; 0.035 reached nothing, 0.07 degraded |
+| 5 | advantage normalised across mixed counts | relative error is ~23 at n = 1 and ~1.4 at n = 10, so low counts dominated every update |
+| 6 | **the quality term rewarded adding objects** | a correct 1-object image scores img_sd 45.4 and a 14-object one 63.2; the floor of 45 rejected **49 %** of images with ≤ 3 objects and **1 %** of those with ≥ 12 |
+
+The sixth is the one that invalidates the first five. Fewer objects on a white backdrop simply *is*
+lower variance, so "keep the image busy" and "draw fewer objects" were in direct conflict and the
+policy was correctly obeying the term it was given. `counted` rose in **every** run. `img_sd`
+cannot be rescued by moving the floor either: a collapsed decode scores 21–35 and a correct
+single-object image 45.4, so the ranges overlap. The backdrop fraction does separate them — 0.000
+collapsed against 0.48–0.74 at every valid count — and was substituted in run six.
+
+**Run six still failed**, and differently: with the correct validity measure the policy drove the
+backdrop fraction down (0.33 → 0.23 → 0.19) by *adding* objects, the controller clamped the radius
+to 0.0170 in response, and at that radius no count is reachable — the run became structurally
+unable to succeed and was stopped at step 200.
+
+**The pattern across all six is the finding.** Reward, advantage sign and the score-function
+estimator were each verified independently — the estimator against a known optimum — so this is
+not a bug. In every run, at every radius and under every reward shape, **the policy found
+directions that add objects and never found directions that remove them.** Adding texture to a
+latent is easy; removing objects while keeping a valid scene is not. Combined with the measured
+geometry — the safe corridor between "reaches n = 1" (0.97) and "destroys the decode" (1.17) is
+15 % wide — the honest reading is that the mechanism is *reachable* but not *trainable* by this
+route within this budget.
+
+**What is not established.** 1600 reward evaluations per run is small for policy gradient, and a
+null result here cannot separate "the mechanism cannot" from "the search was too small". That
+distinction needs an order of magnitude more compute than one 8 GB card provides, and saying so is
+more useful than presenting six failures as a conclusion about the method.
