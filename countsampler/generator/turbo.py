@@ -61,6 +61,7 @@ class FrozenTurboGenerator:
                  prediction_type: str = "epsilon", family: str = "sd", device="cuda",
                  dtype: torch.dtype = torch.bfloat16, resolution: int = 512,
                  min_alpha_bar: float = 1e-4, gradient_checkpointing: bool = True,
+                 decode_chunk: int = 4,
                  default_timesteps: tuple[int, ...] = (999,), input_scaling: str = "pipeline"):
         if family not in ("sd", "sdxl"):
             raise ValueError("family must be 'sd' or 'sdxl'")
@@ -89,6 +90,7 @@ class FrozenTurboGenerator:
         self._prompt_cache: dict[str, tuple[torch.Tensor, torch.Tensor]] = {}
         self._token_cache: dict[tuple[str, str], list[int]] = {}
         self.freeze()
+        self.decode_chunk = int(decode_chunk)
         if gradient_checkpointing and hasattr(self.unet, "enable_gradient_checkpointing"):
             self.unet.enable_gradient_checkpointing()
 
@@ -102,6 +104,7 @@ class FrozenTurboGenerator:
             dtype=resolve_dtype(gcfg.get("dtype", "bfloat16")),
             resolution=gcfg.get("resolution", 512),
             gradient_checkpointing=gcfg.get("gradient_checkpointing", True),
+            decode_chunk=int(gcfg.get("decode_chunk", 4)),
             min_alpha_bar=gcfg.get("min_alpha_bar", 1e-4),
             default_timesteps=tuple(gcfg.get("timesteps", [999])),
             variant=gcfg.get("variant", "fp16"),
@@ -113,6 +116,7 @@ class FrozenTurboGenerator:
     def from_pretrained(cls, model_id: str, *, family: str = "auto", device="cuda",
                         dtype: torch.dtype = torch.bfloat16, resolution: int = 512,
                         gradient_checkpointing: bool = True, min_alpha_bar: float = 1e-4,
+                        decode_chunk: int = 4,
                         default_timesteps=(999,), variant: str | None = "fp16",
                         vae_id: str | None = None, input_scaling: str = "pipeline") -> "FrozenTurboGenerator":
         from diffusers import AutoencoderKL, DDPMScheduler, UNet2DConditionModel
@@ -144,6 +148,7 @@ class FrozenTurboGenerator:
                    prediction_type=sched.config.get("prediction_type", "epsilon"),
                    family=family, device=device, dtype=dtype, resolution=resolution,
                    min_alpha_bar=min_alpha_bar, gradient_checkpointing=gradient_checkpointing,
+                   decode_chunk=decode_chunk,
                    default_timesteps=default_timesteps, input_scaling=input_scaling)
 
     def freeze(self) -> None:
@@ -347,9 +352,16 @@ class FrozenTurboGenerator:
         return torch.cat(res)
 
     # ------------------------------------------------------------------ VAE
-    def decode(self, latents: torch.Tensor, grad: bool = False, chunk: int | None = 8) -> torch.Tensor:
-        """Scaled latents -> images in [-1, 1] (float32). Keep `grad=True` to backprop (image counter)."""
-        return vae_decode(self.vae, latents, grad=grad, chunk=chunk)
+    def decode(self, latents: torch.Tensor, grad: bool = False, chunk: int | None = None) -> torch.Tensor:
+        """Scaled latents -> images in [-1, 1] (float32). Keep `grad=True` to backprop (image counter).
+
+        `chunk` defaults to `generator.decode_chunk`. The size matters far more than it looks: at
+        512 px on an 8 GB card, decoding 8 latents at once reserves 12.3 GB, spills to shared
+        memory and takes **11.98 s**, against **1.16 s** at chunk 4 and 1.04 s at chunk 1 - a 10x
+        penalty paid silently by every evaluation in this project.
+        """
+        return vae_decode(self.vae, latents, grad=grad,
+                          chunk=self.decode_chunk if chunk is None else chunk)
 
     def encode_images(self, images: torch.Tensor, chunk: int = 8) -> torch.Tensor:
         """Images in [-1, 1] -> scaled latents (posterior mean)."""

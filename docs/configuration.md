@@ -46,6 +46,7 @@ Keeping this page complete is enforced by `tests/test_docs.py`.
 | `generator.timesteps` | `[999]` | unrolled steps. `[999, 499]` = first two steps |
 | `generator.input_scaling` | `pipeline` | first U-Net input: `pipeline` (√(1−ᾱ_T)·z, exactly the diffusers Turbo pipelines) or `identity` (z, literal Eq. 1). See [spec_decisions.md](spec_decisions.md) |
 | `generator.gradient_checkpointing` | true | recompute U-Net activations in backward |
+| `generator.decode_chunk` | 4 | latents per VAE decode call. The size matters far more than it looks: at 512 px on an 8 GB card, decoding 8 at once reserves **12.3 GB**, spills to shared memory and takes **11.98 s** for eight images, against **1.16 s** at chunk 4 and 1.04 s at chunk 1 — a 10× penalty paid silently by every evaluation |
 | `generator.min_alpha_bar` | 1e-4 | clamp for ᾱ_t in Eq. 1 |
 | `generator.vae_id` | (unset) | optional separate VAE repo, e.g. `madebyollin/sdxl-vae-fp16-fix` for fp16 SDXL |
 
