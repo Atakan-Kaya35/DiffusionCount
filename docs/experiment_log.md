@@ -3240,3 +3240,72 @@ prompt sets the reachable band and the noise only modulates within it; the band 
 flat-lay prompt is 8 to 31, so targets 1 to 8 do not exist at any noise; a search that optimises a
 detector selects for that detector's blind spot; and the count a noise yields is dominated by the
 noise-prompt interaction rather than by the noise.
+
+## 2026-11-26 19:50 - Per-cell reference noise: the first positive result
+
+The repair the variance decomposition implied. If the colour/shape cell accounts for 55.9 of the
+variance against 21.9 for the requested target, then a reference noise must be fitted per cell.
+That is not a workaround: Dphi(eps, n, c_bar) takes the condition, so a per-cell mapping from
+target to noise is inside the hypothesis class this project proposes. The question is whether
+such a mapping exists at all, before anything tries to learn it.
+
+Three cells where OWLv2 and the colour counter agree within 2 objects. Pentagons excluded,
+because the detector cannot see them. 128-noise pool per cell, references chosen only among
+noises where the two counters agree.
+
+**The evaluation is on held-out seeds.** At blend 1.0 the evaluated image IS the image that was
+counted when the reference was chosen, so skill there is fitting on test and means nothing; it is
+reported as a ceiling and labelled as such. At blend 0.75 the noise is slerped with a seed that
+was never part of the fitting set, so the image scored was never counted.
+
+```
+   blend    MAE   skill   corr  slope    sd  corr(owl,col)   note
+    0.00   5.48  -0.097  +0.00  -0.00  2.87      +0.10       untouched baseline
+    0.50   5.17  -0.035  +0.83   0.28  4.98      +0.44       held-out seeds
+    0.75   3.48  +0.305  +0.99   0.62  4.28      +0.57       held-out seeds
+    1.00   0.07  +0.987  +1.00   1.02  0.05      +0.79       fit on test, ceiling only
+```
+
+Paired bootstrap over the 120 (cell, seed, target) units, blend 0.75 against the untouched
+baseline:
+
+```
+    baseline MAE 5.48   per-cell reference MAE 3.48
+    improvement +2.01   95% CI [+1.12, +2.88]   p(no improvement) 0.0000
+    skill +0.305        improved on 58% of units, worse on 31%
+    degeneracy guard: 8/10 distinct rounded means, 8/9 monotone pairs
+
+          cell  baseline  per-cell   skill
+       blu/dia      5.35      4.78  +0.045
+       gre/dia      5.35      2.27  +0.545
+       red/dia      5.75      3.38  +0.325
+```
+
+Per-target mean counted at blend 0.75: 14.1 13.9 16.5 16.6 18.3 20.2 20.4 21.2 24.1 24.8 for
+targets 10 through 28. Monotone except one pair, and the baseline row is flat at 20.4.
+
+Counter agreement RISES with blend here, +0.10 to +0.79, where in the previous pooled-reference
+run it fell from +0.57 to +0.28. The two instruments converge as the mechanism is applied rather
+than diverging, which is the signature of a real effect rather than a detector artefact. It is
+the same check that invalidated the plain-plural pool, now passing.
+
+### What this is, stated precisely
+
+With the count absent from the prompt - every target gets the identical text - choosing the noise
+places the object count on the requested value better than the best constant predictor, by
+2.01 objects of MAE, significant at p < 0.0001, on seeds held out from the fitting.
+
+### What it is not
+
+It generalises across seeds, not across cells. The reference is fitted per colour/shape, and the
+previous run established that a reference does not transfer to a cell it was not fitted on. The
+band is 10 to 28, not the specification's 1 to 10, because the count-free flat-lay prompt never
+renders fewer than 8 objects at any noise, so the bar here is 5.00 rather than 2.500 and the two
+skill numbers are not comparable. It is selection from a pool, not a learned sampler. And blue
+diamond gains only +0.045, so the effect is uneven across cells.
+
+The route from here to the project's actual object is distillation: the per-cell pool now defines
+a supervised target - for each (cell, target) a noise that demonstrably renders it - which Dphi
+can be regressed onto directly. That replaces the reward signal that six policy-gradient runs
+could not get a usable gradient from, and it asks Dphi to reproduce a mapping now known to exist
+rather than to discover one.
