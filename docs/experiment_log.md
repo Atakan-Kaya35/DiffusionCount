@@ -3106,3 +3106,137 @@ does not render and the detector cannot measure.
 
 **Method note.** This was caught only by cross-checking with an independent counter that has a
 different failure mode. A single metric cannot validate a search that optimises that same metric.
+
+## 2026-11-26 19:12 - A band where the prompt renders and the detector can be trusted
+
+The previous pool was built on the plain-plural prompt and was invalid: the search minimised OWLv2
+and selected noises the detector reads as 0 while an independent colour counter finds 92. Rebuilt
+on the flat-lay prompt, which renders well-separated objects and is where the hand-count check of
+2026-11-25 found OWLv2 accurate (11 against ~12, 17 against ~16-18).
+
+128 noises, 3 cells, count-free flat-lay prompt, every image counted twice:
+
+```
+  OWLv2  mean  18.9  range  8-31
+  colour mean  21.7  range  9-46
+  corr(OWLv2, colour) over the pool  +0.613
+  noises where the two counters agree within tolerance: 128/128
+```
+
+The two instruments agree. That is the check whose absence invalidated the previous attempt, and
+it is the reason this band is usable at all: the colour counter reads systematically higher,
+consistent with over-segmentation, but it tracks OWLv2 rather than contradicting it.
+
+Reference noises for targets 10 to 28, chosen only among noises where the two counters agree:
+
+```
+   target  noise   OWLv2  colour          target  noise   OWLv2  colour
+       10      8     9.7    14.7              20      4    19.7    26.3
+       12     23    12.0    16.7              22     16    22.0    24.3
+       14     76    14.0    25.0              24      1    24.0    28.3
+       16      5    16.0    24.0              26      2    25.7    26.7
+       18     57    18.0    27.7              28     28    28.3    26.3
+```
+
+Oracle MAE 0.13 against a best-constant bar of 5.00. That number is the pool scored against
+itself, so it is an upper bound and not a result - the references were chosen on these three
+cells at blend 1.0. What it establishes is that the band CONTAINS all ten targets, which 1 to 10
+did not: the count-free flat-lay prompt never renders fewer than 8.
+
+The evaluation that follows is the test that matters. Six cells including held-out shapes, four
+held-out seeds, and a blend sweep, because blend 1.0 is the reference noise itself - maximum
+control and zero diversity, one image per cell. Blend 0.0 is the untouched baseline and its row
+must come out flat, since it is the same noise whatever the target. The gap between those rows is
+the count carried by the noise.
+
+## 2026-11-26 19:45 - Reference-noise selection fails inside the trustworthy band too
+
+Six cells, four held-out seeds, a blend sweep, counted twice. Blend 0.00 is the untouched
+baseline - the same noise whatever the target - so its row must be flat, and it is.
+
+```
+   blend  MAE(OWLv2)   skill  MAE(colour)   skill   corr(OWLv2,colour)
+    0.00        9.29  -0.858         5.78  -0.155         +0.57
+    0.50        9.74  -0.948         7.15  -0.430         +0.39
+    0.75        9.43  -0.886         7.44  -0.487         +0.30
+    1.00        9.12  -0.823         7.55  -0.510         +0.28
+```
+
+Negative everywhere, and blending does not improve on blend 0. Two things had to be ruled out
+before that could be stated.
+
+**The detector cannot see pentagons.** 64 of 240 images at blend 1.00 are read by OWLv2 as 0 to 2
+objects while the colour counter finds a mean of 22, and every one of those 64 is above 8 on the
+colour counter. It is concentrated by shape:
+
+```
+          cell   OWLv2  colour  disagree
+       blu/pen     7.6    21.5      13.9
+       gre/pen     4.3    22.8      18.5
+       red/pen    18.9    22.8       3.9
+       blu/dia    20.8    18.9       1.9
+       gre/dia    23.4    25.2       1.8
+       red/dia    22.5    22.1       0.4
+```
+
+The hand-count check of 2026-11-25 that licensed trusting OWLv2 on flat-lay was done on crosses.
+It does not extend to pentagons. Note that the counter agreement also falls monotonically with
+blend, +0.57 down to +0.28: pushing toward a noise chosen by OWLv2 moves the images toward where
+OWLv2 is wrong. That is the same contamination as the plain-plural pool, caught early this time
+because both counters were run from the start.
+
+**Rescored on the three cells where the two counters agree within 2 objects** - a criterion that
+knows nothing about the requested target, so it cannot flatter the result:
+
+```
+   blend    MAE   skill   corr  slope  sd within target
+    0.00   5.48  -0.097  +0.00  -0.00              2.87
+    0.50   6.78  -0.357  +0.52   0.23              5.95
+    0.75   6.23  -0.247  +0.67   0.51              6.08
+    1.00   6.23  -0.247  +0.63   0.56              4.69
+```
+
+Still negative, and still worse than doing nothing. The mechanism is not inert - correlation
+between the requested target and the mean count reaches +0.67 and the slope reaches 0.56 - but it
+buys that tracking by raising the within-target spread from 2.87 to about 6. The variance costs
+more than the signal gains. This is the same trap as Method D's +0.989, which was a correlation
+of per-count means against a per-image +0.270, and the per-target means here would read MAE 3.18,
+skill +0.36. The per-image number is the result; the per-target mean is not.
+
+**Why it fails: the count is not a property of the noise.** At blend 1.00 all four seeds use the
+identical z, so the only thing varying is the colour and shape in the prompt:
+
+```
+  target   blu/dia   blu/pen   gre/dia   gre/pen   red/dia   red/pen  spread
+      14       0.0       1.0      20.0       1.0      24.0      25.0    25.0
+      20      26.0       1.0      30.0      16.0      28.0      27.0    29.0
+      28      21.0      28.0      26.0       1.0      35.0      40.0    39.0
+
+  mean across-cell spread for one fixed noise: 28.3 objects
+  the band being controlled is 18 objects wide
+```
+
+One fixed noise spans more counts across six cells than the entire range it is meant to select
+within. The variance decomposition is explicit: the requested target accounts for 21.9, the
+colour/shape cell for 55.9. A reference noise is a reference for the cell it was fitted on and
+not for any other, because what a given z renders depends on the prompt it is decoded against.
+
+That is the general statement the whole sequence has been converging on, and it applies to the
+learned sampler as much as to selection: Dphi(eps, n, c_bar) already takes the condition, so it
+is not forbidden from learning this interaction - but the interaction is 2.5 times larger than
+the effect being learned, and it has to be learned per cell from a reward that cannot measure
+half the cells.
+
+### What is now closed
+
+Three routes to count control through the noise have been run to the point of a measurement:
+differentiable proxies (best per-image +0.154), policy gradient on a detector reward (six runs,
+no count-reducing direction exists under the count-free prompt), and reference-noise selection
+(negative at every blend, inside the band, on cells where the instrument works). None beats the
+constant predictor per image.
+
+The honest positive results of this project are the negative ones, and they are specific: the
+prompt sets the reachable band and the noise only modulates within it; the band of the count-free
+flat-lay prompt is 8 to 31, so targets 1 to 8 do not exist at any noise; a search that optimises a
+detector selects for that detector's blind spot; and the count a noise yields is dominated by the
+noise-prompt interaction rather than by the noise.
