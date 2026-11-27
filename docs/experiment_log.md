@@ -3574,3 +3574,56 @@ signal.
 the flat baseline row above each. The baseline is flat by construction - same prompt, same noise,
 ten columns, one number - which is exactly why any variation in the Dphi row is attributable to
 the sampler alone.
+
+## The blend was the bottleneck, and raising it fixes every cell
+
+The ten-cell table had three negative cells, and I read them as an offset: counts rising with n
+but sitting too high, fixable with an intercept. `scripts/offset_diagnose.py` measured three arms
+on the same held-out seeds - the reference at full strength, the slerp blend Dphi is trained to
+copy, and Dphi itself - and the reading was wrong on both counts.
+
+```
+             cell    arm    MAE   skill   corr   bias
+     red/triangle    ref   0.00  +1.000  +1.00  +0.00
+     red/triangle  slerp   5.21  -0.043  +0.89  -0.24
+     red/triangle   dphi   5.26  -0.053  +0.91  -0.71
+```
+
+Bias is near zero, and negative if anything, so there was no offset to correct. And Dphi
+reproduces its training target to within 0.05 MAE, so the network was never the problem. The
+references are near-exact too - red/triangle's are [10,12,...,28] on the nose. The loss is
+entirely in the step between reference and seed: a reference's count does not fully survive being
+blended with an unseen seed, and how much survives differs by cell. Blending 0.75 of the way costs
+red/cross little (MAE 0 -> 3.24) and costs red/triangle everything (0 -> 5.21).
+
+(The `ref` arm's 0.00 is in-sample and means less than it looks: those references were selected by
+this counter on this cell, and the arm is ten fixed images with no seed diversity at all.)
+
+So the lever is the blend, and `scripts/blend_sweep.py` swept it while measuring the price -
+across-seed pixel diversity as a fraction of untouched noise. Every cell improves monotonically
+with the blend and every cell loses diversity monotonically. At 0.95, skill is excellent and
+diversity is 0.16 of raw, which is nearly the same ten pictures for every seed; that is the
+degenerate solution and is not taken. 0.85 holds diversity near 0.45 and turns every negative cell
+positive, so 0.85 is used for all ten cells and fitted on none.
+
+The sweep ran on seed bank 90210, which is the bank the ten-cell table was scored on, so choosing
+0.85 there and reporting on it would be selection on the test set. `percell_calibrate_v2.py`
+therefore retrains at both 0.75 and 0.85 and scores on a fresh bank, 24680, that played no part in
+the choice.
+
+```
+  blend 0.75   POOLED  7.41 -> 4.09  skill +0.182  improve +3.32 [+2.89,+3.75]  div 0.61
+  blend 0.85   POOLED  7.41 -> 3.07  skill +0.385  improve +4.34 [+3.92,+4.76]  div 0.45
+```
+
+**Ten of ten cells beat the constant predictor at 0.85; ten of ten beat untouched noise at
+p < 0.05.** Pooled correlation +1.00, slope 0.81, degeneracy guard clean at 10/10 distinct and 9/9
+monotone. Only red/triangle remains weak (+0.060) while still significant.
+
+One further check fell out of the fresh bank, and it corrects an earlier claim. Per-cell skill is
+not stable across seed banks: at blend 0.75, red/cross reads +0.360 on bank 90210 and +0.138 on
+24680, under an identical procedure. The pooled figure barely moves (+0.170 vs +0.182). Eight
+seeds cannot rank cells against one another, so "red/cross is the best cell" was over-read, and
+the pooled number is the one to quote.
+
+`runs/percal2/comparison.png` shows blue/cross, green/star and red/triangle with all three arms.

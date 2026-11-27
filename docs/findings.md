@@ -254,48 +254,64 @@ significant on a paired test, while producing 0.19 objects per image.
 
 ## 6. Where the work is now
 
-**The thesis has a positive demonstration.** With the count absent from the prompt — every target
-gets the identical text — a learned Δφ places the object count on the requested value better than
-the best constant predictor. Calibrated per cell, on eight held-out seeds each:
+**The thesis has a positive demonstration.** With the count absent from the prompt - every target
+gets the identical text - a learned Delta-phi places the object count on the requested value
+better than the best constant predictor, on every cell tested. Ten cells, eight seeds each, the
+seeds used neither in training nor in choosing any hyper-parameter:
 
 ```
-             cell   base   Dphi   skill   corr  slope  improve          95% CI       p
-        red/cross   6.22   3.20  +0.360  +0.95   0.69    +3.02 [+1.99,+4.05]  0.0000
-      green/cross   6.03   3.44  +0.312  +0.94   0.72    +2.59 [+1.56,+3.62]  0.0000
-         red/star   6.03   3.54  +0.292  +0.86   0.61    +2.49 [+1.41,+3.62]  0.0000
-        blue/star   7.05   3.55  +0.290  +0.85   0.66    +3.50 [+2.16,+4.84]  0.0000
-       blue/cross   6.17   3.60  +0.280  +0.90   0.58    +2.58 [+1.49,+3.62]  0.0000
-     yellow/cross   8.88   3.81  +0.237  +0.92   0.82    +5.06 [+3.30,+6.96]  0.0000
-      red/diamond   7.00   4.41  +0.118  +0.74   0.54    +2.59 [+1.23,+3.96]  0.0002
-     red/triangle   8.47   5.26  -0.053  +0.91   0.85    +3.21 [+1.64,+4.84]  0.0000
-       green/star   6.50   5.34  -0.068  +0.48   0.20    +1.16 [+0.31,+2.04]  0.0049
-     blue/diamond   6.58   5.38  -0.075  +0.89   0.62    +1.20 [-0.43,+2.88]  0.0756
+             cell   base   Dphi   skill   corr  slope  improve          95% CI       p   div
+       blue/cross   6.88   2.44  +0.512  +0.97   0.84    +4.44 [+3.26,+5.63]  0.0000  0.46
+      green/cross   6.58   2.56  +0.487  +0.98   0.84    +4.01 [+2.95,+5.11]  0.0000  0.46
+     yellow/cross   8.22   2.56  +0.487  +0.98   0.94    +5.66 [+4.46,+6.94]  0.0000  0.47
+         red/star   7.38   2.84  +0.432  +0.98   0.69    +4.54 [+3.38,+5.75]  0.0000  0.46
+      red/diamond   6.40   3.00  +0.400  +0.89   0.82    +3.40 [+2.31,+4.56]  0.0000  0.43
+       green/star   9.20   3.01  +0.397  +0.91   0.64    +6.19 [+4.79,+7.62]  0.0000  0.42
+        blue/star   9.53   3.02  +0.395  +0.90   0.79    +6.50 [+4.72,+8.25]  0.0000  0.44
+        red/cross   6.83   3.25  +0.350  +0.96   0.80    +3.58 [+2.39,+4.74]  0.0000  0.46
+     blue/diamond   6.60   3.35  +0.330  +0.94   0.77    +3.25 [+2.01,+4.53]  0.0000  0.49
+     red/triangle   6.50   4.70  +0.060  +0.87   1.00    +1.80 [+0.50,+3.09]  0.0037  0.40
 
-           POOLED   6.89   4.15  +0.170  +0.98   0.63    +2.74 [+2.31,+3.17]  0.0000
+           POOLED   7.41   3.07  +0.385  +1.00   0.81    +4.34 [+3.92,+4.76]  0.0000  0.45
 ```
 
-The baseline row is flat by construction - identical prompt, untouched noise - so the entire
-difference is carried by Delta-phi. Best cell: **skill +0.360 at correlation +0.95**, for 2.7
-minutes of training plus one 96-noise counting pass. Across ten cells, **seven beat the best
-constant predictor** and **nine of ten beat untouched noise at p < 0.05**; the one that does not,
-blue/diamond, still improves by +1.20 with a CI that only just crosses zero.
+**Ten of ten cells beat the best constant predictor, and ten of ten beat untouched noise at
+p < 0.05.** Pooled skill **+0.385** at correlation **+1.00** and slope 0.81, with the degeneracy
+guard fully clean: ten distinct rounded per-target means and nine of nine monotone steps. The
+baseline row is flat by construction - identical prompt, untouched noise - so the whole of the
+difference is carried by Delta-phi. Cost per cell: 2.7 minutes of training plus one 96-noise
+counting pass.
 
-Two things the ten-cell table says that the four-cell one could not.
+### What it costs, stated plainly
 
-**Correlation with the target is near-universal; absolute accuracy is not.** Nine of the ten cells
-track the request at r >= +0.74 - red/triangle at +0.91 with slope 0.85, blue/diamond at +0.89 -
-so the sampler knows which way to move almost everywhere. Both of those still score negative
-skill: their counts rise with n but sit too high, an offset rather than a loss of control. Only
-green/star (r +0.48, slope 0.20) is a genuine control failure. And a large baseline error is no
-obstacle by itself - yellow/cross starts worst of all at 8.88 and still reaches +0.237, the single
-biggest improvement in the table at +5.06.
+`div` is across-seed image diversity (pixel sd at a fixed target) as a fraction of what untouched
+noise has. At the operating point it is **0.45**: the sampler pulls each seed 85% of the way
+toward a reference, so the images for one target resemble each other far more than raw samples do.
+Pushing the blend to 0.95 scores better still - red/cross reaches +0.778 - at a diversity of 0.16,
+which is close to rendering the same ten pictures for every seed. That is the degenerate solution
+and it is not claimed here. 0.85 is used for every cell, fitted on none.
 
-**The instrument explanation weakened under more data.** On four cells, skill correlated +0.83 with
-how well the two independent counters agree. On ten it is **+0.55** (and -0.64 against raw
-disagreement) - still the right sign, no longer strong enough to explain the negatives away.
-yellow/cross reaches +0.237 at a counter agreement of 4.9, worse than blue/diamond's 5.6. So
-counter noise is part of the story and not the whole of it, and the claim stays stated per cell
-rather than leaned on a single pooled number.
+### The blend is the mechanism, and why
+
+The reference noises are near-exact: gen_genpool.py fits them to within a count on every cell, and
+red/triangle's land on [10,12,...,28] precisely. Delta-phi copies its training target almost
+exactly (5.26 against the target's own 5.21 on red/triangle). Neither end is the bottleneck. What
+fails is the step between: **a reference's count does not fully survive being blended with an
+unseen seed**, and the fraction that survives is the blend. Raising it from 0.75 to 0.85 lifted
+pooled skill from +0.182 to +0.385 and turned every remaining negative cell positive.
+
+The error it removes is scatter, not bias. On the cells that were failing, mean(counted - target)
+measured -0.24 and -0.75 - near zero. An earlier reading of these cells as "landing too high" was
+wrong, and the intercept correction it implied would have fixed nothing.
+
+### Per-cell skill is not stable across seed banks; the pooled estimate is
+
+Scored on bank 90210 at blend 0.75, red/cross reads +0.360 and seven of ten cells are positive. On
+bank 24680, identical procedure, red/cross reads **+0.138** and ten of ten are positive. The
+pooled number barely moves (+0.170 against +0.182). Eight seeds is too small a bank to rank cells
+against each other, so the headline is the pooled figure and the per-cell column is read as a
+spread, not a league table. The earlier framing of red/cross as "the best cell" does not survive
+this check.
 
 ### The architectural finding that made it possible
 
