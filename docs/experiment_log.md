@@ -3682,3 +3682,48 @@ every sample is blank the reward is -1.000 for all of them, the per-count advant
 subtracts to exactly zero, and no gradient points back out - an absorbing state, which is why the
 last 500 steps are identical. The guard is now two-sided (`--sd-ceil`, measured valid band
 0.48-0.74) and penalises both ends.
+
+## Policy gradient, seventh attempt: the cage was necessary, not sufficient
+
+With the shell projection in place and the guard made two-sided, the run no longer gets absorbed
+into the blank canvas. It still fails, and the block summary shows exactly how:
+
+```
+       block   reward   |c-n|  counted     bg  dead%  blank%  radius
+       1-100   -8.448   13.19     5.88   0.57     25      25  0.8243
+     200-300  -11.689   13.57     4.67   0.42     55       0  0.1865
+     400-500   -0.475    6.83    17.62   0.74      0      18  0.0352
+     700-801   -5.094    7.88    16.42   0.41     69       0  0.0560
+```
+
+Whenever the policy ventures out - radius 0.8 in the first hundred steps - a quarter of the images
+die and a quarter go blank. The adaptive radius then shrinks to protect image quality, and it
+settles at **0.035-0.073: precisely the cage the projection was built to lift.** The best block
+reaches |counted - n| 6.83, still worse than the constant predictor's 5.00. The final checkpoint
+is degenerate in the other direction - scored on the stored grid it draws 0 objects at every
+target, backdrop 0.00, MAE 19.00.
+
+So the architectural finding needs qualifying. Norm preservation is **necessary but not
+sufficient**. shell_probe.py showed random directions stay healthy on the shell at any distance,
+but a LEARNED direction does not: it concentrates energy in a way that leaves the Gaussian
+distribution even while ||z|| is held fixed, the decode degrades, and the quality controller drives
+the radius back into the original budget. The slerp construction avoids this because every point on
+the path is as Gaussian as its endpoints - that, and not the norm alone, is what makes it work.
+
+Scored against the stored baselines on red/cross:
+
+```
+                     arm    MAE   skill
+  prompt (count in text)   9.75  -0.950
+   count-free, raw noise   6.83  -0.365
+           best constant   5.00  +0.000
+    dphi calibrated 0.85   3.25  +0.350
+      RL policy gradient  19.00  -2.800
+```
+
+Seven policy-gradient runs have now failed. The first six were searching a ball that does not
+contain the answer; this one could reach the answer's neighbourhood and was pushed back out by its
+own image-quality controller. The honest conclusion is that REINFORCE on a detector reward is not
+the route here, and the reason is geometric rather than a matter of tuning.
+
+`runs/baselines/arms.png` shows all four arms on one seed.
