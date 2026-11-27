@@ -20,6 +20,14 @@ The sampler is the same in all experiments. Only the error signal that trains it
 
 All three share the sampler and its geometry regularizers ([docs/methods/shared.md](docs/methods/shared.md)).
 
+## Results
+
+**[docs/RESULTS.md](docs/RESULTS.md) is the results package** — the headline
+numbers, the figures, the baselines they are measured against, the costs, and the routes that
+failed. With the count removed from the prompt entirely, a per-cell calibrated Δφ reaches pooled
+skill **+0.385** over the best constant predictor across ten cells (10/10 cells positive,
+p < 0.05), against **+7.12 objects** better than simply putting the number in the prompt.
+
 ## Documentation
 
 **Start at [docs/README.md](docs/README.md).** Main pages:

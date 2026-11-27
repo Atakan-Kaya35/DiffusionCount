@@ -5,7 +5,10 @@ Documentation for the CS485 count-conditioned noise sampler. The specification i
 
 ## Reading order
 
-**For the results, start with [Findings](findings.md)** — what is established, with the measurement
+**For the results, start with [RESULTS.md](RESULTS.md)** — the presentation-ready package:
+headline tables, figures, baselines, costs and limitations in one place.
+
+**For the full evidence trail, read [Findings](findings.md)** — what is established, with the measurement
 behind each claim, including what beats the baseline and why the attention-based methods failed.
 The running narrative with the wrong turns and corrections is in
 [the experiment log](experiment_log.md).
