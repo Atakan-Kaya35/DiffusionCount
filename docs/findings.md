@@ -282,6 +282,58 @@ baseline row is flat by construction - identical prompt, untouched noise - so th
 difference is carried by Delta-phi. Cost per cell: 2.7 minutes of training plus one 96-noise
 counting pass.
 
+### What it is measured against
+
+Every comparison here used to be against untouched noise under a count-free prompt. That arm
+cannot know n - the prompt is identical for every target - so its response is flat by
+construction, and beating it only shows the sampler is better than ignoring the request. The
+comparison a reader wants is against the obvious alternative: **put the number in the prompt and
+count what comes out.** `runs/baselines/store.json` holds that arm, keyed by (colour, shape,
+count, seed, mode), built once and read by every scoring script rather than regenerated.
+
+```
+             cell  prompt    +cal  countfree  constant  dphi.75  dphi.85
+        red/cross    9.75    6.67       6.83      5.00     4.31     3.25
+       blue/cross   10.55    6.93       6.88      5.00     3.56     2.44
+      green/cross   10.53    7.48       6.58      5.00     3.55     2.56
+     yellow/cross   18.70    3.83       8.22      5.00     3.79     2.56
+         red/star    9.30    6.75       7.38      5.00     3.55     2.84
+        blue/star    9.12   10.61       9.53      5.00     4.12     3.02
+       green/star    8.39    9.20       9.20      5.00     4.92     3.01
+      red/diamond    7.29    8.79       6.40      5.00     3.71     3.00
+     blue/diamond    6.33   20.18       6.60      5.00     4.51     3.35
+     red/triangle   11.95    5.66       6.50      5.00     4.86     4.70
+
+           POOLED   10.19    8.61       7.41      5.00     4.09     3.07
+```
+
+**Asking the model for the number is the worst arm in the table, at 10.19.** Not because it
+ignores the request - it tracks it at correlation +0.96 and slope 0.92 - but because it overdraws
+by a near-constant margin: mean(counted - requested) = **+7.72**. Ask for 10, get 18; ask for 28,
+get 35.
+
+Since that error is almost all bias, `+cal` gives the arm its best possible form: each cell's own
+fitted response curve inverted, so the user asks for whatever number actually yields what they
+want. That is an oracle - it needs the curve measured in advance - and it is exactly the "ask for
+a different number" tactic that this project rejects as a direction. It is included only so the
+sampler faces the strongest honest version of the comparison. It reaches 8.61 pooled, still
+behind. (blue/diamond's 20.18 is the inversion exploding on a slope of 0.24: a near-flat response
+cannot be inverted.)
+
+Against the prompt baseline, paired over (cell, seed, count), n = 800:
+
+```
+  improvement +7.12 objects   95% CI [+6.56, +7.69]   p = 0.0000
+
+  requested     10   12   14   16   18   20   22   24   26   28
+  prompt        18   20   21   24   26   31   31   29   31   35
+  dphi@0.85     11   13   15   17   19   20   22   23   24   26
+```
+
+One caveat belongs with this. The band 10-28 is where SD-Turbo overdraws, so part of the prompt
+baseline's handicap is the choice of band rather than a defect of prompting. The store makes that
+testable on a different band without regenerating anything already measured.
+
 ### What it costs, stated plainly
 
 `div` is across-seed image diversity (pixel sd at a fixed target) as a fraction of what untouched

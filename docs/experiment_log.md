@@ -3627,3 +3627,58 @@ seeds cannot rank cells against one another, so "red/cross is the best cell" was
 the pooled number is the one to quote.
 
 `runs/percal2/comparison.png` shows blue/cross, green/star and red/triangle with all three arms.
+
+## A real baseline, kept on disk; and RL finds the blank canvas
+
+Two things this entry records: the comparison was too weak, and the unblocked policy gradient
+failed in a new and diagnosable way.
+
+### The baseline was flat by construction
+
+Every number quoted so far was against untouched noise under a count-free prompt. That arm cannot
+know n, so its response is ten identical numbers and beating it only shows the sampler is better
+than ignoring the request. `scripts/baseline_store.py` builds the arm a reader actually wants -
+the count IN the prompt - and keeps it in `runs/baselines/store.json`, keyed by (colour, shape,
+count, seed, mode) and idempotent, so a key already present is never re-rendered. The 800
+count-free rows were imported from the percal2 evaluation rather than regenerated.
+
+```
+             cell  prompt    +cal  countfree  constant  dphi.75  dphi.85
+           POOLED   10.19    8.61       7.41      5.00     4.09     3.07
+```
+
+Asking the model for the number is the WORST arm, at 10.19, and not because it ignores the
+request: correlation +0.96, slope 0.92. It overdraws by a near-constant +7.72 objects. Ask for 10,
+get 18. Since the error is almost all bias, `+cal` inverts each cell's own fitted response - the
+strongest honest form of the comparison, an oracle, and exactly the "ask for a different number"
+tactic this project rejects as a direction. Even so it only reaches 8.61.
+
+dphi@0.85 against the prompt baseline, paired over (cell, seed, count), n = 800: **+7.12 objects,
+95% CI [+6.56, +7.69], p = 0.0000.** Per-count means run 11 13 15 17 19 20 22 23 24 26 against a
+request of 10 12 14 16 18 20 22 24 26 28.
+
+Caveat kept with the claim: 10-28 is the band where SD-Turbo overdraws, so some of the prompt
+baseline's handicap is the band, not prompting as such.
+
+### The guard was one-sided and the policy found the hole
+
+shell_probe.py first confirmed the architectural claim on RANDOM directions, not just slerp paths:
+without the projection a random direction is dead by d = 0.6 (count 0, backdrop 0.59 -> 0.23);
+with it the decode stays healthy at every distance (backdrop ~0.65 throughout). The cage was real.
+It also showed something the RL retry had to face - a random shell direction at d 0.81 moves the
+count only from 19.9 to 22.0. Being on the shell at distance is not count control; the
+count-carrying directions are a thin subset.
+
+The run with the cage lifted converged to a blank white canvas:
+
+```
+[   180] reward -0.544  counted 15.50 vs 18.25  bg 0.56  dead  0%
+[   800] reward -1.000  counted  0.00 vs 19.75  bg 1.00  dead  0%
+```
+
+The collapse guard was derived from dead decodes reading backdrop 0.000, so it rejects bg below a
+floor. An empty white image reads bg 1.000 and passes as healthy while drawing nothing. And once
+every sample is blank the reward is -1.000 for all of them, the per-count advantage baseline
+subtracts to exactly zero, and no gradient points back out - an absorbing state, which is why the
+last 500 steps are identical. The guard is now two-sided (`--sd-ceil`, measured valid band
+0.48-0.74) and penalises both ends.

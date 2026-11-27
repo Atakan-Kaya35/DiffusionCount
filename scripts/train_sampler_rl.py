@@ -32,6 +32,7 @@ of n and the experiment is falsifiable: any skill above the constant predictor i
 from __future__ import annotations
 
 import json
+from collections import defaultdict
 import time
 from pathlib import Path
 
@@ -71,6 +72,26 @@ def project(delta: torch.Tensor, radius: float) -> torch.Tensor:
     return delta * scale[:, None, None, None]
 
 
+def to_shell(z: torch.Tensor, eps: torch.Tensor) -> torch.Tensor:
+    """Rescale z back onto the sphere of radius ||eps||.
+
+    Why every earlier policy-gradient run here was searching the wrong set. The radius above was
+    derived from how far an ADDITIVE direction can travel before the decode dies: d_z 0.07, since
+    a learned direction amplifies 10-16x into x0 and x0 dies at 1.17. But slerp paths carry the
+    count across the whole band at d_z 1.112 without ever collapsing, because they hold ||z||
+    fixed. The collapse was never about distance - it was about leaving the Gaussian shell the
+    U-Net was trained on. So the 0.05-0.07 budget was not a safety margin; it was a cage 14x
+    smaller than the region where count control lives, and six runs searched inside it.
+
+    With this projection the displacement cap can be raised to the measured working range. The
+    policy gradient stays valid: the Gaussian policy is over a = eps + w*Delta + sigma*xi, and
+    this is a deterministic map applied to that action before the environment sees it.
+    """
+    zf, ef = z.flatten(1), eps.flatten(1)
+    scale = ef.norm(dim=1) / zf.norm(dim=1).clamp_min(1e-9)
+    return z * scale.view(-1, *([1] * (z.dim() - 1)))
+
+
 def main() -> None:
     ap = base_parser(__doc__, config_required=False)
     ap.add_argument("--steps", type=int, default=2000)
@@ -80,12 +101,29 @@ def main() -> None:
                     help="hard cap on d(z, eps); the measured safe z-budget is 0.07-0.097")
     ap.add_argument("--sigma", type=float, default=0.02,
                     help="exploration sd in normalised distance; d(z, eps+wD) equals this")
+    ap.add_argument("--norm-preserve", action="store_true",
+                    help="rescale z onto the ||eps|| shell after composing it; this is what lifts "
+                         "the displacement cage, so --radius may then be set near the measured 1.112")
+    ap.add_argument("--cell", default=None,
+                    help="restrict training to one colour/shape, e.g. red/cross; cells do not "
+                         "share a solution and spreading one Dphi over ten dilutes all of them")
+    ap.add_argument("--targets", default=None,
+                    help="lo:hi:step for the requested counts, e.g. 10:28:2. The count-free prompt "
+                         "reaches about 8-35 objects, so targets below that are unreachable by any noise")
     ap.add_argument("--eps-per-batch", type=int, default=2)
     ap.add_argument("--counts-per-eps", type=int, default=4)
     ap.add_argument("--lr", type=float, default=3e-5)
     ap.add_argument("--counter", default="owlv2")
     ap.add_argument("--sd-floor", type=float, default=0.25,
                     help="backdrop fraction below which the decode is treated as collapsed; valid images span 0.48-0.74 at every count and a collapsed one scores 0.000")
+    ap.add_argument("--sd-ceil", type=float, default=None,
+                    help="backdrop fraction ABOVE which the decode is treated as empty. The floor "
+                         "alone is one-sided: it was derived from dead decodes reading 0.000, so a "
+                         "blank white canvas reads 1.000 and passes as healthy while drawing "
+                         "nothing. Measured valid images span 0.48-0.74, so 0.80 is the natural "
+                         "ceiling. Without this the policy is absorbed into drawing nothing: every "
+                         "sample then scores the same worst reward, the advantage is identically "
+                         "zero, and no gradient points back out.")
     ap.add_argument("--collapse-penalty", type=float, default=150.0,
                     help="K in the quadratic image-quality penalty K*((floor-sd)/floor)^2")
     ap.add_argument("--baseline-ema", type=float, default=0.9)
@@ -114,7 +152,15 @@ def main() -> None:
     sigma = float(args.sigma)
     noise_gen = torch.Generator().manual_seed(int(cfg.experiment.seed) + 1)
     colors, shapes = list(cfg.data.colors), list(cfg.data.heldout_shapes) + list(cfg.data.train_shapes)
-    baseline = {k: (None, None) for k in range(1, n_max + 1)}   # per-count (mean, scale) EMAs
+    if args.cell:
+        cc, ss = args.cell.split("/")
+        colors, shapes = [cc], [ss]
+    if args.targets:
+        lo, hi, st = (int(v) for v in args.targets.split(":"))
+        target_pool = list(range(lo, hi + 1, st))
+    else:
+        target_pool = list(range(1, n_max + 1))
+    baseline = defaultdict(lambda: (None, None))   # per-count (mean, scale) EMAs
     radius = float(args.radius)
     t0 = time.time()
 
@@ -124,8 +170,9 @@ def main() -> None:
             e = torch.randn(1, c, h, w_, generator=noise_gen)
             col = colors[int(torch.randint(len(colors), (1,), generator=noise_gen))]
             shp = shapes[int(torch.randint(len(shapes), (1,), generator=noise_gen))]
-            ns = torch.randperm(n_max, generator=noise_gen)[:args.counts_per_eps] + 1
-            for n in ns.tolist():
+            idx = torch.randperm(len(target_pool), generator=noise_gen)[:args.counts_per_eps]
+            ns = [target_pool[int(i)] for i in idx]
+            for n in ns:
                 eps_list.append(e)
                 counts.append(n)
                 p, word = prompts.prompt(n, col, shp)
@@ -143,6 +190,8 @@ def main() -> None:
             delta_s = project(sampler.delta(eps, n_t, enc.pooled.float()), radius)
             xi = torch.randn(eps.shape, generator=noise_gen).to(device)
             z = eps + wmix * delta_s + sigma * xi
+            if args.norm_preserve:
+                z = to_shell(z, eps)
             u8 = to_uint8_images(gen.decode(gen.generate_latents(z, enc)))
             d_anchor = normalized_distance(z, eps)
 
@@ -186,7 +235,9 @@ def main() -> None:
         # gradient always points back toward a healthy image.
         rel = np.abs(counted - tgt) / np.maximum(tgt, 1.0)
         short = np.maximum(0.0, args.sd_floor - img_sd) / args.sd_floor
-        reward = -rel - float(args.collapse_penalty) * short ** 2
+        over = (np.maximum(0.0, img_sd - args.sd_ceil) / max(1e-6, 1.0 - args.sd_ceil)
+                if args.sd_ceil is not None else 0.0)
+        reward = -rel - float(args.collapse_penalty) * (short ** 2 + over ** 2)
 
         # ---- advantage against a per-count baseline, then normalised
         # Per-count mean AND scale. The reward scale differs enormously across counts - a
@@ -221,20 +272,22 @@ def main() -> None:
         # the batch is unhealthy removes the option rather than taxing it, and the corridor here
         # is narrow enough (reaching n=1 needs d_x0 0.97, collapse starts at 1.17) that the radius
         # has to sit on the boundary rather than be chosen once.
-        healthy = float(img_sd.mean()) >= args.sd_floor
+        healthy = float(img_sd.mean()) >= args.sd_floor and (
+            args.sd_ceil is None or float(img_sd.mean()) <= args.sd_ceil)
         radius = min(args.radius_max, radius * 1.01) if healthy else max(0.01, radius * 0.97)
 
         if step % args.log_every == 0:
             rec = {"step": step, "reward": float(reward.mean()), "abs_err": float(np.abs(counted - tgt).mean()),
                    "counted_mean": float(counted.mean()), "target_mean": float(tgt.mean()),
                    "img_sd": float(img_sd.mean()), "collapsed_frac": float((img_sd < args.sd_floor).mean()),
+                   "empty_frac": float((img_sd > args.sd_ceil).mean()) if args.sd_ceil is not None else 0.0,
                    "geom/d_anchor_mean": float(d_anchor.mean()), "geom/d_anchor_max": float(d_anchor.max()),
                    "grad_norm": float(gnorm), "loss": float(loss.detach()), "radius": radius, "sec_per_step": (time.time() - t0) / step}
             log.write(json.dumps(rec) + "\n"); log.flush()
             print(f"[{step:6d}] reward {rec['reward']:+7.3f}  |counted-n| {rec['abs_err']:6.3f}  "
                   f"counted {rec['counted_mean']:5.2f} vs {rec['target_mean']:5.2f}  "
                   f"d_anchor {rec['geom/d_anchor_mean']:.4f}  img_sd {rec['img_sd']:5.1f}  "
-                  f"bg {rec['img_sd']:.2f}  dead {100*rec['collapsed_frac']:3.0f}%  r {radius:.4f}  {rec['sec_per_step']:.2f}s/step", flush=True)
+                  f"dead {100*rec['collapsed_frac']:3.0f}%  blank {100*rec['empty_frac']:3.0f}%  r {radius:.4f}  {rec['sec_per_step']:.2f}s/step", flush=True)
 
         if args.preview_every and step % args.preview_every == 0:
             with torch.no_grad():
